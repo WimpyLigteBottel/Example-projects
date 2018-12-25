@@ -1,8 +1,9 @@
 <application>
   <component name="FileTypeManager" version="17">
     <extensionMap>
-      <mapping pattern="Challenge" type="PLAIN_TEXT" />
+      <mapping pattern="simpleDay8" type="PLAIN_TEXT" />
       <mapping pattern="buffLaneInAttack" type="PLAIN_TEXT" />
+      <mapping pattern="Challenge" type="PLAIN_TEXT" />
     </extensionMap>
   </component>
 </application>
