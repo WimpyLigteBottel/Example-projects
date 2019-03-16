@@ -2,8 +2,9 @@
   <component name="FileTypeManager" version="17">
     <extensionMap>
       <mapping pattern="simpleDay8" type="PLAIN_TEXT" />
-      <mapping pattern="Challenge" type="PLAIN_TEXT" />
       <mapping pattern="buffLaneInAttack" type="PLAIN_TEXT" />
+      <mapping pattern="Challenge" type="PLAIN_TEXT" />
+      <mapping ext="feature" type="PLAIN_TEXT" />
       <mapping ext="edh" type="PLAIN_TEXT" />
     </extensionMap>
   </component>
