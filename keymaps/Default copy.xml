@@ -1,0 +1,6 @@
+<keymap version="1" name="Default copy" parent="$default">
+  <action id="GotoBookmark5" />
+  <action id="Hotswap">
+    <keyboard-shortcut first-keystroke="ctrl 5" />
+  </action>
+</keymap>
