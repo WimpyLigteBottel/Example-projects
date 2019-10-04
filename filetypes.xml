@@ -1,11 +1,14 @@
 <application>
   <component name="FileTypeManager" version="17">
     <extensionMap>
+      <removed_mapping ext="js" type="JavaScript" />
       <mapping pattern="simpleDay8" type="PLAIN_TEXT" />
       <mapping pattern="CardListToAdd" type="PLAIN_TEXT" />
-      <mapping pattern="Challenge" type="PLAIN_TEXT" />
       <mapping pattern="buffLaneInAttack" type="PLAIN_TEXT" />
+      <mapping pattern="Challenge" type="PLAIN_TEXT" />
+      <mapping ext="js" type="PLAIN_TEXT" />
       <mapping ext="edh" type="PLAIN_TEXT" />
+      <mapping pattern="cards-table" type="VueGWT" />
       <mapping ext="vue" type="VueGWT" />
     </extensionMap>
   </component>
