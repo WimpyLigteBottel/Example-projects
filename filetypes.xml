@@ -2,6 +2,7 @@
   <component name="FileTypeManager" version="17">
     <extensionMap>
       <mapping pattern="simpleDay8" type="PLAIN_TEXT" />
+      <mapping pattern="aoc3" type="PLAIN_TEXT" />
       <mapping pattern="aoc2" type="PLAIN_TEXT" />
       <mapping pattern="CardListToAdd" type="PLAIN_TEXT" />
       <mapping pattern="buffLaneInAttack" type="PLAIN_TEXT" />
