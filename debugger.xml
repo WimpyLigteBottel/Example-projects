@@ -1,6 +1,7 @@
 <application>
   <component name="DebuggerSettings">
     <option name="RUN_HOTSWAP_AFTER_COMPILE" value="RunHotswapAlways" />
+    <option name="INSTRUMENTING_AGENT" value="false" />
     <filter>
       <option name="PATTERN" value="com.sun.*" />
       <option name="ENABLED" value="true" />
