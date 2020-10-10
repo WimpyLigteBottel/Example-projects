@@ -1,5 +1,13 @@
 <keymap version="1" name="Default copy" parent="$default">
+  <action id="Git.Fetch">
+    <keyboard-shortcut first-keystroke="ctrl 7" />
+  </action>
+  <action id="Git.Pull">
+    <keyboard-shortcut first-keystroke="ctrl 8" />
+  </action>
   <action id="GotoBookmark5" />
+  <action id="GotoBookmark7" />
+  <action id="GotoBookmark8" />
   <action id="Hotswap">
     <keyboard-shortcut first-keystroke="ctrl 5" />
   </action>
