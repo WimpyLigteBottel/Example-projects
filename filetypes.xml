@@ -10,6 +10,8 @@
       <mapping pattern="gridmap" type="PLAIN_TEXT" />
       <mapping pattern="aoc3" type="PLAIN_TEXT" />
       <mapping pattern="aoc2" type="PLAIN_TEXT" />
+      <mapping pattern="beacon_2" type="PLAIN_TEXT" />
+      <mapping pattern="beacon_1" type="PLAIN_TEXT" />
       <mapping pattern="block_test" type="PLAIN_TEXT" />
       <mapping pattern="blinker_2" type="PLAIN_TEXT" />
       <mapping pattern="bee-hive_test" type="PLAIN_TEXT" />
