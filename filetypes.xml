@@ -6,6 +6,7 @@
       <mapping pattern="buffLaneInAttack" type="PLAIN_TEXT" />
       <mapping pattern="cards" type="PLAIN_TEXT" />
       <mapping pattern="aoc6" type="PLAIN_TEXT" />
+      <mapping pattern="gridmap" type="PLAIN_TEXT" />
       <mapping pattern="aoc3" type="PLAIN_TEXT" />
       <mapping pattern="aoc2" type="PLAIN_TEXT" />
       <mapping pattern="CardListToAdd" type="PLAIN_TEXT" />
