@@ -8,6 +8,7 @@
       <mapping pattern="blinker_1" type="PLAIN_TEXT" />
       <mapping pattern="CardListToAdd" type="PLAIN_TEXT" />
       <mapping pattern="tub" type="PLAIN_TEXT" />
+      <mapping pattern="day3" type="PLAIN_TEXT" />
       <mapping pattern="day2" type="PLAIN_TEXT" />
       <mapping pattern="buffLaneInAttack" type="PLAIN_TEXT" />
       <mapping pattern="ValidNames" type="PLAIN_TEXT" />
