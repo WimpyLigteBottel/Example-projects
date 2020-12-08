@@ -12,12 +12,12 @@
       <mapping pattern="day2" type="PLAIN_TEXT" />
       <mapping pattern="buffLaneInAttack" type="PLAIN_TEXT" />
       <mapping pattern="ValidNames" type="PLAIN_TEXT" />
-      <mapping pattern="blinker_2" type="PLAIN_TEXT" />
+      <mapping pattern="bee-hive_test" type="PLAIN_TEXT" />
       <mapping pattern="aoc6_test" type="PLAIN_TEXT" />
+      <mapping pattern="Challenge" type="PLAIN_TEXT" />
       <mapping pattern="cards" type="PLAIN_TEXT" />
       <mapping pattern="simpleDay8" type="PLAIN_TEXT" />
-      <mapping pattern="Challenge" type="PLAIN_TEXT" />
-      <mapping pattern="bee-hive_test" type="PLAIN_TEXT" />
+      <mapping pattern="blinker_2" type="PLAIN_TEXT" />
       <mapping pattern="gridmap" type="PLAIN_TEXT" />
       <mapping pattern="block_test" type="PLAIN_TEXT" />
       <mapping pattern="beacon_2" type="PLAIN_TEXT" />
