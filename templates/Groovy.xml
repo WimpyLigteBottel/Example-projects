@@ -1,7 +1,0 @@
-<templateSet group="Groovy">
-  <template name="pvm" value="public void method(){&#10;$END$&#10;}" description="creates a void method" toReformat="false" toShortenFQNames="true">
-    <context>
-      <option name="JAVA_CODE" value="true" />
-    </context>
-  </template>
-</templateSet>

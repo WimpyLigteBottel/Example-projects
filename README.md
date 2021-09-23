@@ -1,1 +1,1 @@
-# AdventOfCode
+# Example-projects
