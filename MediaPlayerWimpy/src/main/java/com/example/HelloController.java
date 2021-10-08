@@ -1,8 +1,6 @@
-package com.example.mediaplayerwimpy;
+package com.example;
 
 import javafx.application.Platform;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -14,7 +12,9 @@ import java.net.MalformedURLException;
 
 public class HelloController {
 
-  public static boolean isPlay = false;
+  public static boolean isPlaying = false;
+  public static boolean isPaused = false;
+
   public MediaPlayer mediaPlayer;
 
   @FXML public TextField fieldLocationTextField;
@@ -28,7 +28,7 @@ public class HelloController {
   public HelloController() throws MalformedURLException {
     fieldLocationTextField = new TextField("C:/temp/Skillet-hero.mp3");
     mediaPlayer = loadMediaPlayer();
-    volumeSlider = new Slider(0, 0.1, 0.05);
+    volumeSlider = new Slider(0, 0.11, 0.0555);
 
     mediaPlayer.totalDurationProperty().addListener((observableValue, duration, t1) -> {});
   }
@@ -36,20 +36,18 @@ public class HelloController {
   @FXML
   public void onPlayButtonClick() throws MalformedURLException {
 
-    if (isPlay) {
+    if (isPlaying && isPaused) {
+      mediaPlayer.play();
+      isPaused = false;
+    } else{
+
       mediaPlayer.stop();
-      isPlay = false;
-    } else {
       mediaPlayer = loadMediaPlayer();
-      isPlay = true;
+      isPlaying = true;
       mediaPlayer.play();
       updateVolume();
+      mediaPlayer.currentTimeProperty().addListener(ov -> updatesValues());
     }
-
-    // Providing functionality to time slider
-    mediaPlayer.currentTimeProperty().addListener(ov -> updatesValues());
-
-
   }
 
   public MediaPlayer loadMediaPlayer() throws MalformedURLException {
@@ -59,33 +57,38 @@ public class HelloController {
     return new MediaPlayer(media);
   }
 
-
   @FXML
   public void onStopButtonClick(ActionEvent actionEvent) {
-    if (isPlay) {
-      isPlay = false;
-      mediaPlayer.stop();
+    if (!isPaused && isPlaying) {
+      isPaused = true;
+      mediaPlayer.pause();
     }
   }
 
   @FXML
   public void updateVolume() {
 
-    double value = volumeSlider.getValue();
+    double value = volumeSlider.getValue()+.01;
 
     System.out.println(value);
     mediaPlayer.setVolume(value);
   }
 
   // Outside the constructor
-  protected void updatesValues()
-  {
-    Platform.runLater(() -> {
-      // Updating to the new time value
-      // This will move the slider while running your video
-      double currentTime = mediaPlayer.getCurrentTime().toMillis();
-      double totalTime = mediaPlayer.getTotalDuration().toMillis();
-      progressBar.setProgress(currentTime / totalTime);
-    });
+  protected void updatesValues() {
+    Platform.runLater(
+        () -> {
+          // Updating to the new time value
+          // This will move the slider while running your video
+          double currentTime = mediaPlayer.getCurrentTime().toMillis();
+          double totalTime = mediaPlayer.getTotalDuration().toMillis();
+          progressBar.setProgress(currentTime / totalTime);
+
+          try {
+            Thread.sleep(100);
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          }
+        });
   }
 }

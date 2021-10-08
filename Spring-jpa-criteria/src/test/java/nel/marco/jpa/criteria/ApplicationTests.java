@@ -1,6 +1,8 @@
 package nel.marco.jpa.criteria;
 
 import nel.marco.db.entity.Customer;
+import nel.marco.db.filter.CustomerFilter;
+import nel.marco.db.filter.CustomerSpecification;
 import nel.marco.db.jpa.CustomerJpa;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +66,25 @@ class ApplicationTests {
     List<Customer> resultList = entityManager.createQuery(criteriaQuery).getResultList();
 
     assertTrue(resultList.size() > 0);
+  }
+
+
+  @Test
+  void dynamicSelectViaJpaQuery() {
+
+    setupCustomers(10);
+
+    List<Customer> all1 = customerJpa.findAll();
+
+    CustomerFilter customerFilter  = new CustomerFilter();
+    customerFilter.setName(all1.get(2).getName());
+    customerFilter.setAge(all1.get(2).getAge());
+
+    CustomerSpecification customerSpecification = new CustomerSpecification(customerFilter);
+
+    List<Customer> all = customerJpa.findAll(customerSpecification);
+
+    System.out.println(all);
   }
 
   public void setupCustomers(int amount) {

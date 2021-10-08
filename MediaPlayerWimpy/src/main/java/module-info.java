@@ -6,8 +6,8 @@ module com.example.mediaplayerwimpy {
   requires org.kordamp.bootstrapfx.core;
   requires javafx.media;
 
-  opens com.example.mediaplayerwimpy to
+  opens com.example to
       javafx.fxml;
 
-  exports com.example.mediaplayerwimpy;
+  exports com.example;
 }
