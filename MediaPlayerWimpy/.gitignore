@@ -1,9 +1,3 @@
-**/.idea/
-**/.idea/**
-**/.mvn
-**/target
-
-
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
@@ -20,7 +14,7 @@ target/
 .sts4-cache
 
 ### IntelliJ IDEA ###
-.idea
+../BasicJavaMediaPlayer/.idea
 *.iws
 *.iml
 *.ipr
