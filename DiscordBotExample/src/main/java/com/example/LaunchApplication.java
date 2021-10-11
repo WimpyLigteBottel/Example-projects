@@ -6,6 +6,7 @@ import org.javacord.api.DiscordApiBuilder;
 import org.javacord.api.entity.message.MessageFlag;
 import org.javacord.api.interaction.SlashCommand;
 import org.javacord.api.interaction.SlashCommandInteraction;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -25,10 +26,11 @@ public class LaunchApplication {
 @Slf4j
 class Config {
 
+    @Value("${discord.token}")
+    String token;
+
     @Bean
     public DiscordApi discordApi() {
-        String token = "MzEzNzM0MTE4Mzg5MDU1NDkw.WRnpqg.Iqd7UVbFf7y8cm9TJnlPQ6LWhtE";
-
         DiscordApi api = new DiscordApiBuilder().setToken(token).login().join();
 
         // Print the invite url of your bot
