@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.springframework.org/schema/webflow
+       http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd">
+
+
+    <view-state id="mainPage" view="/WEB-INF/jsp/mainPage.jsp">
+        <transition on="welcome" to="welcome">
+            <set name="flowScope.name" value="requestParameters.name"/>
+        </transition>
+    </view-state>
+
+    <view-state id="welcome" view="/WEB-INF/jsp/welcome.jsp">
+        <on-entry>
+            <evaluate expression="welcomeAction.doSomethingAwesome(name)" result="viewScope.result"/>
+        </on-entry>
+        <transition on="back" to="mainPage"/>
+    </view-state>
+
+</flow>
