@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+<div>
+    <img id="localImageId" src="XXXX_REPLACEME_XXXX"/>
+</div>
+</body>
+</html>
+<script>
+
+   //Below code will encode the text into qr code
+   let encodedText= "https://www.w3schools.com/jsref/tryit.asp?filename=tryjsref_replace";
+
+
+   let locationUrl =  `http://localhost:8080/qr/generate?text=${encodedText}` ;
+   let imageId =  document.getElementById("localImageId");
+
+   let text = imageId.outerHTML;
+   imageId.outerHTML = text.replace("XXXX_REPLACEME_XXXX",locationUrl);
+
+
+</script>
+
