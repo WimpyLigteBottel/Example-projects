@@ -1,12 +1,16 @@
 package nel.marco;
 
+import nel.marco.util.ServiceDiscoveryStartupUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.text.MessageFormat;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,6 +31,26 @@ public class Launcher {
 
   public static void main(String[] args) {
     SpringApplication.run(Launcher.class, args);
+  }
+}
+
+@Component
+class StartupSetup implements CommandLineRunner {
+
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+  @Value("${server.port}")
+  String serverPort;
+
+  @Value("${application.name}")
+  String applicationName;
+
+  @Value("${discovery.service.port}")
+  String discoveryServicePort;
+
+  @Override
+  public void run(String... args) throws Exception {
+    ServiceDiscoveryStartupUtil.registerService(serverPort, discoveryServicePort, applicationName);
   }
 }
 
@@ -53,7 +76,7 @@ class RestEndpoint {
                 }
               });
 
-          MessageFormat messageFormat = new MessageFormat("Map has been filled [size={0}]");
+          MessageFormat messageFormat = new MessageFormat("Map has been cleaned [currentsize={0}]");
           String text = messageFormat.format(new Object[] {map.size()});
           logger.info(text);
         });
@@ -77,11 +100,10 @@ class RestEndpoint {
   public ResponseEntity<String> generate(@RequestParam String text) {
     String encodedText = generateUniquePattern();
 
-    map.put(encodedText, Map.entry(text, LocalDateTime.now().plusSeconds(5)));
+    map.put(encodedText, Map.entry(text, LocalDateTime.now().plusSeconds(60)));
 
     return ResponseEntity.ok(encodedText);
   }
-
 
   private String generateUniquePattern() {
     String encodedText = UUID.randomUUID().toString().substring(0, 6);
@@ -102,13 +124,13 @@ class RestEndpoint {
       return "NO SHORTCODE FOR THIS";
     }
 
-    //retrieve the decodedUrl and update the map to extend the url use
+    // retrieve the decodedUrl and update the map to extend the url use
     String decodedUrl = pair.getKey();
     LocalDateTime extendedDuration = LocalDateTime.now().plusMinutes(1);
     map.put(url, Map.entry(decodedUrl, extendedDuration));
     logger.info("extending the url [key={};value={};until={}]", url, decodedUrl, extendedDuration);
 
-    //redirect the user
+    // redirect the user
     httpServletResponse.setHeader("Location", decodedUrl);
     httpServletResponse.setStatus(302);
 
