@@ -18,6 +18,7 @@ a place i could check in my work and have a very ROUGH reference on how certain 
 - Discord bot
 - Web scraper
 - Cucumber (BDD)
+- Basic Q and A application ( if you want to save information)
 
 ## Why do I do this?
 I am very curious person and like experementing on new things. I believe one should not hastely jump to the latest and greatest without understanding the techonology or approach first. This is just place for me to have some fun and maybe in the future if I want to deleve deeper I can do that :)
