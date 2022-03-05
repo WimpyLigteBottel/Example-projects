@@ -5,7 +5,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -19,6 +18,11 @@ public class MtgHistory {
 
     @Column
     private String name;
+
+    @JoinColumn
+    @OneToOne(fetch = FetchType.LAZY)
+    private MtgCard mtgCard;
+
     @Column
     private String link;
     @Column
@@ -31,6 +35,14 @@ public class MtgHistory {
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     private Date created;
+
+    public MtgCard getMtgCard() {
+        return mtgCard;
+    }
+
+    public void setMtgCard(MtgCard mtgCard) {
+        this.mtgCard = mtgCard;
+    }
 
     public long getId() {
         return id;

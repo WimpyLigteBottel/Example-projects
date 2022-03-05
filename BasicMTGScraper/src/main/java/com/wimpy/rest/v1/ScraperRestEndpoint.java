@@ -1,9 +1,9 @@
-package com.wimpy.rest;
+package com.wimpy.rest.v1;
 
 
 import com.wimpy.core.MtgGoldfishScraper;
 import com.wimpy.dao.entity.MtgHistory;
-import com.wimpy.model.MtgQuery;
+import com.wimpy.rest.v1.model.MtgQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,9 +36,10 @@ public class ScraperRestEndpoint {
 
     @PostMapping
     public ResponseEntity<MtgHistory> addNewCard(@RequestParam String name, @RequestParam String link) {
-        MtgQuery mtgGoldFishQuery = new MtgQuery(name, "", link);
+        MtgQuery mtgQuery = new MtgQuery(name, "", link);
 
+        MtgHistory mtgHistory = mtgGoldfishScraper.retrieveCardPrice(mtgQuery);
 
-        return ResponseEntity.ok(mtgGoldfishScraper.saveCardPrice(mtgGoldFishQuery));
+        return ResponseEntity.ok(mtgGoldfishScraper.saveCardPrice(mtgHistory));
     }
 }

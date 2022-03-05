@@ -1,24 +1,20 @@
 package com.wimpy.core;
 
 import com.google.gson.Gson;
-import com.wimpy.dao.CardDatabaseCrudDao;
+import com.wimpy.core.util.MtgGoldfishExtractor;
+import com.wimpy.dao.MtgCardCrudDao;
+import com.wimpy.dao.MtgHistoryCrudDao;
 import com.wimpy.dao.entity.MtgCard;
 import com.wimpy.dao.entity.MtgHistory;
-import com.wimpy.model.MtgQuery;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
+import com.wimpy.rest.v1.model.MtgQuery;
 import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Optional;
 
 /**
  * This class contains the core logic to retrieve the card price
@@ -28,41 +24,19 @@ public class MtgGoldfishScraper {
 
 
     private static final Logger log = LoggerFactory.getLogger(MtgGoldfishScraper.class);
-    private final Map<String, String> cookies = new HashMap<>();
 
-    @Value("${mtg.gold.fish.extract.price}")
-    private String priceSelector;
-
-    @Value("${mtg.gold.fish.extract.name}")
-    private String nameSelector;
-
-    @Value("${mtg.gold.fish.extract.edition}")
-    private String editionSelector;
-
-    private final CardDatabaseCrudDao cardDatabaseCrudDao;
+    private final MtgGoldfishExtractor mtgGoldfishExtractor;
+    private final MtgHistoryCrudDao mtgHistoryCrudDao;
+    private final MtgCardCrudDao mtgCardCrudDao;
+    private final ScraperUtil scraperUtil;
 
     @Autowired
-    public MtgGoldfishScraper(CardDatabaseCrudDao cardDatabaseCrudDao) {
-        this.cardDatabaseCrudDao = cardDatabaseCrudDao;
-        setupDefaultCookies();
+    public MtgGoldfishScraper(MtgGoldfishExtractor mtgGoldfishExtractor, MtgHistoryCrudDao mtgHistoryCrudDao, MtgCardCrudDao mtgCardCrudDao, ScraperUtil scraperUtil) {
+        this.mtgGoldfishExtractor = mtgGoldfishExtractor;
+        this.mtgHistoryCrudDao = mtgHistoryCrudDao;
+        this.mtgCardCrudDao = mtgCardCrudDao;
+        this.scraperUtil = scraperUtil;
     }
-
-    /**
-     * Setup the default cookies to scrap future request a lot faster
-     */
-    private void setupDefaultCookies() {
-        try {
-            cookies.putAll(
-                    Jsoup.connect(
-                                    "https://www.mtggoldfish.com/price/Throne+of+Eldraine/Edgewall+Innkeeper#paper")
-                            .cookies(cookies)
-                            .execute()
-                            .cookies());
-        } catch (IOException e) {
-            log.error("Failed to update default cookies [errorMessage={}]", e.getMessage(), e);
-        }
-    }
-
 
     @Transactional
     public MtgHistory retrieveCardPrice(MtgQuery mtgGoldFishQuery) {
@@ -75,26 +49,11 @@ public class MtgGoldfishScraper {
         }
 
         try {
-            Connection.Response execute = Jsoup.connect(link).cookies(cookies).execute();
-            // Updates cookies after every request
-            cookies.putAll(execute.cookies());
-            Document document = Jsoup.parse(execute.body());
-
+            Document document = scraperUtil.retrieveOnline(link);
 
             MtgHistory mtgHistory = new MtgHistory();
-
-            String name = document
-                    .select(nameSelector)
-                    .text()
-                    .replaceAll("&nbsp;", "");
-            mtgHistory.setName(name);
-
-            BigDecimal price = BigDecimal.valueOf(Double.parseDouble(document
-                    .select(priceSelector)
-                    .html()
-                    .replaceAll("&nbsp;", "").substring(1)));
-            mtgHistory.setPrice(price);
-
+            mtgHistory.setName(mtgGoldfishExtractor.extractName(document));
+            mtgHistory.setPrice(mtgGoldfishExtractor.extractPrice(document));
             mtgHistory.setLink(link);
 
             return mtgHistory;
@@ -107,11 +66,20 @@ public class MtgGoldfishScraper {
     }
 
     @Transactional
-    public MtgHistory saveCardPrice(MtgQuery query) {
-        MtgHistory mtgHistory = retrieveCardPrice(query);
+    public MtgHistory saveCardPrice(MtgHistory mtgHistory) {
+
+        Optional<MtgCard> optionalMtgCard = mtgCardCrudDao.findByName(mtgHistory.getName());
 
 
-        MtgHistory card = cardDatabaseCrudDao.save(mtgHistory);
+        //if empty creates the card and links it up to the history
+        optionalMtgCard.ifPresentOrElse(mtgHistory::setMtgCard, () -> {
+            MtgCard entity = new MtgCard();
+            entity.setName(mtgHistory.getName());
+            mtgHistory.setMtgCard(mtgCardCrudDao.save(entity));
+        });
+
+
+        MtgHistory card = mtgHistoryCrudDao.save(mtgHistory);
         log.info("saved [entityJson={}]", new Gson().toJson(card));
 
         return card;
