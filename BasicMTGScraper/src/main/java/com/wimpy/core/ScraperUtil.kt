@@ -1,28 +1,24 @@
-package com.wimpy.core;
+package com.wimpy.core
 
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired
+import java.util.HashMap
+import kotlin.Throws
+import java.io.IOException
+import org.jsoup.Jsoup
+import com.wimpy.core.ScraperUtil
+import org.jsoup.nodes.Document
+import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Component
 
 @Component
-public class ScraperUtil {
+open class ScraperUtil @Autowired constructor(private var cookies:MutableMap<String, String>) {
 
-    private static final Logger log = LoggerFactory.getLogger(ScraperUtil.class);
-    private final Map<String, String> cookies = new HashMap<>();
-
-    @Autowired
-    public ScraperUtil() {
-        setupDefaultCookies();
+    init {
+        cookies = mutableMapOf()
+        setupDefaultCookies()
     }
 
+    private val log = LoggerFactory.getLogger(ScraperUtil::class.java)
 
     /**
      * Retrieves the document via jsoup online which can be parsed
@@ -30,27 +26,30 @@ public class ScraperUtil {
      * @return
      * @throws IOException
      */
-    public Document retrieveOnline(String link) throws IOException {
-        Connection.Response execute = Jsoup.connect(link).cookies(cookies).execute();
+    @Throws(IOException::class)
+    fun retrieveOnline(link: String): Document {
+        val execute = Jsoup.connect(link).cookies(cookies).execute()
         // Updates cookies after every request
-        cookies.putAll(execute.cookies());
-        Document document = Jsoup.parse(execute.body());
-        return document;
+        cookies.putAll(execute.cookies())
+        return Jsoup.parse(execute.body())
     }
 
     /**
      * Setup the default cookies to scrap future request a lot faster
      */
-    private void setupDefaultCookies() {
+    private fun setupDefaultCookies() {
         try {
-            cookies.putAll(
-                    Jsoup.connect(
-                                    "https://www.mtggoldfish.com/price/Throne+of+Eldraine/Edgewall+Innkeeper#paper")
-                            .cookies(cookies)
-                            .execute()
-                            .cookies());
-        } catch (IOException e) {
-            log.error("Failed to update default cookies [errorMessage={}]", e.getMessage(), e);
+            val cookiesFromJsoup = Jsoup.connect(
+                "https://www.mtggoldfish.com/price/Throne+of+Eldraine/Edgewall+Innkeeper#paper"
+            )
+                .execute()
+                .cookies()
+
+
+            cookies.putAll(cookiesFromJsoup)
+        } catch (e: IOException) {
+            log.error("Failed to update default cookies [errorMessage={}]", e.message, e)
         }
     }
+
 }

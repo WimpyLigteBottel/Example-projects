@@ -1,35 +1,41 @@
-package com.wimpy.core.util;
+package com.wimpy.core.util
 
-import org.jsoup.nodes.Document;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
-import java.math.BigDecimal;
+import org.jsoup.nodes.Document
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Component
+import java.math.BigDecimal
 
 @Component
-public class MtgGoldfishExtractor {
+open class MtgGoldfishExtractor {
+    @Value("\${mtg.gold.fish.extract.price}")
+    private val priceSelector: String? = null
 
-    @Value("${mtg.gold.fish.extract.price}")
-    private String priceSelector;
+    @Value("\${mtg.gold.fish.extract.name}")
+    private val nameSelector: String? = null
 
-    @Value("${mtg.gold.fish.extract.name}")
-    private String nameSelector;
+    @Value("\${mtg.gold.fish.extract.edition}")
+    private val editionSelector: String? = null
 
-    @Value("${mtg.gold.fish.extract.edition}")
-    private String editionSelector;
-
-    public BigDecimal extractPrice(Document document) {
-        return BigDecimal.valueOf(Double.parseDouble(document
+    fun extractPrice(document: Document): BigDecimal {
+        return BigDecimal.valueOf(
+            document
                 .select(priceSelector)
                 .html()
-                .replaceAll("&nbsp;", "").substring(1)));
+                .replace("&nbsp;".toRegex(), "").substring(1).toDouble()
+        )
     }
 
-    public String extractName(Document document) {
+    fun extractName(document: Document): String {
         return document
-                .select(nameSelector)
-                .text()
-                .replaceAll("&nbsp;", "");
+            .select(nameSelector)
+            .text()
+            .replace("&nbsp;".toRegex(), "")
     }
 
+    fun editionSelector(document: Document): String {
+        return document
+            .select(editionSelector)
+            .text()
+            .replace("&nbsp;".toRegex(), "")
+    }
 }

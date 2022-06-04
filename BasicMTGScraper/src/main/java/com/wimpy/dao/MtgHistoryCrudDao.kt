@@ -1,16 +1,11 @@
-package com.wimpy.dao;
+package com.wimpy.dao
 
-import com.wimpy.dao.entity.MtgCard;
-import com.wimpy.dao.entity.MtgHistory;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
-
-import java.util.List;
+import org.springframework.data.repository.CrudRepository
+import com.wimpy.dao.entity.MtgHistory
+import com.wimpy.dao.entity.MtgCard
+import org.springframework.stereotype.Repository
 
 @Repository
-public interface MtgHistoryCrudDao extends CrudRepository<MtgHistory, Long> {
-
-
-    List<MtgHistory> findByMtgCard(MtgCard mtgCard);
-
+interface MtgHistoryCrudDao : CrudRepository<MtgHistory, Long?> {
+    fun findByMtgCard(mtgCard: MtgCard): List<MtgHistory>
 }

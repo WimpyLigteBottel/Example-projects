@@ -1,61 +1,35 @@
-package com.wimpy.dao.entity;
+package com.wimpy.dao.entity
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import javax.persistence.*;
-import java.util.Date;
+import org.hibernate.annotations.CreationTimestamp
+import org.hibernate.annotations.UpdateTimestamp
+import java.util.*
+import javax.persistence.*
 
 @Entity
 @Table
-public class MtgCard {
-
+class MtgCard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    var id: Long = 0
 
-    @Column
-    private String name;
+    @Column(nullable = false)
+    var name: String = ""
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    private Date created;
+    var created: Date = Date()
 
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    private Date updated;
+    var updated: Date = Date()
 
-    public long getId() {
-        return id;
+    fun setId(id: Long): MtgCard {
+        this.id = id
+        return this
     }
 
-    public MtgCard setId(long id) {
-        this.id = id;
-        return this;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public MtgCard setName(String name) {
-        this.name = name;
-        return this;
-    }
-
-    public Date getCreated() {
-        return created;
-    }
-
-    public void setCreated(Date created) {
-        this.created = created;
-    }
-
-    public Date getUpdated() {
-        return updated;
-    }
-
-    public void setUpdated(Date updated) {
-        this.updated = updated;
+    fun setName(name: String): MtgCard {
+        this.name = name
+        return this
     }
 }

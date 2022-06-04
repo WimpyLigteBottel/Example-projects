@@ -1,94 +1,39 @@
-package com.wimpy.dao.entity;
+package com.wimpy.dao.entity
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import javax.persistence.*;
-import java.math.BigDecimal;
-import java.util.Date;
+import com.google.gson.Gson
+import org.hibernate.annotations.CreationTimestamp
+import org.hibernate.annotations.UpdateTimestamp
+import java.math.BigDecimal
+import java.util.*
+import javax.persistence.*
 
 @Entity
-@Table
-public class MtgHistory {
-
-
+class MtgHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    var id: Long = 0
 
-    @Column
-    private String name;
+    @Column(nullable = false)
+    var name: String = ""
 
     @JoinColumn
     @OneToOne(fetch = FetchType.LAZY)
-    private MtgCard mtgCard;
+    var mtgCard: MtgCard? = null
 
-    @Column
-    private String link;
-    @Column
-    private BigDecimal price;
+    @Column(nullable = false)
+    var link: String = ""
+
+    @Column(nullable = false)
+    var price: BigDecimal = BigDecimal.ZERO
 
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    private Date updated;
+    var updated: Date = Date()
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    private Date created;
-
-    public MtgCard getMtgCard() {
-        return mtgCard;
-    }
-
-    public void setMtgCard(MtgCard mtgCard) {
-        this.mtgCard = mtgCard;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getLink() {
-        return link;
-    }
-
-    public void setLink(String link) {
-        this.link = link;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public Date getUpdated() {
-        return updated;
-    }
-
-    public void setUpdated(Date updated) {
-        this.updated = updated;
-    }
-
-    public Date getCreated() {
-        return created;
-    }
-
-    public void setCreated(Date created) {
-        this.created = created;
+    var created: Date = Date()
+    override fun toString(): String {
+        return Gson().toJson(this)
     }
 }

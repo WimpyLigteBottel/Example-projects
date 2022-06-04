@@ -1,8 +1,9 @@
 package com.wimpy.rest.v1.model;
 
-import java.math.BigDecimal;
-import java.util.Date;
+import java.math.BigDecimal
+import java.util.*
 
-public record CardHistoryModel(BigDecimal price, Date timeCreated) {
+data class CardHistoryModel (val price: BigDecimal, val timeCreated: Date){
+
 
 }
