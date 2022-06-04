@@ -1,21 +1,22 @@
 package com.wimpy.core
 
-import org.springframework.beans.factory.annotation.Autowired
-import java.util.HashMap
-import kotlin.Throws
-import java.io.IOException
+import kotlinx.coroutines.runBlocking
 import org.jsoup.Jsoup
-import com.wimpy.core.ScraperUtil
 import org.jsoup.nodes.Document
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import java.io.IOException
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.coroutineContext
 
 @Component
-open class ScraperUtil @Autowired constructor(private var cookies:MutableMap<String, String>) {
+open class ScraperUtil constructor(private var cookies: MutableMap<String, String> = mutableMapOf()) {
 
     init {
-        cookies = mutableMapOf()
-        setupDefaultCookies()
+        runBlocking {
+            setupDefaultCookies()
+        }
+
     }
 
     private val log = LoggerFactory.getLogger(ScraperUtil::class.java)
@@ -37,19 +38,17 @@ open class ScraperUtil @Autowired constructor(private var cookies:MutableMap<Str
     /**
      * Setup the default cookies to scrap future request a lot faster
      */
-    private fun setupDefaultCookies() {
-        try {
-            val cookiesFromJsoup = Jsoup.connect(
-                "https://www.mtggoldfish.com/price/Throne+of+Eldraine/Edgewall+Innkeeper#paper"
-            )
-                .execute()
-                .cookies()
+     suspend fun setupDefaultCookies() = try {
+        val cookiesFromJsoup = Jsoup.connect(
+            "https://www.mtggoldfish.com/price/Throne+of+Eldraine/Edgewall+Innkeeper#paper"
+        )
+            .execute()
+            .cookies()
 
 
-            cookies.putAll(cookiesFromJsoup)
-        } catch (e: IOException) {
-            log.error("Failed to update default cookies [errorMessage={}]", e.message, e)
-        }
+        cookies.putAll(cookiesFromJsoup)
+    } catch (e: IOException) {
+        log.error("Failed to update default cookies [errorMessage={}]", e.message, e)
     }
 
 }

@@ -29,13 +29,18 @@ open class MtgGoldfishScraper @Autowired constructor(
     open fun retrieveCardPrice(mtgGoldFishQuery: MtgQuery): MtgHistory {
         var link = mtgGoldFishQuery.link
 
+        //https://www.mtggoldfish.com/price/Commander 2017/Alms Collector#paper
+        if(mtgGoldFishQuery.cardName.isBlank() && link.endsWith("#paper"))
+            mtgGoldFishQuery.cardName = link.substringAfterLast("/").substringBefore("#paper")
+
         // If link is empty construct it yourself
         if (mtgGoldFishQuery.link.length == 0) {
             link = constructLinkOfCard(mtgGoldFishQuery.cardName, mtgGoldFishQuery.edition)
         }
+
         return try {
             val document = scraperUtil.retrieveOnline(link)
-            var mtgHistory = MtgHistory()
+            val mtgHistory = MtgHistory()
             mtgHistory.name = mtgGoldfishExtractor.extractName(document)
             mtgHistory.price = mtgGoldfishExtractor.extractPrice(document)
             mtgHistory.link = link

@@ -24,7 +24,7 @@ class ScraperRestEndpoint @Autowired constructor(private val mtgGoldfishScraper:
     }
 
     @PostMapping
-    fun addNewCard(@RequestParam name: String, @RequestParam link: String): ResponseEntity<MtgHistory> {
+    fun addNewCard(@RequestParam(required = false,defaultValue = "") name: String, @RequestParam link: String): ResponseEntity<MtgHistory> {
         val mtgHistory = mtgGoldfishScraper.retrieveCardPrice(MtgQuery(name, "", link))
         return ResponseEntity.ok(mtgGoldfishScraper.saveCardPrice(mtgHistory))
     }
