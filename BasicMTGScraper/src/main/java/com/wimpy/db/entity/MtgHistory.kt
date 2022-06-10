@@ -1,4 +1,4 @@
-package com.wimpy.dao.entity
+package com.wimpy.db.entity
 
 import com.google.gson.Gson
 import org.hibernate.annotations.CreationTimestamp

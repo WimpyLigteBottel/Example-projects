@@ -1,9 +1,8 @@
 package com.wimpy.core
 
 import com.wimpy.core.util.MtgGoldfishExtractor
-import com.wimpy.dao.MtgCardCrudDao
-import com.wimpy.dao.MtgHistoryCrudDao
-import com.wimpy.rest.v1.model.MtgQuery
+import com.wimpy.db.dao.MtgCardCrudDao
+import com.wimpy.db.dao.MtgHistoryCrudDao
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith

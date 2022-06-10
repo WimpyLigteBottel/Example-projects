@@ -1,8 +1,7 @@
 package com.wimpy.rest.v1
 
 import com.wimpy.core.MtgGoldfishScraper
-import com.wimpy.dao.entity.MtgHistory
-import com.wimpy.rest.v1.ScraperRestEndpoint
+import com.wimpy.db.entity.MtgHistory
 import com.wimpy.rest.v1.model.MtgQuery
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired

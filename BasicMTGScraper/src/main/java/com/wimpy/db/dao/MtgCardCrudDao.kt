@@ -1,7 +1,7 @@
-package com.wimpy.dao
+package com.wimpy.db.dao
 
 import org.springframework.data.repository.CrudRepository
-import com.wimpy.dao.entity.MtgCard
+import com.wimpy.db.entity.MtgCard
 import org.springframework.stereotype.Repository
 import java.util.*
 

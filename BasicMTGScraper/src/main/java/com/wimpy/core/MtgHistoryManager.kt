@@ -1,8 +1,8 @@
 package com.wimpy.core
 
-import com.wimpy.dao.MtgCardCrudDao
-import com.wimpy.dao.MtgHistoryCrudDao
-import com.wimpy.dao.entity.MtgHistory
+import com.wimpy.db.dao.MtgCardCrudDao
+import com.wimpy.db.dao.MtgHistoryCrudDao
+import com.wimpy.db.entity.MtgHistory
 import com.wimpy.rest.v1.model.CardHistoryModel
 import com.wimpy.rest.v1.model.CardHistoryResponse
 import org.springframework.beans.factory.annotation.Autowired
@@ -28,5 +28,9 @@ open class MtgHistoryManager @Autowired constructor(
 
 
         return CardHistoryResponse(cardName, histories);
+    }
+
+    fun clearHistory() {
+        mtgHistoryCrudDao.deleteAll()
     }
 }

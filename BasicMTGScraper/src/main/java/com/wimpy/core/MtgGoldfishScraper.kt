@@ -1,12 +1,11 @@
 package com.wimpy.core
 
 import com.google.gson.Gson
-import com.wimpy.core.MtgGoldfishScraper
 import com.wimpy.core.util.MtgGoldfishExtractor
-import com.wimpy.dao.MtgCardCrudDao
-import com.wimpy.dao.MtgHistoryCrudDao
-import com.wimpy.dao.entity.MtgCard
-import com.wimpy.dao.entity.MtgHistory
+import com.wimpy.db.dao.MtgCardCrudDao
+import com.wimpy.db.dao.MtgHistoryCrudDao
+import com.wimpy.db.entity.MtgCard
+import com.wimpy.db.entity.MtgHistory
 import com.wimpy.rest.v1.model.MtgQuery
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,13 +23,14 @@ open class MtgGoldfishScraper @Autowired constructor(
     private val scraperUtil: ScraperUtil
 ) {
 
+    private val log = LoggerFactory.getLogger(MtgGoldfishScraper::class.java)
 
     @Transactional
     open fun retrieveCardPrice(mtgGoldFishQuery: MtgQuery): MtgHistory {
         var link = mtgGoldFishQuery.link
 
         //https://www.mtggoldfish.com/price/Commander 2017/Alms Collector#paper
-        if(mtgGoldFishQuery.cardName.isBlank() && link.endsWith("#paper"))
+        if (mtgGoldFishQuery.cardName.isBlank() && link.endsWith("#paper"))
             mtgGoldFishQuery.cardName = link.substringAfterLast("/").substringBefore("#paper")
 
         // If link is empty construct it yourself
@@ -38,13 +38,9 @@ open class MtgGoldfishScraper @Autowired constructor(
             link = constructLinkOfCard(mtgGoldFishQuery.cardName, mtgGoldFishQuery.edition)
         }
 
-        return try {
+        try {
             val document = scraperUtil.retrieveOnline(link)
-            val mtgHistory = MtgHistory()
-            mtgHistory.name = mtgGoldfishExtractor.extractName(document)
-            mtgHistory.price = mtgGoldfishExtractor.extractPrice(document)
-            mtgHistory.link = link
-            mtgHistory
+            return mtgGoldfishExtractor.extractFields(document, link)
         } catch (e: Exception) {
             log.error("Failed to retrieve card details from website [link={}]", link, e)
             throw RuntimeException("Could not retrieve card details", e)
@@ -84,7 +80,4 @@ open class MtgGoldfishScraper @Autowired constructor(
         return text.replace("[\\s]+".toRegex(), "+")
     }
 
-    companion object {
-        private val log = LoggerFactory.getLogger(MtgGoldfishScraper::class.java)
-    }
 }

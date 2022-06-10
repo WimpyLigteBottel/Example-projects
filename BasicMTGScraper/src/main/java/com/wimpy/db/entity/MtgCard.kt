@@ -1,4 +1,4 @@
-package com.wimpy.dao.entity
+package com.wimpy.db.entity
 
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
@@ -22,11 +22,6 @@ class MtgCard {
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     var updated: Date = Date()
-
-    fun setId(id: Long): MtgCard {
-        this.id = id
-        return this
-    }
 
     fun setName(name: String): MtgCard {
         this.name = name
