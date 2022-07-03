@@ -1,6 +1,5 @@
 package com.example.config.command
 
-import com.example.DiscordConfig
 import org.javacord.api.DiscordApi
 import org.javacord.api.event.message.MessageCreateEvent
 import org.javacord.api.interaction.SlashCommand
@@ -15,7 +14,9 @@ class PongCommand constructor(var discordApi: DiscordApi) : Command {
     }
 
 
-    override fun command() {
+    override fun command(): Boolean {
+        log.debug("Command has been executed [className={}]", this.javaClass.name)
+
         val pong = SlashCommand.with("pong", "Checks the functionality of this command")
             .createGlobal(discordApi)
             .join()
@@ -32,5 +33,7 @@ class PongCommand constructor(var discordApi: DiscordApi) : Command {
             if (event.message.content == "!ping")
                 log.info("pong")
         }
+
+        return true;
     }
 }
