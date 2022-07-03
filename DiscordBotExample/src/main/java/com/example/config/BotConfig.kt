@@ -1,5 +1,6 @@
 package com.example.config
 
+import com.example.config.command.ClearMessageCommand
 import com.example.config.command.Command
 import com.example.config.command.PongCommand
 import com.example.config.listener.LogMessages
@@ -24,6 +25,7 @@ class BotConfig constructor(private val discordApi: DiscordApi, private val logU
         log.info("Starting up config loading")
         incrementCounter(PongCommand(discordApi));
         incrementCounter(LogMessages(discordApi, logUtil));
+        incrementCounter(ClearMessageCommand(discordApi));
         log.info("Finished loading config [counter={}]", counter)
     }
 

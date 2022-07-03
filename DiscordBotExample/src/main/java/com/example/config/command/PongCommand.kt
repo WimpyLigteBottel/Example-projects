@@ -30,8 +30,10 @@ class PongCommand constructor(var discordApi: DiscordApi) : Command {
         }
 
         discordApi.addMessageCreateListener { event: MessageCreateEvent ->
-            if (event.message.content == "!ping")
+            if (event.message.content == "!ping"){
                 log.info("pong")
+                event.channel.sendMessage("pong!")
+            }
         }
 
         return true;
