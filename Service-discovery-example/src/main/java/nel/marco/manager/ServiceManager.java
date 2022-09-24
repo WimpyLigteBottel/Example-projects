@@ -45,9 +45,9 @@ public class ServiceManager {
 
   public boolean removeService(String serviceName, String serviceUrl) {
 
-    List<String> services = serviceDictionary.get(serviceName);
+    List<String> services = serviceDictionary.getOrDefault(serviceName, new ArrayList<>());
 
-    if (services == null || !services.contains(serviceUrl)) {
+    if (!services.contains(serviceUrl)) {
       log.info("service removed [successful={};name={};url={}]", false, serviceName, serviceUrl);
       return false;
     }
