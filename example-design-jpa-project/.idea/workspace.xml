@@ -5,19 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2f9b6c11-0cba-47b6-99da-dd79f08f4c23" name="Changes" comment="adding design project (commiting in junk ;_;)">
-      <change afterPath="$PROJECT_DIR$/../Mapstruct-example/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Mapstruct-example/src/main/kotlin/org/example/App.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Mapstruct-example/src/main/kotlin/org/example/Controller.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/example/marcodemodesign/api/BaseTestController.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/example/marcodemodesign/db/dao/ComplexDao.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/example/marcodemodesign/db/dao/RatingsRepo.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/example/marcodemodesign/db/dao/ReviewRepo.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/example/marcodemodesign/db/entity/Rating.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/example/marcodemodesign/db/entity/Review.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../DiscordBotExample/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../DiscordBotExample/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Service-discovery-example/src/main/java/nel/marco/manager/ServiceManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Service-discovery-example/src/main/java/nel/marco/manager/ServiceManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/example/marcodemodesign/service/ReviewService.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/example/marcodemodesign/api/BaseTestController.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/example/marcodemodesign/api/BaseTestController.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -76,6 +67,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File" value="SQL" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="reference.settings.project.maven.repository.indices" />
   </component>
   <component name="RunManager">
     <configuration name="MarcoDemoDesignApplicationKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
@@ -118,7 +110,14 @@
       <option name="project" value="LOCAL" />
       <updated>1663775150419</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="adding design project (commiting in junk ;_;)">
+      <created>1664011239946</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1664011239946</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
