@@ -34,6 +34,15 @@ class BaseTestController(var reviewService: ReviewService) {
         return timeMethod(function)
     }
 
+    @GetMapping("v2/ratings")
+    fun findByRetailerIdVersion(@RequestParam(required = false, defaultValue = "") retailerId: String): Any {
+        val function: () -> List<Rating> = {
+            reviewService.findAllRatingsFor(retailerId, 2)
+        }
+
+        return timeMethod(function)
+    }
+
     fun timeMethod(function: () -> Any): Any {
         val now = Instant.now()
         val invoke = function.invoke()

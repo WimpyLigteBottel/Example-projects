@@ -5,11 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2f9b6c11-0cba-47b6-99da-dd79f08f4c23" name="Changes" comment="adding design project (commiting in junk ;_;)">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/example/marcodemodesign/service/ReviewService.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/example/marcodemodesign/api/BaseTestController.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/example/marcodemodesign/api/BaseTestController.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/example/marcodemodesign/db/dao/RatingsRepo.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/example/marcodemodesign/db/dao/RatingsRepo.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/example/marcodemodesign/service/ReviewService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/example/marcodemodesign/service/ReviewService.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

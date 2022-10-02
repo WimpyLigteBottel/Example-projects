@@ -23,7 +23,10 @@ class ReviewService(val ratingsRepo: RatingsRepo, val reviewRepo: ReviewRepo, va
         return reviewRepo.findAll()
     }
 
-    fun findAllRatingsFor(retailerId: String): List<Rating> {
+    fun findAllRatingsFor(retailerId: String, version: Int = 1): List<Rating> {
+        if (version == 2)
+            return ratingsRepo.findRetailerRatings(retailerId)
+
         return complexDao.findAllRatingsForRetailers(retailerId)
     }
 
@@ -39,7 +42,7 @@ class ReviewService(val ratingsRepo: RatingsRepo, val reviewRepo: ReviewRepo, va
 
     override fun run(vararg args: String?) {
         runBlocking {
-            for (x in 0..10000) {
+            for (x in 0..100) {
                 async { createReview(Review()) }
             }
         }
