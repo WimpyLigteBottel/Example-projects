@@ -4,11 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2f9b6c11-0cba-47b6-99da-dd79f08f4c23" name="Changes" comment="adding design project (commiting in junk ;_;)">
+    <list default="true" id="2f9b6c11-0cba-47b6-99da-dd79f08f4c23" name="Changes" comment="Adding different version querying using native query and the @query annotation">
+      <change afterPath="$PROJECT_DIR$/../docker-example/DockerFile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../docker-example/docker-compose.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../docker-example/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../docker-example/src/main/kotlin/nel/marco/Config.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../docker-example/src/main/kotlin/nel/marco/CustomController.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../docker-example/src/main/kotlin/nel/marco/Main.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../docker-example/src/main/kotlin/nel/marco/db/entity/Customer.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../docker-example/src/main/kotlin/nel/marco/db/repo/CustomerRepo.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../docker-example/src/main/resources/application.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../docker-example/src/main/resources/db/migration/V1__Customer.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../docker-example/src/main/resources/db/migration/V2__setup_data.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/example/marcodemodesign/api/BaseTestController.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/example/marcodemodesign/api/BaseTestController.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/example/marcodemodesign/db/dao/RatingsRepo.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/example/marcodemodesign/db/dao/RatingsRepo.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/example/marcodemodesign/service/ReviewService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/example/marcodemodesign/service/ReviewService.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,6 +33,7 @@
       <list>
         <option value="Kotlin Interface" />
         <option value="Kotlin Class" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -65,10 +74,13 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File" value="SQL" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="reference.settings.project.maven.repository.indices" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../python/Test.py" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.locustfile">
     <configuration name="MarcoDemoDesignApplicationKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.example.marcodemodesign.MarcoDemoDesignApplicationKt" />
       <module name="marco-demo-design" />
@@ -87,9 +99,75 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="Test (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="marco-demo-design" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../python" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../../python/Test.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="marco-demo-design" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\Marco\AppData\Local\Programs\Python\Python37-32\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$APPLICATION_CONFIG_DIR$/scratches" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$APPLICATION_CONFIG_DIR$/scratches/Test.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="locustfile" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="marco-demo-design" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../python" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../../python/locustfile.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Kotlin.MarcoDemoDesignApplicationKt" />
+        <item itemvalue="Python.locustfile" />
+        <item itemvalue="Python.Test (1)" />
+        <item itemvalue="Python.Test" />
       </list>
     </recent_temporary>
   </component>
@@ -116,7 +194,14 @@
       <option name="project" value="LOCAL" />
       <updated>1664011239946</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Adding different version querying using native query and the @query annotation">
+      <created>1664714753113</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1664714753113</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -133,6 +218,11 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="adding design project (commiting in junk ;_;)" />
-    <option name="LAST_COMMIT_MESSAGE" value="adding design project (commiting in junk ;_;)" />
+    <MESSAGE value="Adding different version querying using native query and the @query annotation" />
+    <option name="LAST_COMMIT_MESSAGE" value="Adding different version querying using native query and the @query annotation" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>
