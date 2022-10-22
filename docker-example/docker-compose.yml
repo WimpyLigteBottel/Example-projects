@@ -1,21 +1,21 @@
 version: '3'
 services:
-  dockerexample:
+  application:
     container_name: application
     build: .
     ports:
       - "8080:8090"
     networks:
       - custom-network
-  postgres:
+  database:
     image: postgres:latest
     ports:
       - "5432:5432"
     networks:
       - custom-network
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD:
+      POSTGRES_USER: Marco
+      POSTGRES_PASSWORD: password
       POSTGRES_DB: localdb
       PGDATA: /data/pgdata
       POSTGRES_HOST_AUTH_METHOD: trust

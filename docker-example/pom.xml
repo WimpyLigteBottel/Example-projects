@@ -101,16 +101,6 @@
                     <jvmTarget>1.8</jvmTarget>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.flywaydb</groupId>
-                <artifactId>flyway-maven-plugin</artifactId>
-                <configuration>
-                    <url>jdbc:postgresql://localhost:5432/localdb</url>
-                    <baselineOnMigrate>true</baselineOnMigrate>
-                    <user>postgres</user>
-                    <password></password>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
