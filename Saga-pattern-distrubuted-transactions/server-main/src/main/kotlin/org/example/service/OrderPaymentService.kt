@@ -6,6 +6,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
+import java.time.Duration
+import java.util.concurrent.TimeUnit
 
 @Service
 class OrderPaymentService(
@@ -19,14 +21,13 @@ class OrderPaymentService(
 
     fun createOrder(id: String): ActionAndState {
         try {
-            val response =
-                webClient.get()
-                    .uri("$orderServerUrl/create?id=$id&name=orderCreation")
-                    .retrieve()
-                    .bodyToMono(ActionAndState::class.java)
-                    .block()
+            webClient.get()
+                .uri("$orderServerUrl/create?id=$id&name=orderCreation")
+                .retrieve()
+                .bodyToMono(Void::class.java)
+                .subscribe()
 
-            return response!!
+            return ActionAndState(name = "orderCreation", state = State.PENDING)
         } catch (e: Exception) {
             log.error("failed to create order[id=$id]", e)
             return ActionAndState(name = "orderCreation", state = State.FAILED)
@@ -37,47 +38,43 @@ class OrderPaymentService(
     fun createPayment(id: String): ActionAndState {
 
         try {
-            val response =
-                webClient.get()
-                    .uri("$paymentServerUrl/create?id=$id&name=paymentProcessing")
-                    .retrieve()
-                    .bodyToMono(ActionAndState::class.java)
-                    .block()
+            webClient.get()
+                .uri("$paymentServerUrl/create?id=$id&name=paymentProcessing")
+                .retrieve()
+                .bodyToMono(Void::class.java)
+                .subscribe()
 
-            return response!!
+
+            return ActionAndState(name = "paymentProcessing", state = State.PENDING)
         } catch (e: Exception) {
             log.error("failed to create payment[id=$id]", e)
             return ActionAndState(name = "paymentProcessing", state = State.FAILED)
         }
     }
 
-    fun stopProcessing(actionAndState: ActionAndState): ActionAndState? {
+    fun stopProcessing(id: String, actionAndState: ActionAndState) {
 
         if (actionAndState.name == "orderCreation") {
-            val block = webClient.post()
-                .uri("$orderServerUrl/rollback")
+            webClient.post()
+                .uri("$orderServerUrl/rollback?id=$id")
                 .bodyValue(actionAndState)
                 .retrieve()
-                .bodyToMono(ActionAndState::class.java)
+                .toBodilessEntity()
                 .block()
 
-            return block
         }
 
         if (actionAndState.name == "paymentProcessing") {
-            val block = webClient.post()
-                .uri("$paymentServerUrl/rollback")
+            webClient.post()
+                .uri("$paymentServerUrl/rollback?id=$id")
                 .bodyValue(actionAndState)
                 .retrieve()
                 .bodyToMono(ActionAndState::class.java)
                 .block()
 
-            return block
         }
 
 
-
-        throw RuntimeException("Failed to process the order")
     }
 
 }

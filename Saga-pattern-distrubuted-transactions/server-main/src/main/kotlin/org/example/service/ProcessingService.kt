@@ -10,7 +10,6 @@ import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.locks.StampedLock
 
 @Service
 class ProcessingService(
@@ -20,39 +19,27 @@ class ProcessingService(
 
     private val log = LoggerFactory.getLogger(this::class.java)
 
-    private val stampedLock = StampedLock()
     private var orderProcessMap = ConcurrentHashMap<String, RequestingOrder>()
 
 
     fun startProcess(requestingOrder: RequestingOrder) {
-        val id = stampedLock.writeLock()
-        try {
-            //Sending request creating order
-            val createOrder = orderPaymentService.createOrder(requestingOrder.id)
-            val createPayment = orderPaymentService.createPayment(requestingOrder.id)
+        //Sending request creating order
+        val createOrder = orderPaymentService.createOrder(requestingOrder.id)
+        val createPayment = orderPaymentService.createPayment(requestingOrder.id)
 
 
-            save(requestingOrder.copy(pendingActions = mutableListOf(createOrder, createPayment)))
-        } finally {
-            stampedLock.unlock(id)
-        }
+        save(requestingOrder.copy(pendingActions = mutableListOf(createOrder, createPayment)))
     }
 
 
     fun handleResponse(id: String, actionAndState: ActionAndState) {
         val requestingOrder = find(id)
 
+        requestingOrder?.pendingActions?.removeIf { it.name == actionAndState.name }
+        requestingOrder?.pendingActions?.add(actionAndState)
 
-        val stamp = stampedLock.writeLock()
-        try {
-            requestingOrder?.pendingActions?.removeIf { it.name == actionAndState.name }
-            requestingOrder?.pendingActions?.add(actionAndState)
+        requestingOrder?.let { save(it) }
 
-            requestingOrder?.let { save(it) }
-
-        } finally {
-            stampedLock.unlock(stamp)
-        }
     }
 
 
@@ -62,29 +49,12 @@ class ProcessingService(
     @Scheduled(fixedRate = 5000, timeUnit = TimeUnit.MILLISECONDS)
     fun processActions() {
 
-        var toBeProcessed = mutableMapOf<String, RequestingOrder>()
-
-        val stamp = stampedLock.readLock()
-        try {
-            toBeProcessed.putAll(orderProcessMap.filter {
-                return@filter it.value.created.isAfter(OffsetDateTime.now().minusSeconds(10))
-            })
-        } finally {
-            stampedLock.unlock(stamp)
-        }
-
-
-        toBeProcessed.values.forEach { request ->
+        orderProcessMap.values.forEach { request ->
             if (request.hasFailure()) {
                 request.pendingActions
                     .filter { it.state == State.SUCCESS }
                     .forEach {
-                        val response = orderPaymentService.stopProcessing(it) // should rollback the success action
-
-
-                        response?.let {
-                            handleResponse(request.id, response) // save / update
-                        }
+                        orderPaymentService.stopProcessing(request.id, it) // should rollback the success action
                     }
             }
 
@@ -105,18 +75,14 @@ class ProcessingService(
             updated = OffsetDateTime.now(ZoneOffset.UTC)
         )
         val previousValue = orderProcessMap.put(newOrder.id, newOrder)
-        log.debug("saving request [new={};old={}]", requestingOrder, previousValue)
+        log.info("saving request [new={};old={}]", requestingOrder, previousValue)
 
     }
 
 
     private fun find(id: String): RequestingOrder? {
-        val stamp = stampedLock.readLock()
-        try {
-            return orderProcessMap[id]
-        } finally {
-            stampedLock.unlock(stamp)
-        }
+        return orderProcessMap[id]
+
     }
 
 }
