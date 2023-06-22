@@ -9,26 +9,26 @@ import org.springframework.web.reactive.function.client.WebClient
 
 @Service
 class OrderPaymentService(
-    private val webClient: WebClient = WebClient.create(),
     @Value("\${order-server-url}") private val orderServerUrl: String,
     @Value("\${payment-server-url}") private val paymentServerUrl: String
 ) {
 
+    private val webClient: WebClient = WebClient.create()
+
     private val log = LoggerFactory.getLogger(this::class.java)
 
     fun createOrder(id: String): ActionAndState {
-
         try {
             val response =
                 webClient.get()
-                    .uri("$orderServerUrl/create?id=$id")
+                    .uri("$orderServerUrl/create?id=$id&name=orderCreation")
                     .retrieve()
                     .bodyToMono(ActionAndState::class.java)
                     .block()
 
             return response!!
         } catch (e: Exception) {
-            log.info("failed to create order[id=$id]")
+            log.error("failed to create order[id=$id]", e)
             return ActionAndState(name = "orderCreation", state = State.FAILED)
         }
     }
@@ -39,34 +39,40 @@ class OrderPaymentService(
         try {
             val response =
                 webClient.get()
-                    .uri("$paymentServerUrl/create?id=$id")
+                    .uri("$paymentServerUrl/create?id=$id&name=paymentProcessing")
                     .retrieve()
                     .bodyToMono(ActionAndState::class.java)
                     .block()
 
             return response!!
         } catch (e: Exception) {
-            log.info("failed to create payment[id=$id]")
+            log.error("failed to create payment[id=$id]", e)
             return ActionAndState(name = "paymentProcessing", state = State.FAILED)
         }
     }
 
-    fun stopProcessing(actionAndState: ActionAndState): ActionAndState {
+    fun stopProcessing(actionAndState: ActionAndState): ActionAndState? {
 
         if (actionAndState.name == "orderCreation") {
-            return webClient.get()
-                .uri("$orderServerUrl/rollback?id=${actionAndState.id}")
+            val block = webClient.post()
+                .uri("$orderServerUrl/rollback")
+                .bodyValue(actionAndState)
                 .retrieve()
                 .bodyToMono(ActionAndState::class.java)
-                .block()!!
+                .block()
+
+            return block
         }
 
         if (actionAndState.name == "paymentProcessing") {
-            return webClient.get()
-                .uri("$paymentServerUrl/rollback?id=${actionAndState.id}")
+            val block = webClient.post()
+                .uri("$paymentServerUrl/rollback")
+                .bodyValue(actionAndState)
                 .retrieve()
                 .bodyToMono(ActionAndState::class.java)
-                .block()!!
+                .block()
+
+            return block
         }
 
 

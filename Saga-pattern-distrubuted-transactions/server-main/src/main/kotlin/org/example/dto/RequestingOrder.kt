@@ -27,7 +27,9 @@ data class RequestingOrder(
 }
 
 
-data class ActionAndState(var id: String? = null, var name: String, var state: State = State.PENDING)
+data class ActionAndState(var id: String? = null, var name: String = "", var state: State = State.PENDING) {
+    constructor() : this(null)
+}
 
 
 enum class State {
