@@ -4,8 +4,10 @@ import org.example.dto.ActionAndState
 import org.example.dto.RequestingOrder
 import org.example.service.ProcessingService
 import org.slf4j.LoggerFactory
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.web.bind.annotation.*
 import java.util.*
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.locks.StampedLock
 import java.util.stream.IntStream
 
@@ -16,6 +18,12 @@ class MainServerController(
 
     private val log = LoggerFactory.getLogger(this::class.java)
     private val stampedLock = StampedLock()
+
+
+    @Scheduled(fixedRate = 5000, timeUnit = TimeUnit.MILLISECONDS)
+    fun processActions() {
+        startProcess(100)
+    }
 
 
     @GetMapping("/start")
