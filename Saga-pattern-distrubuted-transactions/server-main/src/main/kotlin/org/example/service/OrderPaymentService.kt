@@ -55,12 +55,12 @@ class OrderPaymentService(
     fun stopProcessing(id: String, actionAndState: ActionAndState) {
 
         if (actionAndState.name == "orderCreation") {
-            webClient.post()
+             webClient.post()
                 .uri("$orderServerUrl/rollback?id=$id")
                 .bodyValue(actionAndState)
                 .retrieve()
-                .toBodilessEntity()
-                .block()
+                 .bodyToMono(Void::class.java)
+                 .subscribe()
 
         }
 
@@ -69,8 +69,8 @@ class OrderPaymentService(
                 .uri("$paymentServerUrl/rollback?id=$id")
                 .bodyValue(actionAndState)
                 .retrieve()
-                .bodyToMono(ActionAndState::class.java)
-                .block()
+                .bodyToMono(Void::class.java)
+                .subscribe()
 
         }
 

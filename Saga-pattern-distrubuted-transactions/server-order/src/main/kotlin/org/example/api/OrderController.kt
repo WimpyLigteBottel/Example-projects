@@ -27,6 +27,15 @@ class OrderController(private val notifyMainServerService: NotifyMainServerServi
             orderCreationMap.put(actionAndState.id!!, actionAndState)
             log.info("successfully create the order! [mainOrder=$id]")
         }
+
+        if (nextInt > 90) {
+            actionAndState.state = State.FAILED
+        } else if (nextInt > 80) {
+            actionAndState.state = State.PENDING
+        } else {
+            orderCreationMap.put(actionAndState.id!!, actionAndState)
+            log.info("successfully create the order! [mainOrder=$id]")
+        }
         notifyMainServerService.respond(id, actionAndState)
 
     }

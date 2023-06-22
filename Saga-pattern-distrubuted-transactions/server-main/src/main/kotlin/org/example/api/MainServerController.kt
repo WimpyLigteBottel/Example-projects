@@ -22,7 +22,7 @@ class MainServerController(
 
     @Scheduled(fixedRate = 5000, timeUnit = TimeUnit.MILLISECONDS)
     fun processActions() {
-        startProcess(100)
+        startProcess(10)
     }
 
 

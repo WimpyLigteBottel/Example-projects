@@ -6,6 +6,7 @@ import org.example.dto.State
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
+import java.time.Duration
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import java.util.concurrent.ConcurrentHashMap
@@ -46,7 +47,7 @@ class ProcessingService(
     /**
      * This will at a fix rate try to process all successful and failed actions and ignore the pending
      */
-    @Scheduled(fixedRate = 5000, timeUnit = TimeUnit.MILLISECONDS)
+    @Scheduled(fixedRate = 1000, timeUnit = TimeUnit.MILLISECONDS)
     fun processActions() {
 
         orderProcessMap.values.forEach { request ->
@@ -68,6 +69,17 @@ class ProcessingService(
         }
 
 
+        orderProcessMap.values.filter {
+            Duration.between(it.created, OffsetDateTime.now(ZoneOffset.UTC)).toSeconds() > 30
+        }.forEach { request ->
+            log.warn("Rollback request older than 30s [$request]")
+            request.pendingActions.forEach {
+                orderPaymentService.stopProcessing(request.id, it) // should rollback the success action
+            }
+
+        }
+
+
     }
 
     private fun save(requestingOrder: RequestingOrder) {
@@ -75,7 +87,7 @@ class ProcessingService(
             updated = OffsetDateTime.now(ZoneOffset.UTC)
         )
         val previousValue = orderProcessMap.put(newOrder.id, newOrder)
-        log.info("saving request [new={};old={}]", requestingOrder, previousValue)
+        log.debug("saving request [new={};old={}]", requestingOrder, previousValue)
 
     }
 
