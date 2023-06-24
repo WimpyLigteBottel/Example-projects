@@ -1,14 +1,20 @@
 package org.example
 
 import org.slf4j.LoggerFactory
+import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.web.reactive.function.client.WebClient
+import reactor.util.retry.Retry
+import java.time.Duration
 
 open class ProcessActionService(
     private val baseUrl: String,
     private val name: PendingActionName = PendingActionName.UNKNOWN
 ) {
 
-    private val webClient: WebClient = WebClient.create()
+    private val webClient: WebClient = WebClient.builder()
+        .baseUrl(baseUrl)
+        .clientConnector(ReactorClientHttpConnector())
+        .build()
     private val log = LoggerFactory.getLogger(this::class.java)
 
 
@@ -21,10 +27,11 @@ open class ProcessActionService(
 
         try {
             webClient.post()
-                .uri("$baseUrl/create")
+                .uri("/create")
                 .bodyValue(actionAndState)
                 .retrieve()
                 .bodyToMono(Void::class.java)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(10)))
                 .subscribe()
 
             return actionAndState.pending()

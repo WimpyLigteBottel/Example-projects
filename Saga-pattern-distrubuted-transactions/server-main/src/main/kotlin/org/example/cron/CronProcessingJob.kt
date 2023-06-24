@@ -7,6 +7,7 @@ import org.example.service.OrderService
 import org.example.service.PaymentService
 import org.example.service.ProcessingService
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import java.time.Duration
@@ -20,16 +21,17 @@ class CronProcessingJob(
     val paymentService: PaymentService,
     val actionRepo: ActionRepo,
     val processingService: ProcessingService,
-    val mainServerController: MainServerController
+    val mainServerController: MainServerController,
+    @Value("\${total-transaction-time}") val totalJourneyTimePossible: Int
 ) {
 
 
     private val log = LoggerFactory.getLogger(this::class.java)
 
 
-    @Scheduled(fixedRate = 5000, timeUnit = TimeUnit.MILLISECONDS)
+    @Scheduled(fixedRate = 100, timeUnit = TimeUnit.MILLISECONDS)
     fun processActions() {
-        mainServerController.startProcess(100)
+        mainServerController.startProcess(10)
     }
 
 
@@ -43,7 +45,6 @@ class CronProcessingJob(
 
         log.info("success transactions [count=${actions.size}]")
     }
-
 
 
     @Scheduled(fixedRate = 5000, timeUnit = TimeUnit.MILLISECONDS)
@@ -70,8 +71,10 @@ class CronProcessingJob(
 
         val actions = actionRepo.findAll()
             .map { it.value }
-            .filter { Duration.between(it.created, OffsetDateTime.now(ZoneOffset.UTC)).toSeconds() > 10 }
-            .filter { !it.isSuccess()}
+            .filter {
+                Duration.between(it.created, OffsetDateTime.now(ZoneOffset.UTC)).toSeconds() > totalJourneyTimePossible
+            }
+            .filter { !it.isSuccess() }
 
 
         actions.forEach { request ->

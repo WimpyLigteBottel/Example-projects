@@ -28,13 +28,13 @@ class OrderController(
 ) : ProcessController(
     notifyMainService = notifyMainService,
     processName = name
-){
+) {
 
     override fun getRandomState(): State {
         Random().nextInt(0, 100)
             .let {
 
-                if( it < 20){
+                if (it < 20) {
                     return State.PENDING
                 }
                 if (it < 30) {

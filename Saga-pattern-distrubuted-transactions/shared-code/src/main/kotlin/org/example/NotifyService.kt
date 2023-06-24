@@ -1,15 +1,14 @@
 package org.example
 
-import org.slf4j.LoggerFactory
 import org.springframework.web.reactive.function.client.WebClient
+import reactor.util.retry.Retry
+import java.time.Duration
 
 open class NotifyService(
     mainServerUrl: String
 ) {
 
     private val webClient: WebClient = WebClient.create(mainServerUrl)
-
-    private val log = LoggerFactory.getLogger(this::class.java)
 
     fun notifyMainServer(actionAndState: ActionAndState) {
 
@@ -18,7 +17,7 @@ open class NotifyService(
             .bodyValue(actionAndState)
             .retrieve()
             .toBodilessEntity()
-            .retry(3)
+            .retryWhen(Retry.backoff(3, Duration.ofSeconds(10)))
             .block()
 
     }
