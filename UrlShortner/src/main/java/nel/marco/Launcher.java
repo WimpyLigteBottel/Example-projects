@@ -11,6 +11,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.web.context.WebServerApplicationContext;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextClosedEvent;
+import org.springframework.context.event.ContextStartedEvent;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -38,7 +41,7 @@ public class Launcher {
 }
 
 @Component // This is used for another project service discovery
-class StartupSetup implements CommandLineRunner {
+class StartupSetup implements CommandLineRunner, ApplicationListener<ContextClosedEvent>{
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -53,9 +56,14 @@ class StartupSetup implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-
-        String port = applicationContext.getWebServer().getPort() + "";
+        String port = String.valueOf(applicationContext.getWebServer().getPort());
         ServiceDiscoveryStartupUtil.registerService(port, discoveryServicePort, applicationName);
+    }
+
+    @Override
+    public void onApplicationEvent(ContextClosedEvent event) {
+        String port = String.valueOf(applicationContext.getWebServer().getPort());
+        ServiceDiscoveryStartupUtil.deregisterService(port, discoveryServicePort, applicationName);
     }
 }
 
