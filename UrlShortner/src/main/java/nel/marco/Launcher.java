@@ -34,29 +34,12 @@ public class Launcher {
   }
 }
 
-@Component
-class StartupSetup implements CommandLineRunner {
-
-  private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-  @Value("${server.port}")
-  String serverPort;
-
-  @Value("${application.name}")
-  String applicationName;
-
-  @Value("${discovery.service.port}")
-  String discoveryServicePort;
-
-  @Override
-  public void run(String... args) throws Exception {
-    ServiceDiscoveryStartupUtil.registerService(serverPort, discoveryServicePort, applicationName);
-  }
-}
-
 @RestController
 @EnableScheduling
 class RestEndpoint {
+
+  @Value("${ownserverurl}")
+  private String ownServerUrl;
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
   private final ExecutorService executor = Executors.newFixedThreadPool(1);
@@ -102,7 +85,7 @@ class RestEndpoint {
 
     map.put(encodedText, Map.entry(text, LocalDateTime.now().plusSeconds(60)));
 
-    return ResponseEntity.ok(encodedText);
+    return ResponseEntity.ok(ownServerUrl+encodedText);
   }
 
   private String generateUniquePattern() {
