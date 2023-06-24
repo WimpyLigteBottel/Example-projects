@@ -1,5 +1,7 @@
 package nel.marco.manager;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -7,9 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +20,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class ServiceManager {
 
   // This map is not threadsafe 100%, can implement reentrant lock or something
-  Map<String, List<String>> serviceDictionary = new ConcurrentHashMap<>();
+  private Map<String, List<String>> serviceDictionary = new ConcurrentHashMap<>();
 
   public boolean registerService(String serviceName, String serviceUrl) {
     List<String> services = serviceDictionary.computeIfAbsent(serviceName, k -> new ArrayList<>());
@@ -41,6 +40,10 @@ public class ServiceManager {
 
   public long listServiceCount(String serviceName) {
     return serviceDictionary.getOrDefault(serviceName, new ArrayList<>()).size();
+  }
+
+  public List<String> findService(String serviceName) {
+    return serviceDictionary.getOrDefault(serviceName, new ArrayList<>());
   }
 
   public boolean removeService(String serviceName, String serviceUrl) {
@@ -64,28 +67,4 @@ public class ServiceManager {
     return true;
   }
 
-  public ResponseEntity<String> sendRequest(
-      String serviceName,
-      String path,
-      String queryParameters,
-      String body,
-      MultiValueMap<String, String> headersMap,
-      HttpServletRequest request,
-      HttpServletResponse httpServletResponse) {
-
-    RestTemplate restTemplate = new RestTemplate();
-
-    List<String> strings = serviceDictionary.get(serviceName);
-    String randomUrlInList = strings.get(ThreadLocalRandom.current().nextInt(0, strings.size()));
-    HttpMethod httpMethod = HttpMethod.resolve(request.getMethod());
-
-    ResponseEntity<String> exchange =
-        restTemplate.exchange(
-            randomUrlInList + path + "?" + queryParameters,
-            httpMethod,
-            new HttpEntity(body, headersMap),
-            String.class);
-
-    return exchange;
-  }
 }

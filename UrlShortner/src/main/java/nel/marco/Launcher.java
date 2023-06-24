@@ -1,5 +1,6 @@
 package nel.marco;
 
+import jakarta.servlet.http.HttpServletResponse;
 import nel.marco.util.ServiceDiscoveryStartupUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -31,6 +31,26 @@ public class Launcher {
 
   public static void main(String[] args) {
     SpringApplication.run(Launcher.class, args);
+  }
+}
+
+@Component // This is used for another project service discovery
+class StartupSetup implements CommandLineRunner {
+
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+  @Value("${server.port}")
+  String serverPort;
+
+  @Value("${application.name}")
+  String applicationName;
+
+  @Value("${discovery.service.port}")
+  String discoveryServicePort;
+
+  @Override
+  public void run(String... args) throws Exception {
+    ServiceDiscoveryStartupUtil.registerService(serverPort, discoveryServicePort, applicationName);
   }
 }
 
