@@ -1,5 +1,6 @@
 package org.example.api
 
+import org.example.Action
 import org.example.repo.RequestingOrder
 import org.example.service.ProcessingService
 import org.springframework.web.bind.annotation.*
@@ -18,4 +19,16 @@ class MainServerController(
 
     }
 
+}
+
+@RestController
+class ListenerController(
+    private val processingService: ProcessingService
+) {
+    @PostMapping("/listen")
+    fun handleOrder(
+        @RequestBody action: Action
+    ) {
+        processingService.handleResponse(action)
+    }
 }

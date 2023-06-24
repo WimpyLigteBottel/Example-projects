@@ -13,26 +13,26 @@ open class ProcessController(
 
     private val log = LoggerFactory.getLogger(this::class.java)
 
-    private var internalMemory = ConcurrentHashMap<String, ActionAndState>()
+    private var internalMemory = ConcurrentHashMap<String, Action>()
 
 
     @PostMapping("/create")
-    fun startProcess(@RequestBody actionAndState: ActionAndState) {
-        var temp = actionAndState.copy(
+    fun startProcess(@RequestBody action: Action) {
+        var temp = action.copy(
             internalId = UUID.randomUUID().toString(),
             state = getRandomState()
         )
-        internalMemory.put(actionAndState.globalId, temp)
+        internalMemory.put(action.globalId, temp)
         notifyMainService.notifyMainServer(temp)
-        log.info("successfully create the $processName! [mainOrderId=${actionAndState.globalId};state=${temp.state}]")
+        log.info("successfully create the $processName! [mainOrderId=${action.globalId};state=${temp.state}]")
     }
 
 
     @PostMapping("/rollback")
-    fun handleOrder(@RequestBody actionAndState: ActionAndState) {
-        internalMemory.remove(actionAndState.globalId)
-        notifyMainService.notifyMainServer(actionAndState.copy(state = State.ROLLBACK))
-        log.info("rollback the $processName! [mainOrderId=${actionAndState.globalId};internalId=${actionAndState.internalId}]")
+    fun handleOrder(@RequestBody action: Action) {
+        internalMemory.remove(action.globalId)
+        notifyMainService.notifyMainServer(action.copy(state = State.ROLLBACK))
+        log.info("rollback the $processName! [mainOrderId=${action.globalId};internalId=${action.internalId}]")
     }
 
 

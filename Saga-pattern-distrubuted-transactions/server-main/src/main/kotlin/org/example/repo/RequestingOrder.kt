@@ -1,6 +1,6 @@
 package org.example.repo
 
-import org.example.ActionAndState
+import org.example.Action
 import org.example.PendingActionName
 import org.example.State
 import java.time.OffsetDateTime
@@ -10,14 +10,14 @@ import java.util.*
 
 data class RequestingOrder(
     var id: String = UUID.randomUUID().toString(),
-    var pendingActions: MutableMap<PendingActionName, ActionAndState> = mutableMapOf(),
+    var pendingActions: MutableMap<PendingActionName, Action> = mutableMapOf(),
     var created: OffsetDateTime = OffsetDateTime.now(ZoneOffset.UTC),
     var updated: OffsetDateTime = OffsetDateTime.now(ZoneOffset.UTC)
 ) {
 
 
-    fun addPendingAction(actionAndState: ActionAndState) {
-        pendingActions.put(actionAndState.name, actionAndState)
+    fun addPendingAction(action: Action) {
+        pendingActions.put(action.name, action)
     }
 
     fun isSuccess(): Boolean {

@@ -22,34 +22,34 @@ open class ProcessActionService(
      * Starts the process of orderCreation, this is fire and forget operation
 
      */
-    fun createFireAndForget(id: String): ActionAndState {
-        val actionAndState = ActionAndState(id, name)
+    fun createFireAndForget(id: String): Action {
+        val action = Action(id, name)
 
         try {
             webClient.post()
                 .uri("/create")
-                .bodyValue(actionAndState)
+                .bodyValue(action)
                 .retrieve()
                 .bodyToMono(Void::class.java)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(10)))
                 .subscribe()
 
-            return actionAndState.pending()
+            return action.pending()
         } catch (e: Exception) {
             log.error("failed to create [id=$id]", e)
         }
 
-        return actionAndState.failed()
+        return action.failed()
     }
 
     /**
      * This is blocking and waits till we get response to verify that it has rolled back
      */
-    fun stopProcessingBlocking(actionAndState: ActionAndState): Boolean {
+    fun stopProcessingBlocking(action: Action): Boolean {
         val isSuccess = runCatching {
             webClient.post()
                 .uri("$baseUrl/rollback")
-                .bodyValue(actionAndState)
+                .bodyValue(action)
                 .retrieve()
                 .bodyToMono(Void::class.java)
                 .retry(3)

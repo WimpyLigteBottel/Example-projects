@@ -10,11 +10,11 @@ open class NotifyService(
 
     private val webClient: WebClient = WebClient.create(mainServerUrl)
 
-    fun notifyMainServer(actionAndState: ActionAndState) {
+    fun notifyMainServer(action: Action) {
 
         webClient.post()
             .uri("/listen")
-            .bodyValue(actionAndState)
+            .bodyValue(action)
             .retrieve()
             .toBodilessEntity()
             .retryWhen(Retry.backoff(3, Duration.ofSeconds(10)))

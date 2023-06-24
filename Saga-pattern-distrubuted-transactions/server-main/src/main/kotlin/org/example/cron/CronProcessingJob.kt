@@ -3,6 +3,7 @@ package org.example.cron
 import org.example.PendingActionName
 import org.example.api.MainServerController
 import org.example.repo.ActionRepo
+import org.example.repo.RequestingOrder
 import org.example.service.OrderService
 import org.example.service.PaymentService
 import org.example.service.ProcessingService
@@ -71,9 +72,7 @@ class CronProcessingJob(
 
         val actions = actionRepo.findAll()
             .map { it.value }
-            .filter {
-                Duration.between(it.created, OffsetDateTime.now(ZoneOffset.UTC)).toSeconds() > totalJourneyTimePossible
-            }
+            .filter { isOlderThanTransactionJourney(it) }
             .filter { !it.isSuccess() }
 
 
@@ -107,6 +106,9 @@ class CronProcessingJob(
 
         log.info("cleaning up old actions [rollbackCountInitiated=$counter]")
     }
+
+    private fun isOlderThanTransactionJourney(it: RequestingOrder) =
+        Duration.between(it.created, OffsetDateTime.now(ZoneOffset.UTC)).toSeconds() > totalJourneyTimePossible
 
 
 }

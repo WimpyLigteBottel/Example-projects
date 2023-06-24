@@ -1,6 +1,6 @@
 package org.example.service
 
-import org.example.ActionAndState
+import org.example.Action
 import org.example.PendingActionName
 import org.example.ProcessActionService
 import org.example.repo.ActionRepo
@@ -38,11 +38,11 @@ class ProcessingService(
     }
 
 
-    fun handleResponse(actionAndState: ActionAndState) {
-        val requestingOrder = actionRepo.find(actionAndState.globalId)
+    fun handleResponse(action: Action) {
+        val requestingOrder = actionRepo.find(action.globalId)
 
         requestingOrder?.let {
-            it.pendingActions[actionAndState.name] = actionAndState
+            it.pendingActions[action.name] = action
             actionRepo.save(it)
         }
     }

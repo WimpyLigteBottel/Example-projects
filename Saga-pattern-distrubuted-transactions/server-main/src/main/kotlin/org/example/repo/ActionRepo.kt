@@ -9,49 +9,43 @@ import java.util.concurrent.locks.StampedLock
 @Repository
 class ActionRepo {
 
-
-    private var orderProcessMap = ConcurrentHashMap<String, RequestingOrder>()
+    private var internalMap = ConcurrentHashMap<String, RequestingOrder>()
     private val stampedLock = StampedLock()
 
 
-    fun find(id: String): RequestingOrder? {
-        val readLock = stampedLock.readLock()
-        try {
-            return orderProcessMap[id]?.copy()
-        } finally {
-            stampedLock.unlock(readLock)
-        }
-
+    fun find(id: String): RequestingOrder? = withReadLock {
+        internalMap[id]?.copy()
     }
 
-    fun findAll(): MutableMap<String, RequestingOrder> {
-
-        val readLock = stampedLock.readLock()
-        try {
-            return orderProcessMap.toMutableMap()
-
-        } finally {
-            stampedLock.unlock(readLock)
-        }
+    fun findAll(): MutableMap<String, RequestingOrder> = withReadLock {
+        internalMap.toMutableMap()
     }
 
-    fun save(requestingOrder: RequestingOrder) {
+    fun save(requestingOrder: RequestingOrder) = withWriteLock {
+        val newOrder = requestingOrder.copy(
+            updated = OffsetDateTime.now(ZoneOffset.UTC)
+        )
+        internalMap[newOrder.id] = newOrder
+    }
+
+    fun remove(requestingOrder: RequestingOrder) = withWriteLock {
+        internalMap.remove(requestingOrder.id)
+    }
+
+
+    fun ActionRepo.withWriteLock(function: () -> Unit) {
         val writeLock = stampedLock.writeLock()
         try {
-            val newOrder = requestingOrder.copy(
-                updated = OffsetDateTime.now(ZoneOffset.UTC)
-            )
-            orderProcessMap[newOrder.id] = newOrder
+            function.invoke()
         } finally {
             stampedLock.unlock(writeLock)
         }
-
     }
 
-    fun remove(requestingOrder: RequestingOrder) {
-        val writeLock = stampedLock.writeLock()
+    fun <T> ActionRepo.withReadLock(function: () -> T): T {
+        val writeLock = stampedLock.readLock()
         try {
-            orderProcessMap.remove(requestingOrder.id)
+            return function.invoke()
         } finally {
             stampedLock.unlock(writeLock)
         }

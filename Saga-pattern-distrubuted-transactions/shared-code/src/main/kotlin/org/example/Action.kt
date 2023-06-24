@@ -1,6 +1,6 @@
 package org.example
 
-data class ActionAndState(
+data class Action(
     var globalId: String,
     var name: PendingActionName = PendingActionName.UNKNOWN,
     var internalId: String? = null,
@@ -11,24 +11,18 @@ data class ActionAndState(
     constructor() : this("")
 
 
-    fun pending(): ActionAndState {
-        return this.copy(
-            state = State.PENDING
-        )
-    }
+    fun pending(): Action = this.copy(
+        state = State.PENDING
+    )
 
 
-    fun failed(): ActionAndState {
-        return this.copy(
-            state = State.FAILED
-        )
-    }
+    fun failed(): Action = this.copy(
+        state = State.FAILED
+    )
 
-    fun rollback(): ActionAndState {
-        return this.copy(
-            state = State.ROLLBACK
-        )
-    }
+    fun rollback(): Action = this.copy(
+        state = State.ROLLBACK
+    )
 }
 
 enum class State {
