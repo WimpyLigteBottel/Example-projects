@@ -4,13 +4,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>Saga-pattern-distrubuted-transactions</artifactId>
     <modules>
+        <module>shared-code</module>
         <module>server-order</module>
         <module>server-payment</module>
         <module>server-main</module>
     </modules>
+
     <groupId>org.example</groupId>
+    <artifactId>Saga-pattern-distrubuted-transactions</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
@@ -22,12 +24,6 @@
         <kotlin.compiler.jvmTarget>17</kotlin.compiler.jvmTarget>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>mavenCentral</id>
-            <url>https://repo1.maven.org/maven2/</url>
-        </repository>
-    </repositories>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -83,5 +79,13 @@
             <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
     </dependencies>
+
+
+    <repositories>
+        <repository>
+            <id>mavenCentral</id>
+            <url>https://repo1.maven.org/maven2/</url>
+        </repository>
+    </repositories>
 
 </project>

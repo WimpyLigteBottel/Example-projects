@@ -1,3 +1,4 @@
 server:
   port: 8081
+  name: "order"
 main-server-url: "http://localhost:8080"

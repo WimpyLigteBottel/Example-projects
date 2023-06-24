@@ -1,6 +1,6 @@
 server:
   port: 8082
-
+  name: "payment"
 
 
 main-server-url: "http://localhost:8080"

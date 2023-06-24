@@ -1,101 +1,52 @@
 package org.example.service
 
-import org.example.dto.ActionAndState
-import org.example.dto.RequestingOrder
-import org.example.dto.State
-import org.slf4j.LoggerFactory
-import org.springframework.scheduling.annotation.Scheduled
+import org.example.ActionAndState
+import org.example.PendingActionName
+import org.example.ProcessActionService
+import org.example.repo.RequestingOrder
+import org.example.repo.ActionRepo
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import java.time.Duration
-import java.time.OffsetDateTime
-import java.time.ZoneOffset
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.TimeUnit
+
+
+@Service
+class OrderService(
+    @Value("\${order-server-url}") private val baseUrl: String
+) : ProcessActionService(baseUrl = baseUrl, name = PendingActionName.CREATE_ORDER)
+
+@Service
+class PaymentService(
+    @Value("\${payment-server-url}") private val baseUrl: String
+) : ProcessActionService(baseUrl = baseUrl, name = PendingActionName.PROCESS_PAYMENT)
 
 @Service
 class ProcessingService(
-    val orderPaymentService: OrderPaymentService
+    private val orderService: OrderService,
+    private val paymentService: PaymentService,
+    private val actionRepo: ActionRepo
 ) {
 
 
-    private val log = LoggerFactory.getLogger(this::class.java)
-
-    private var orderProcessMap = ConcurrentHashMap<String, RequestingOrder>()
-
-
     fun startProcess(requestingOrder: RequestingOrder) {
-        //Sending request creating order
-        val createOrder = orderPaymentService.createOrder(requestingOrder.id)
-        val createPayment = orderPaymentService.createPayment(requestingOrder.id)
+        val createOrder = orderService.createFireAndForget(requestingOrder.id)
+        val createPayment = paymentService.createFireAndForget(requestingOrder.id)
 
+        requestingOrder.addPendingAction(createOrder)
+        requestingOrder.addPendingAction(createPayment)
 
-        save(requestingOrder.copy(pendingActions = mutableListOf(createOrder, createPayment)))
+        actionRepo.save(requestingOrder)
     }
 
 
-    fun handleResponse(id: String, actionAndState: ActionAndState) {
-        val requestingOrder = find(id)
+    fun handleResponse(actionAndState: ActionAndState) {
+        val requestingOrder = actionRepo.find(actionAndState.globalId)
 
-        requestingOrder?.pendingActions?.removeIf { it.name == actionAndState.name }
-        requestingOrder?.pendingActions?.add(actionAndState)
-
-        requestingOrder?.let { save(it) }
-
-    }
-
-
-    /**
-     * This will at a fix rate try to process all successful and failed actions and ignore the pending
-     */
-    @Scheduled(fixedRate = 1000, timeUnit = TimeUnit.MILLISECONDS)
-    fun processActions() {
-
-        orderProcessMap.values.forEach { request ->
-            if (request.hasFailure()) {
-                request.pendingActions
-                    .filter { it.state == State.SUCCESS }
-                    .forEach {
-                        orderPaymentService.stopProcessing(request.id, it) // should rollback the success action
-                    }
-            }
-
-            if (request.isSuccess()) {
-                log.info("request process is success! [request=$request]")
-                orderProcessMap.remove(request.id)
-            } else if (request.isFailure()) {
-                log.info("request process has failed! [request=$request]")
-                orderProcessMap.remove(request.id)
-            }
+        requestingOrder?.let {
+            it.pendingActions[actionAndState.name] = actionAndState
+            actionRepo.save(it)
         }
-
-
-        orderProcessMap.values.filter {
-            Duration.between(it.created, OffsetDateTime.now(ZoneOffset.UTC)).toSeconds() > 30
-        }.forEach { request ->
-            log.warn("Rollback request older than 30s [$request]")
-            request.pendingActions.forEach {
-                orderPaymentService.stopProcessing(request.id, it) // should rollback the success action
-            }
-
-        }
-
-
     }
 
-    private fun save(requestingOrder: RequestingOrder) {
-        val newOrder = requestingOrder.copy(
-            updated = OffsetDateTime.now(ZoneOffset.UTC)
-        )
-        val previousValue = orderProcessMap.put(newOrder.id, newOrder)
-        log.debug("saving request [new={};old={}]", requestingOrder, previousValue)
-
-    }
-
-
-    private fun find(id: String): RequestingOrder? {
-        return orderProcessMap[id]
-
-    }
 
 }
 
