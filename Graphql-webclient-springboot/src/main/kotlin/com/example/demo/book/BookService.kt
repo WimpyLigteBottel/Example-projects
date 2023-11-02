@@ -1,22 +1,20 @@
 package com.example.demo.book
 
+import com.example.demo.author.Author
+import com.example.demo.author.AuthorRepo
 import com.example.demo.util.PaginateUtil
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
 class BookService {
 
-    val books = Arrays.asList(
-        Book("book-1", "Effective Java", 416, "author-1"),
-        Book("book-2", "Effective Java 2", 400, "author-1"),
-        Book("book-3", "Effective Java 2", 400, "author-1"),
-        Book("book-4", "Effective Java 2", 400, "author-1"),
-        Book("book-5", "Effective Java 2", 400, "author-1"),
-        Book("book-6", "Effective Java 2", 400, "author-1"),
-        Book("book-7", "Hitchhiker's Guide to the Galaxy", 208, "author-2"),
-        Book("book-8", "Down Under", 436, "author-3")
-    )
+    @Autowired
+    lateinit var bookRepo: BookRepo
+
+    @Autowired
+    lateinit var paginateUtil: PaginateUtil
 
     fun findAll(
         id: String? = null,
@@ -27,14 +25,13 @@ class BookService {
         pageSize: Int = 100
     ): List<Book> {
 
-        val books = books
+        val books = bookRepo.findAll()
             .filter { x -> isEqual(id, x.id) }
             .filter { x -> isEqual(name, x.name) }
             .filter { x -> isEqual(pageCount, x.pageCount) }
-            .filter { x -> isEqual(authorId, x.authorId) }
             .toMutableList()
 
-        return PaginateUtil.paginationResult(books, page, pageSize)
+        return paginateUtil.paginationResult(books, page, pageSize)
     }
 
 

@@ -1,17 +1,19 @@
 package com.example.demo.query
 
+import com.example.demo.advance.AdvanceSearchService
 import com.example.demo.author.Author
+import com.example.demo.author.AuthorRepo
 import com.example.demo.book.Book
-import com.example.demo.author.AuthorService
-import com.example.demo.book.BookService
+import com.example.demo.book.BookRepo
 import org.slf4j.LoggerFactory
 import org.springframework.graphql.data.method.annotation.SchemaMapping
 import org.springframework.stereotype.Controller
 
 @Controller
 class SchemaMappingController(
-    val authorService: AuthorService,
-    val bookService: BookService,
+    val authorRepo: AuthorRepo,
+    val bookRepo: BookRepo,
+    val advanceSearchService: AdvanceSearchService
 ) {
 
     private val log = LoggerFactory.getLogger(this::class.java)
@@ -35,8 +37,9 @@ class SchemaMappingController(
         // This the entity that contains the  @SchemaMapping value (aka book contains author) see the Type definition in book.graphqls
         book: Book
     ): Author? {
-        log.info("finding author from $book")
-        return authorService.findAll(book.authorId).firstOrNull()
+        log.info("finding author from ${book.id}")
+        val findByBooks = authorRepo.findByBooksIs(book)
+        return findByBooks
     }
 
 
@@ -56,8 +59,8 @@ class SchemaMappingController(
         // This the entity that contains the  @SchemaMapping value (aka book contains author) see the Type definition in book.graphqls
         author: Author
     ): List<Book> {
-        log.info("finding the books from $author")
-        return bookService.findAll(authorId = author.id)
+        log.info("finding the books from Author.id=${author.id}")
+        return bookRepo.findAllByAuthor(author)
     }
 
 }

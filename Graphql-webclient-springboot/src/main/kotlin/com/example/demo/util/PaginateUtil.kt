@@ -1,6 +1,9 @@
 package com.example.demo.util
 
-object PaginateUtil {
+import org.springframework.stereotype.Component
+
+@Component
+class PaginateUtil {
 
     fun <T> paginationResult(
         elements: MutableList<T>,
