@@ -7,7 +7,6 @@ import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.graphql.client.HttpGraphQlClient
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.web.reactive.function.client.WebClient
-import kotlin.test.assertContains
 import kotlin.test.assertEquals
 
 @SpringBootTest(
@@ -181,8 +180,8 @@ class TestGraphqlEndpoints {
     fun testInputList() {
         val client = buildGQLClient()
 
-        // Note: you will need to Add <""> if you want to inject multiple fields
-        val bookIds = listOf("1", "3","4","5")
+        // Note: you will need to Add <""> if you want to inject multiple fields if they are strings
+        val bookIds = listOf("1", "3", "4", "5")
         var document = """
             {
                findAuthorsByBookIds(bookIds: $bookIds) {
