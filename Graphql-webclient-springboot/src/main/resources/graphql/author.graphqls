@@ -1,13 +1,19 @@
 extend type Query {
-    findAuthor(id: ID,name: String,pageCount: Int, authorId: String): Author
+    #finds specific author
+    findAuthor(id: ID,firstName: String, lastName: String): Author
+    #finds all the authors with pagination
     findAuthors(page: Int, pageSize: Int): [Author]
 }
 
-
+# A simple author type
 type Author {
+    #the unique id of the author
     id: ID!
+    #The authors first name
     firstName: String!
+    #The authors last name
     lastName: String!
+    #The list of books that the author has written
     books: [Book]
 }
 

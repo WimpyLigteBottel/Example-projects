@@ -1,12 +1,18 @@
 extend type Query {
+    #Query to use to find specific type of book
     findBook(id: ID,name: String,pageCount: Int, authorId: String): Book
-    findBooks: [Book]
+    #Finds all the books that use pagination
+    findBooks(page: Int, pageSize: Int): [Book]
 }
 
-
+# An simple book type
 type Book {
+    #the unique id of the book
     id: ID!
+    #The name of the book
     name: String!
+    #How many pages the book contains
     pageCount: Int!
+    #The author that has written this book
     author: Author!
 }
