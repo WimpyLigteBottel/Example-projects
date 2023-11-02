@@ -11,19 +11,18 @@ class AdvanceSearchService {
     @Autowired
     lateinit var entityManager: EntityManager
 
-    fun findAuthors(bookIds: List<String>): List<Author> {
+    fun findAuthors(bookIds: List<Long>): List<Author> {
 
         var query = """
-            select a
-            FROM Author a
-            JOIN Book b
-            ON a.id = b.author.id
-            where  b.id in (:bookIds)
+            SELECT a FROM Author a
+            LEFT JOIN Book b
+            ON b.author.id = a.id
+            where b.id in (:bookIds)
         """.trimIndent()
 
         return entityManager
             .createQuery(query, Author::class.java)
-            .setParameter("bookIds", bookIds)
+            .setParameter("bookIds", bookIds.toList())
             .resultList
     }
 

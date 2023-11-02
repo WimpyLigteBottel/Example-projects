@@ -17,7 +17,7 @@ class BookService {
     lateinit var paginateUtil: PaginateUtil
 
     fun findAll(
-        id: String? = null,
+        id: Long? = null,
         name: String? = null,
         pageCount: Int? = null,
         authorId: String? = null,

@@ -6,6 +6,7 @@ import com.example.demo.author.AuthorRepo
 import com.example.demo.book.Book
 import com.example.demo.book.BookRepo
 import org.slf4j.LoggerFactory
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.graphql.data.method.annotation.SchemaMapping
 import org.springframework.stereotype.Controller
 
@@ -38,8 +39,7 @@ class SchemaMappingController(
         book: Book
     ): Author? {
         log.info("finding author from ${book.id}")
-        val findByBooks = authorRepo.findByBooksIs(book)
-        return findByBooks
+        return  authorRepo.findByIdOrNull(book.author.id)
     }
 
 
@@ -60,6 +60,7 @@ class SchemaMappingController(
         author: Author
     ): List<Book> {
         log.info("finding the books from Author.id=${author.id}")
+
         return bookRepo.findAllByAuthor(author)
     }
 

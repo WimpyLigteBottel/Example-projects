@@ -32,7 +32,7 @@ class BookGraphQLController(
     )
     fun findBook(
         // The same applies to the argument name
-        @Argument(name = "id") id: String? = null,
+        @Argument(name = "id") id: Long? = null,
         @Argument name: String? = null,
         @Argument pageCount: Int? = null,
         @Argument authorId: String? = null

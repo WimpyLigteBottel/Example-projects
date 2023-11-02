@@ -7,7 +7,7 @@ import com.example.demo.book.BookRepo
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Configuration
-import java.util.*
+import kotlin.random.Random
 
 @Configuration
 class StartupConfig : CommandLineRunner {
@@ -17,20 +17,38 @@ class StartupConfig : CommandLineRunner {
     @Autowired
     lateinit var bookRepo: BookRepo
     override fun run(vararg args: String?) {
-        var author1 = authorRepo.save(Author(firstName = "Joshua", lastName = "Bloch"))
-        val book1 = bookRepo.save(Book(name = "Effective Java 1", pageCount = 416, author = author1))
-        author1.books.add(book1)
-        authorRepo.save(author1)
+        var author1 = createAuthor()
+        var author2 = createAuthor()
+        var author3 = createAuthor()
 
-        var author2 = authorRepo.save(Author(firstName = "Douglas", lastName = "Adams"))
-        var book2 = bookRepo.save(Book(name = "Effective Java 2", pageCount = 400, author = author2))
-        author2.books.add(book2)
-        authorRepo.save(author2)
 
-        var author3 = authorRepo.save(Author(firstName = "Bill", lastName = "Bryson"))
-        var book3 = bookRepo.save(Book(name = "Effective Java 3", pageCount = 400, author = author3))
-        author3.books.add(book3)
-        authorRepo.save(author3)
+        linkAndUpdate(author1, listOf(createBook(author1), createBook(author1)))
+        linkAndUpdate(author2, createBook(author2))
+        linkAndUpdate(author3, createBook(author3))
 
+
+    }
+
+    fun createBook(author: Author) =
+        bookRepo.saveAndFlush(
+            Book(
+                name = "Effective Java ${Random.nextInt(10000)}",
+                pageCount = Random.nextInt(1000),
+                author = author
+            )
+        )
+
+    fun createAuthor(
+        firstName: String = "firstName-${Random.nextInt(100000)}",
+        lastName: String = "lastname-${Random.nextInt(100000)}"
+    ) =
+        authorRepo.saveAndFlush(Author(firstName = firstName, lastName = lastName))
+
+
+    fun linkAndUpdate(author: Author, book: Book) = linkAndUpdate(author, listOf(book))
+
+    fun linkAndUpdate(author: Author, books: List<Book>) {
+        author.books.addAll(books)
+        authorRepo.saveAndFlush(author)
     }
 }

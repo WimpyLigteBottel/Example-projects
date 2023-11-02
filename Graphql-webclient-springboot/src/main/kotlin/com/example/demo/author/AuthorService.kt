@@ -15,13 +15,15 @@ class AuthorService {
     lateinit var paginateUtil: PaginateUtil
 
     fun findAll(
-        id: String? = null,
+        id: Long? = null,
         firstName: String? = null,
         lastName: String? = null,
         page: Int = 0,
         pageSize: Int = 100,
     ): List<Author> {
-        val allAuthors = authorRepo.findAll()
+        var allAuthors = authorRepo.findAll();
+
+        allAuthors = allAuthors
             .filter { x -> isEqual(id, x.id) }
             .filter { x -> isEqual(firstName, x.firstName) }
             .filter { x -> isEqual(lastName, x.lastName) }

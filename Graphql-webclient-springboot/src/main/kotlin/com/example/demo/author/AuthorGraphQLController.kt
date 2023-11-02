@@ -34,7 +34,7 @@ class AuthorGraphQLController(
     )
      fun findAuthor(
         // The same applies to the argument name
-        @Argument(name = "id") id: String? = null,
+        @Argument(name = "id") id: Long? = null,
         @Argument firstName: String? = null,
         @Argument lastName: String? = null
     ): Author? {
@@ -48,7 +48,7 @@ class AuthorGraphQLController(
 
     @QueryMapping
      fun findAuthorsByBookIds(
-        @Argument bookIds: List<String> = emptyList(),
+        @Argument bookIds: List<Long> = emptyList(),
     ): List<Author> {
         log.info("findAuthorByBookIds [bookIds=$bookIds]")
 
