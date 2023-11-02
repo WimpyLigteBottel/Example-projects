@@ -9,18 +9,14 @@ data class BookWithAuthor(
     override val name: String? = null,
     override val pageCount: Int? = null,
     override val author: TestAuthor? = null,
-) : BookI {
-
-}
+) : BookI
 
 data class AuthorWithBooks(
     override val id: String? = null,
     override val firstName: String? = null,
     override val lastName: String? = null,
     override val books: List<TestBook> = emptyList()
-) : AuthorI {
-
-}
+) : AuthorI
 
 data class TestBook(
     override val id: String? = null,
@@ -35,8 +31,6 @@ interface BookI {
     val pageCount: Int?
     val author: TestAuthor?
 }
-
-
 data class TestAuthor(
     override val id: String = "",
     override val firstName: String = "",

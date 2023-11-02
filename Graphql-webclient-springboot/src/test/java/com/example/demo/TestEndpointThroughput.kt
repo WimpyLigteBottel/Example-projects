@@ -5,6 +5,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.graphql.client.HttpGraphQlClient
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.web.reactive.function.client.WebClient
+import kotlin.test.assertContains
 import kotlin.test.assertEquals
 
 @SpringBootTest
@@ -184,6 +185,7 @@ class TestEndpointThroughput {
     fun testingPagination() {
         val client = buildGQLClient("http://localhost:8080/graphql")
 
+        // Below is how you would do pagination
         var document = """
             {
               findAuthors(page: 0,pageSize: 3){
@@ -220,7 +222,39 @@ class TestEndpointThroughput {
             ),
             actual = authorWithBooks
         )
+    }
 
+
+    @Test
+    fun testInputList() {
+        val client = buildGQLClient("http://localhost:8080/graphql")
+
+        // Note: you will need to Add <""> if you want to inject multiple fields
+        val bookIds = listOf("\"book-1\"", "\"book-8\"")
+        var document = """
+            {
+               findAuthorsByBookIds(bookIds: $bookIds) {
+                id
+                books{
+                  id
+                }
+              }
+            }
+        """.trimMargin()
+
+        val authorWithBooks = client
+            .document(document)
+            .retrieve("findAuthorsByBookIds")
+            .toEntityList(AuthorWithBooks::class.java)
+            .block() ?: emptyList()
+
+
+        assertEquals(
+            expected = 2,
+            actual = authorWithBooks.size
+        )
+
+        assertContains(authorWithBooks, AuthorWithBooks(id = "author-3", books = listOf(TestBook(id = "book-8"))))
     }
 
 

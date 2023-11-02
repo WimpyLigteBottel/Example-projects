@@ -1,18 +1,25 @@
 extend type Query {
-    #finds specific author
+    #finds specific author and if no parameter is specified returns first author found
     findAuthor(id: ID,firstName: String, lastName: String): Author
+
     #finds all the authors with pagination
     findAuthors(page: Int, pageSize: Int): [Author]
+
+    #Adding test query to showing hwo to handle input list
+    findAuthorsByBookIds(bookIds: [ID]): [Author]
 }
 
 # A simple author type
 type Author {
     #the unique id of the author
     id: ID!
+
     #The authors first name
     firstName: String!
+
     #The authors last name
     lastName: String!
+
     #The list of books that the author has written
     books: [Book]
 }

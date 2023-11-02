@@ -1,5 +1,5 @@
 extend type Query {
-    #Query to use to find specific type of book
+    #Query to use to find specific type of book and if none is defined find first book 
     findBook(id: ID,name: String,pageCount: Int, authorId: String): Book
     #Finds all the books that use pagination
     findBooks(page: Int, pageSize: Int): [Book]

@@ -16,7 +16,7 @@ class BookGraphQLController(
     @QueryMapping(
         name = "findBooks" // This is not needed because if left out then take the function name as querymapping name
     )
-    suspend fun findBooks(
+    fun findBooks(
         @Argument page: Int?,
         @Argument pageSize: Int?
     ): List<Book> {
@@ -30,7 +30,7 @@ class BookGraphQLController(
     @QueryMapping(
         name = "findBook" // This is not needed because if left out then take the function name as querymapping name
     )
-    suspend fun findBook(
+    fun findBook(
         // The same applies to the argument name
         @Argument(name = "id") id: String? = null,
         @Argument name: String? = null,
