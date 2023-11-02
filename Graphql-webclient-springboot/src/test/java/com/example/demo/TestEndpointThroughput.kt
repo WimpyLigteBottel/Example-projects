@@ -151,7 +151,7 @@ class TestEndpointThroughput {
 
         var document = """
             {
-              findAuthors(page: 0,pageSize: 100){
+              findAuthors{
                 id
                 firstName
                 lastName
@@ -172,15 +172,6 @@ class TestEndpointThroughput {
                     id = "author-1",
                     firstName = "Joshua",
                     lastName = "Bloch",
-                ),
-                AuthorWithBooks(
-                    id = "author-2",
-                    firstName = "Douglas",
-                    lastName = "Adams",
-                ), AuthorWithBooks(
-                    id = "author-3",
-                    firstName = "Bill",
-                    lastName = "Bryson",
                 )
             ),
             actual = authorWithBooks
