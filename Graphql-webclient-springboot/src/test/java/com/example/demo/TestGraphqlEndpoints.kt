@@ -2,30 +2,35 @@ package com.example.demo
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.graphql.client.HttpGraphQlClient
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.web.reactive.function.client.WebClient
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 
-@SpringBootTest
-class TestEndpointThroughput {
+@SpringBootTest(
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
+)
+class TestGraphqlEndpoints {
 
+    @LocalServerPort
+    lateinit var port: String
 
-    private fun buildGQLClient(path: String): HttpGraphQlClient =
+    private fun buildGQLClient(): HttpGraphQlClient =
         HttpGraphQlClient
-            .builder(buildClient(path))
+            .builder(
+                WebClient.builder()
+                    .baseUrl("http://localhost:$port/graphql")
+                    .clientConnector(ReactorClientHttpConnector())
+                    .build()
+            )
             .build()
 
-
-    private fun buildClient(path: String): WebClient =
-        WebClient.builder().baseUrl(path)
-            .clientConnector(ReactorClientHttpConnector())
-            .build()
 
     @Test
     fun findBook() {
-        val client = buildGQLClient("http://localhost:8080/graphql")
+        val client = buildGQLClient()
 
         var id = "book-1"
         var document = """
@@ -70,7 +75,7 @@ class TestEndpointThroughput {
 
     @Test
     fun findBooks() {
-        val client = buildGQLClient("http://localhost:8080/graphql")
+        val client = buildGQLClient()
 
         var document = """
             {
@@ -104,7 +109,7 @@ class TestEndpointThroughput {
 
     @Test
     fun findAuthor() {
-        val client = buildGQLClient("http://localhost:8080/graphql")
+        val client = buildGQLClient()
 
         val id = "author-1"
         var document = """
@@ -148,7 +153,7 @@ class TestEndpointThroughput {
 
     @Test
     fun findAuthors() {
-        val client = buildGQLClient("http://localhost:8080/graphql")
+        val client = buildGQLClient()
 
         var document = """
             {
@@ -183,7 +188,7 @@ class TestEndpointThroughput {
 
     @Test
     fun testingPagination() {
-        val client = buildGQLClient("http://localhost:8080/graphql")
+        val client = buildGQLClient()
 
         // Below is how you would do pagination
         var document = """
@@ -227,7 +232,7 @@ class TestEndpointThroughput {
 
     @Test
     fun testInputList() {
-        val client = buildGQLClient("http://localhost:8080/graphql")
+        val client = buildGQLClient()
 
         // Note: you will need to Add <""> if you want to inject multiple fields
         val bookIds = listOf("\"book-1\"", "\"book-8\"")
