@@ -16,4 +16,30 @@ data class Book(
 
     @ManyToOne
     var author: Author = Author()
-)
+){
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Book
+
+        if (id != other.id) return false
+        if (name != other.name) return false
+        if (pageCount != other.pageCount) return false
+        return author == other.author
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + pageCount
+        result = 31 * result + author.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "Book(id=$id, name='$name', pageCount=$pageCount)"
+    }
+
+
+}

@@ -6,10 +6,12 @@ import com.example.demo.book.Book
 import com.example.demo.book.BookRepo
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner
+import org.springframework.cache.annotation.EnableCaching
 import org.springframework.context.annotation.Configuration
 import kotlin.random.Random
 
 @Configuration
+@EnableCaching
 class StartupConfig : CommandLineRunner {
     @Autowired
     lateinit var authorRepo: AuthorRepo
@@ -26,6 +28,10 @@ class StartupConfig : CommandLineRunner {
         linkAndUpdate(author2, createBook(author2))
         linkAndUpdate(author3, createBook(author3))
 
+        repeat(1000){
+            val author = createAuthor()
+            linkAndUpdate(author,createBook(author))
+        }
 
     }
 
