@@ -1,7 +1,5 @@
-package com.example.demo.query
+package com.example.demo.book
 
-import com.example.demo.model.Book
-import com.example.demo.service.BookService
 import org.slf4j.LoggerFactory
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.QueryMapping

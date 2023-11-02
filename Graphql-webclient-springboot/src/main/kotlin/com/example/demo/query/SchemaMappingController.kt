@@ -1,9 +1,9 @@
 package com.example.demo.query
 
-import com.example.demo.model.Author
-import com.example.demo.model.Book
-import com.example.demo.service.AuthorService
-import com.example.demo.service.BookService
+import com.example.demo.author.Author
+import com.example.demo.book.Book
+import com.example.demo.author.AuthorService
+import com.example.demo.book.BookService
 import org.slf4j.LoggerFactory
 import org.springframework.graphql.data.method.annotation.SchemaMapping
 import org.springframework.stereotype.Controller
@@ -35,7 +35,7 @@ class SchemaMappingController(
         // This the entity that contains the  @SchemaMapping value (aka book contains author) see the Type definition in book.graphqls
         book: Book
     ): Author? {
-        log.info("author $book")
+        log.info("finding author from $book")
         return authorService.findAll(book.authorId).firstOrNull()
     }
 
@@ -56,7 +56,7 @@ class SchemaMappingController(
         // This the entity that contains the  @SchemaMapping value (aka book contains author) see the Type definition in book.graphqls
         author: Author
     ): List<Book> {
-        log.info("book $author")
+        log.info("finding the books from $author")
         return bookService.findAll(authorId = author.id)
     }
 

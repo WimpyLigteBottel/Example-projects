@@ -1,7 +1,6 @@
-package com.example.demo.query
+package com.example.demo.author
 
-import com.example.demo.model.Author
-import com.example.demo.service.AuthorService
+import org.slf4j.LoggerFactory
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.stereotype.Controller
@@ -11,6 +10,8 @@ class AuthorGraphQLController(
     val authorService: AuthorService
 ) {
 
+    private val log = LoggerFactory.getLogger(this::class.java)
+
     @QueryMapping(
         name = "findAuthors" // This is not needed because if left out then take the function name as querymapping name
     )
@@ -18,7 +19,7 @@ class AuthorGraphQLController(
         @Argument page: Int? = 0,
         @Argument pageSize: Int? = 1
     ): List<Author> {
-        println("findAuthors")
+        log.info("findAuthors [page=$page;pageSize=$pageSize]")
 
         return authorService.findAll(
             page = page ?: 0,
@@ -35,7 +36,7 @@ class AuthorGraphQLController(
         @Argument firstName: String? = null,
         @Argument lastName: String? = null
     ): Author? {
-        println("findAuthor")
+        log.info("findAuthor [id=$id;firstName=$firstName;lastName=$lastName]")
         return authorService.findAll(
             id = id,
             firstName = firstName,
