@@ -94,7 +94,7 @@ class TestEndpointThroughput {
 
 
         assertEquals(
-            expected = 8,
+            expected = 1,
             actual = booksWithAuhtorsList.size
         )
 

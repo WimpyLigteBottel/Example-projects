@@ -1,5 +1,6 @@
 package com.example.demo.author
 
+import com.example.demo.util.PaginateUtil
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -30,29 +31,7 @@ class AuthorService {
             .toMutableList()
 
 
-        return paginationResult(pageSize, allAuthors, page)
-    }
-
-    private fun paginationResult(
-        pageSize: Int,
-        allAuthors: MutableList<Author>,
-        page: Int
-    ): List<Author> {
-        val listOfAuthorList: MutableList<List<Author>> = mutableListOf()
-        var maxSize = pageSize
-
-        while (allAuthors.isNotEmpty()) {
-            if (maxSize > allAuthors.size) {
-                maxSize = allAuthors.size
-            }
-            listOfAuthorList.add(allAuthors.slice(0 until maxSize))
-            allAuthors.removeAll(allAuthors.slice(0 until maxSize))
-        }
-
-        if (page >= listOfAuthorList.size)
-            return emptyList()
-
-        return listOfAuthorList[page]
+        return PaginateUtil.paginationResult(allAuthors, page, pageSize)
     }
 
     private fun isEqual(queryParameter: Any?, x: Any) = queryParameter?.let { queryParameter == x } ?: true

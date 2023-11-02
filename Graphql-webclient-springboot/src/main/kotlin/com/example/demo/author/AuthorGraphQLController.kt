@@ -16,8 +16,8 @@ class AuthorGraphQLController(
         name = "findAuthors" // This is not needed because if left out then take the function name as querymapping name
     )
     suspend fun findAuthors(
-        @Argument page: Int? = 0,
-        @Argument pageSize: Int? = 1
+        @Argument page: Int?,
+        @Argument pageSize: Int?
     ): List<Author> {
         log.info("findAuthors [page=$page;pageSize=$pageSize]")
 
