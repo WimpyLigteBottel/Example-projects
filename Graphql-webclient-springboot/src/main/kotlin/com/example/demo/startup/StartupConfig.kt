@@ -28,9 +28,9 @@ class StartupConfig : CommandLineRunner {
         linkAndUpdate(author2, createBook(author2))
         linkAndUpdate(author3, createBook(author3))
 
-        repeat(1000){
+        repeat(1000) {
             val author = createAuthor()
-            linkAndUpdate(author,createBook(author))
+            linkAndUpdate(author, createBook(author))
         }
 
     }
@@ -47,8 +47,7 @@ class StartupConfig : CommandLineRunner {
     fun createAuthor(
         firstName: String = "firstName-${Random.nextInt(100000)}",
         lastName: String = "lastname-${Random.nextInt(100000)}"
-    ) =
-        authorRepo.saveAndFlush(Author(firstName = firstName, lastName = lastName))
+    ) = authorRepo.saveAndFlush(Author(firstName = firstName, lastName = lastName))
 
 
     fun linkAndUpdate(author: Author, book: Book) = linkAndUpdate(author, listOf(book))

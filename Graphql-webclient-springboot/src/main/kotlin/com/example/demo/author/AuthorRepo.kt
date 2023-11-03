@@ -12,17 +12,18 @@ interface AuthorRepo : JpaRepository<Author, Long> {
     @Cacheable("author")
     override fun findById(id: Long): Optional<Author>
 
-
     @Cacheable("authors")
     override fun findAll(): MutableList<Author>
 
-
-    @Query("""
+    @Query(
+        """
             SELECT a FROM Author a
             LEFT JOIN Book b
             ON b.author.id = a.id
             where b.id in (:bookIds)
-    """)
+    """
+    )
+    @Cacheable("authors")
     fun findAuthorsByBookIds(bookIds: List<Long>): List<Author>
 
 }

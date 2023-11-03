@@ -14,9 +14,6 @@ class SchemaMappingController(
     val bookRepo: BookRepo
 ) {
 
-    private val log = LoggerFactory.getLogger(this::class.java)
-
-
     /**
      * Example: The following will call this method
      * findBook(id: "book-1"){
@@ -34,9 +31,7 @@ class SchemaMappingController(
     fun authors(
         // This the entity that contains the  @SchemaMapping value (aka book contains author) see the Type definition in book.graphqls
         book: Book
-    ): Author? {
-        return authorRepo.findById(book.author.id).orElse(null)
-    }
+    ): Author? = authorRepo.findById(book.author.id).orElse(null)
 
 
     /**
@@ -54,8 +49,6 @@ class SchemaMappingController(
     fun book(
         // This the entity that contains the  @SchemaMapping value (aka book contains author) see the Type definition in book.graphqls
         author: Author
-    ): List<Book> {
-        return bookRepo.findAllByAuthor(author)
-    }
+    ): List<Book> = bookRepo.findAllByAuthor(author)
 
 }
