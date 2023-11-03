@@ -1,0 +1,9 @@
+spring:
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: false
+  cache:
+    caffeine:
+      spec: "maximumSize=1000,expireAfterAccess=0s"

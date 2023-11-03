@@ -32,10 +32,9 @@ class BookEndpointsTest {
     fun findBook() {
         val client = buildGQLClient()
 
-        var id = "1"
         var document = """
         {
-          findBook(id: "$id"){
+          findBook(id: 1){
             id
             name
             pageCount
