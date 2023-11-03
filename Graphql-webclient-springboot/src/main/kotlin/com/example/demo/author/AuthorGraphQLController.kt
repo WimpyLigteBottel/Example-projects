@@ -1,6 +1,5 @@
 package com.example.demo.author
 
-import com.example.demo.advance.AdvanceSearchService
 import org.slf4j.LoggerFactory
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.QueryMapping
@@ -8,8 +7,7 @@ import org.springframework.stereotype.Controller
 
 @Controller
 class AuthorGraphQLController(
-    val authorService: AuthorService,
-    val advanceSearchService: AdvanceSearchService
+    val authorService: AuthorService
 ) {
 
     private val log = LoggerFactory.getLogger(this::class.java)
@@ -52,7 +50,7 @@ class AuthorGraphQLController(
     ): List<Author> {
         log.info("findAuthorByBookIds [bookIds=$bookIds]")
 
-        return advanceSearchService.findAuthors(bookIds)
+        return authorService.findAuthorsByBookIds(bookIds)
     }
 
 }

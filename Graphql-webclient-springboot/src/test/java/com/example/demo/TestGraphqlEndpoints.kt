@@ -200,7 +200,71 @@ class TestGraphqlEndpoints {
             .block() ?: emptyList()
 
 
-        assertThat(authorWithBooks).hasSize(3)
+        assertThat(authorWithBooks).hasSize(4)
+    }
+
+    @Test
+    fun testShowcasingVariables() {
+        val client = buildGQLClient()
+
+        // Note: you will need to Add <""> if you want to inject multiple fields if they are strings
+        val bookIds = listOf("1", "3", "4", "5")
+        var document = """
+            query findAuthorsByBookIds(variable: [ID]){
+               findAuthorsByBookIds(bookIds: variable) {
+                id
+                books{
+                  id
+                }
+              }
+            }
+        """.trimMargin().replace("variable", "\$variable")
+
+        val authorWithBooks = client
+            .document(document)
+            .variable("variable", bookIds)
+            .retrieve("findAuthorsByBookIds")
+            .toEntityList(AuthorWithBooks::class.java)
+            .block() ?: emptyList()
+
+
+        assertThat(authorWithBooks).hasSize(4)
+    }
+
+    @Test
+    fun testShowcasingFragements() {
+        val client = buildGQLClient()
+        var document = """
+                {
+                  findAuthorsByBookIds(bookIds: [1,2,3,4,5]){
+                    ...author
+                  }
+                }
+                
+                fragment author on Author{
+                  id
+                  firstName
+                  lastName
+                  books {
+                    ...book
+                  }
+                }
+                
+                fragment book on Book{
+                  id
+                  name
+                  pageCount
+                }
+        """.trimMargin()
+
+        val authorWithBooks = client
+            .document(document)
+            .retrieve("findAuthorsByBookIds")
+            .toEntityList(AuthorWithBooks::class.java)
+            .block() ?: emptyList()
+
+
+        assertThat(authorWithBooks).hasSize(4)
     }
 
 

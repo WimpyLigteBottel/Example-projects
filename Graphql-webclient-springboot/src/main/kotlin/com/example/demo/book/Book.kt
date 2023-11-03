@@ -1,7 +1,11 @@
 package com.example.demo.book
 
 import com.example.demo.author.Author
-import jakarta.persistence.*
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.Id
+import jakarta.persistence.ManyToOne
 
 
 @Entity

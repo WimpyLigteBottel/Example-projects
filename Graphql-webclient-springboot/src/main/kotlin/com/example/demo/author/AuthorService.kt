@@ -33,5 +33,10 @@ class AuthorService {
         return paginateUtil.paginationResult(allAuthors, page, pageSize)
     }
 
+
+    fun findAuthorsByBookIds(ids: List<Long>): List<Author> {
+        return authorRepo.findAuthorsByBookIds(ids)
+    }
+
     private fun isEqual(queryParameter: Any?, x: Any) = queryParameter?.let { queryParameter == x } ?: true
 }

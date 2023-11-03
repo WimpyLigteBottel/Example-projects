@@ -1,11 +1,8 @@
 package com.example.demo.book
 
-import com.example.demo.author.Author
-import com.example.demo.author.AuthorRepo
 import com.example.demo.util.PaginateUtil
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
 class BookService {
