@@ -16,7 +16,7 @@ interface AuthorRepo : JpaRepository<Author, Long> {
     override fun findAll(): MutableList<Author>
 
     @Query(
-        """
+    """
             SELECT a FROM Author a
             LEFT JOIN Book b
             ON b.author.id = a.id
