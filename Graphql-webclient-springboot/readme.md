@@ -198,15 +198,28 @@ Hibernate: select b1_0.id,b1_0.author_id,b1_0.name,b1_0.page_count from book b1_
 Hibernate: select b1_0.id,b1_0.author_id,b1_0.name,b1_0.page_count from book b1_0 where b1_0.author_id=?
 ```
 
-And if we were to update to find 4 authors without caching its  10 queries!
+And if we were to update to find 4 authors without caching its 10 queries!
 
 ```
+findAuthors [page=null;pageSize=4]
 Hibernate: select a1_0.id,a1_0.first_name,a1_0.last_name from author a1_0
 Hibernate: select b1_0.id,b1_0.author_id,b1_0.name,b1_0.page_count from book b1_0 where b1_0.author_id=?
 Hibernate: select b1_0.id,b1_0.author_id,b1_0.name,b1_0.page_count from book b1_0 where b1_0.author_id=?
 Hibernate: select b1_0.id,b1_0.author_id,b1_0.name,b1_0.page_count from book b1_0 where b1_0.author_id=?
 Hibernate: select b1_0.id,b1_0.author_id,b1_0.name,b1_0.page_count from book b1_0 where b1_0.author_id=?
 Hibernate: select b1_0.id,b1_0.author_id,b1_0.name,b1_0.page_count from book b1_0 where b1_0.author_id=?
+Hibernate: select b1_0.id,b1_0.author_id,b1_0.name,b1_0.page_count from book b1_0 where b1_0.author_id=?
+Hibernate: select b1_0.id,b1_0.author_id,b1_0.name,b1_0.page_count from book b1_0 where b1_0.author_id=?
+Hibernate: select b1_0.id,b1_0.author_id,b1_0.name,b1_0.page_count from book b1_0 where b1_0.author_id=?
+Hibernate: select b1_0.id,b1_0.author_id,b1_0.name,b1_0.page_count from book b1_0 where b1_0.author_id=?
+```
+
+
+and if we were to do it with caching its 5 queries
+
+```
+findAuthors [page=null;pageSize=4]
+Hibernate: select a1_0.id,a1_0.first_name,a1_0.last_name from author a1_0
 Hibernate: select b1_0.id,b1_0.author_id,b1_0.name,b1_0.page_count from book b1_0 where b1_0.author_id=?
 Hibernate: select b1_0.id,b1_0.author_id,b1_0.name,b1_0.page_count from book b1_0 where b1_0.author_id=?
 Hibernate: select b1_0.id,b1_0.author_id,b1_0.name,b1_0.page_count from book b1_0 where b1_0.author_id=?
