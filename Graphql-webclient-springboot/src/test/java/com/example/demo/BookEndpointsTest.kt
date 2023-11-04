@@ -1,9 +1,12 @@
 package com.example.demo
 
+import com.example.demo.book.BookRepo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.server.LocalServerPort
+import org.springframework.data.domain.Pageable
 import org.springframework.graphql.client.HttpGraphQlClient
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.web.reactive.function.client.WebClient
@@ -16,6 +19,9 @@ class BookEndpointsTest {
 
     @LocalServerPort
     lateinit var port: String
+
+    @Autowired
+    lateinit var bookRepo: BookRepo
 
     private fun buildGQLClient(): HttpGraphQlClient =
         HttpGraphQlClient
@@ -55,6 +61,42 @@ class BookEndpointsTest {
 
 
         assertThat(bookWithAuthor).isNotNull
+
+    }
+
+
+    @Test
+    fun findBookAndDoUniqueFilterSearch() {
+
+        val bookInRepo = bookRepo.findAll(Pageable.ofSize(2)).last()
+
+        val client = buildGQLClient()
+
+        var document = """
+        {
+          findBook(id: ${bookInRepo.id}, name: "${bookInRepo.name}", pageCount: ${bookInRepo.pageCount}){
+            id
+            name
+            pageCount
+            author {
+              id
+              firstName
+              lastName
+            }
+          }
+        }
+        """.trimMargin()
+
+        val bookWithAuthor = client
+            .document(document)
+            .retrieve("findBook")
+            .toEntity(BookWithAuthor::class.java)
+            .block()
+
+
+        assertThat(bookWithAuthor.id).isEqualTo(bookInRepo.id.toString())
+        assertThat(bookWithAuthor.name).isEqualTo(bookInRepo.name)
+        assertThat(bookWithAuthor.pageCount).isEqualTo(bookInRepo.pageCount)
 
     }
 

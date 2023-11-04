@@ -36,7 +36,7 @@ class StartupConfig : CommandLineRunner {
     }
 
     fun createBook(author: Author) =
-        bookRepo.saveAndFlush(
+        bookRepo.save(
             Book(
                 name = "Effective Java ${Random.nextInt(10000)}",
                 pageCount = Random.nextInt(1000),

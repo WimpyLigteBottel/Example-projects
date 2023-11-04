@@ -1,6 +1,7 @@
 package com.example.demo.book
 
 import org.slf4j.LoggerFactory
+import org.springframework.data.domain.PageRequest
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.stereotype.Controller
@@ -22,8 +23,8 @@ class BookGraphQLController(
     ): List<Book> {
         log.info("findBooks")
         return bookService.findAll(
-            page = page ?: 0,
-            pageSize = pageSize ?: 1
+            BookFilter(),
+            PageRequest.of(page?: 0, pageSize?: 1)
         )
     }
 
@@ -37,8 +38,13 @@ class BookGraphQLController(
         @Argument pageCount: Int? = null,
         @Argument authorId: String? = null
     ): Book? {
+
+        val pageable = PageRequest.of(0, 1)
+
+        val bookFilter = BookFilter(id, name, pageCount, authorId)
+
         log.info("findBook [id=$id;name=$name;pageCount=$pageCount;authorId=$authorId]")
-        return bookService.findAll(id, name, pageCount, authorId).firstOrNull()
+        return bookService.findAll(bookFilter, pageable).firstOrNull()
     }
 
 }

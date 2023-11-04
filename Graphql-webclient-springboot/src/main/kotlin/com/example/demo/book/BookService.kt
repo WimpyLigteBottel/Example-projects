@@ -1,7 +1,11 @@
 package com.example.demo.book
 
-import com.example.demo.util.PaginateUtil
+import com.example.demo.author.Author
+import jakarta.persistence.criteria.*
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.cache.annotation.Cacheable
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 
 @Service
@@ -10,28 +14,65 @@ class BookService {
     @Autowired
     lateinit var bookRepo: BookRepo
 
-    @Autowired
-    lateinit var paginateUtil: PaginateUtil
-
+    @Cacheable("books")
     fun findAll(
-        id: Long? = null,
-        name: String? = null,
-        pageCount: Int? = null,
-        authorId: String? = null,
-        page: Int = 0,
-        pageSize: Int = 100
-    ): List<Book> {
+        bookFilter: BookFilter,
+        pageRequest: PageRequest
+    ): List<Book> = bookRepo.findAll(
+        BookSpecification(bookFilter),
+        pageRequest
+    ).toList()
 
-        val books = bookRepo.findAll()
-            .filter { x -> isEqual(id, x.id) }
-            .filter { x -> isEqual(name, x.name) }
-            .filter { x -> isEqual(pageCount, x.pageCount) }
-            .toMutableList()
+    @Cacheable("books")
+    fun findAllBooksByAuthor(author: Author) = bookRepo.findAllByAuthor(author)
 
-        return paginateUtil.paginationResult(books, page, pageSize)
+}
+
+
+data class BookFilter(
+    val id: Long? = null,
+    val name: String? = null,
+    val pageCount: Int? = null,
+    val authorId: String? = null,
+)
+
+
+class BookSpecification(val bookFilter: BookFilter) : Specification<Book> {
+    override fun toPredicate(
+        root: Root<Book>,
+        query: CriteriaQuery<*>,
+        cb: CriteriaBuilder
+    ): Predicate {
+
+        val predicates: MutableList<Predicate> = ArrayList()
+
+
+        bookFilter.id?.let {
+            val value: Path<Long> = root["id"]
+            predicates.add(cb.equal(value, it))
+        }
+
+
+        bookFilter.name?.let {
+            val value: Path<String> = root["name"]
+            predicates.add(cb.equal(value, it))
+        }
+
+
+        bookFilter.pageCount?.let {
+            val value: Path<Long> = root["pageCount"]
+            predicates.add(cb.equal(value, it))
+
+        }
+
+        bookFilter.authorId?.let {
+            val value: Path<String> = root["author_id"]
+            predicates.add(cb.equal(value, it))
+        }
+
+
+        return cb.and(*predicates.toTypedArray())
+
     }
-
-
-    private fun isEqual(fieldA: Any?, x: Any) = fieldA?.let { fieldA == x } ?: true
 
 }

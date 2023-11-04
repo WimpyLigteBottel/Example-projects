@@ -1,8 +1,11 @@
 package com.example.demo.author
 
-import com.example.demo.util.PaginateUtil
+import com.example.demo.book.BookSpecification
+import jakarta.persistence.criteria.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.annotation.Cacheable
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 
 
@@ -12,32 +15,72 @@ class AuthorService {
     @Autowired
     lateinit var authorRepo: AuthorRepo
 
-    @Autowired
-    lateinit var paginateUtil: PaginateUtil
 
+    @Cacheable("author")
+
+    fun findAuthorById(id: Long) = authorRepo.findById(id).orElse(null)
+
+
+    @Cacheable("authors")
     fun findAll(
-        id: Long? = null,
-        firstName: String? = null,
-        lastName: String? = null,
-        page: Int = 0,
-        pageSize: Int = 100,
+        authorFilter: AuthorFilter,
+        pageRequest: PageRequest,
     ): List<Author> {
-        var allAuthors = authorRepo.findAll();
 
-        allAuthors = allAuthors
-            .filter { x -> isEqual(id, x.id) }
-            .filter { x -> isEqual(firstName, x.firstName) }
-            .filter { x -> isEqual(lastName, x.lastName) }
-            .toMutableList()
+        val findAll = authorRepo.findAll(
+            AuthorSpecification(authorFilter),
+            pageRequest
+        )
 
-
-        return paginateUtil.paginationResult(allAuthors, page, pageSize)
+        return findAll.toList()
     }
 
 
-    fun findAuthorsByBookIds(ids: List<Long>): List<Author> {
-        return authorRepo.findAuthorsByBookIds(ids)
+    @Cacheable("authors")
+    fun findAuthorsByBookIds(ids: List<Long>): List<Author> = authorRepo.findAuthorsByBookIds(ids)
+
+}
+
+
+data class AuthorFilter(
+    val id: Long? = null,
+    val firstName: String? = null,
+    val lastName: String? = null
+)
+
+
+class AuthorSpecification(val filter: AuthorFilter) : Specification<Author> {
+    override fun toPredicate(
+        root: Root<Author>,
+        query: CriteriaQuery<*>,
+        cb: CriteriaBuilder
+    ): Predicate {
+
+        val predicates: MutableList<Predicate> = mutableListOf()
+
+
+        filter.id?.let {
+            val value: Path<Long> = root["id"]
+            predicates.add(cb.equal(value, it))
+        }
+
+
+        filter.firstName?.let {
+            val value: Path<String> = root["firstName"]
+            predicates.add(cb.equal(value, it))
+        }
+
+
+        filter.lastName?.let {
+            val value: Path<String> = root["lastName"]
+            predicates.add(cb.equal(value, it))
+
+        }
+
+
+
+        return cb.and(*predicates.toTypedArray())
+
     }
 
-    private fun isEqual(queryParameter: Any?, x: Any) = queryParameter?.let { queryParameter == x } ?: true
 }
