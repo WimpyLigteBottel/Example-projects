@@ -9,7 +9,6 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 
 import java.text.MessageFormat;
 
@@ -28,12 +27,7 @@ class PersonRestEndpointTest {
     @Test
     public void getPerson_tokenIsInvalid_expect401() {
         String url = MessageFormat.format("http://localhost:{0}/person", port);
-
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth("token");
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        var entity = new HttpEntity<>(null, headers);
+        HttpEntity<Object> entity = setupHttpEntity(null, AccessType.NONE);
 
         var forEntity = template.exchange(url, HttpMethod.GET, entity, String.class);
 
@@ -44,7 +38,7 @@ class PersonRestEndpointTest {
     @Test
     public void getPerson_tokenIsvalid_expect200() {
         String url = MessageFormat.format("http://localhost:{0}/person", port);
-        HttpEntity<Object> entity = setupHttpEntity(null,AccessType.READ_WRITE);
+        HttpEntity<Object> entity = setupHttpEntity(null, AccessType.READ_WRITE);
 
         var forEntity = template.exchange(url, HttpMethod.GET, entity, Object.class);
 
