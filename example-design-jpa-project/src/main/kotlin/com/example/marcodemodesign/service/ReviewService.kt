@@ -51,7 +51,7 @@ class ReviewService(val ratingsRepo: RatingsRepo, val reviewRepo: ReviewRepo, va
         runBlocking {
             findAll.forEach {
                 for (x in 0..6) {
-                    async { createReview(x, it) }
+                    launch { createReview(x, it) }
                 }
             }
 

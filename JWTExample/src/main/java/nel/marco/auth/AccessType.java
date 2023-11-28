@@ -1,4 +1,4 @@
-package nel.marco.controller.type;
+package nel.marco.auth;
 
 public enum AccessType {
     ADMIN,

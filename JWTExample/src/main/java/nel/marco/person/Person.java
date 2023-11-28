@@ -1,4 +1,4 @@
-package nel.marco;
+package nel.marco.person;
 
 public class Person {
 
