@@ -6,7 +6,6 @@ import nel.marco.auth.AccessType;
 import nel.marco.auth.AuthenticationRestEndpoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +26,7 @@ public class PersonRestEndpoint {
 
     List<Person> people = new ArrayList<>();
 
-    @GetMapping(value = "/person", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/person")
     public ResponseEntity<?> getPerson(HttpServletRequest request) {
         DecodedJWT decodedJWT;
         try {
