@@ -1,22 +1,21 @@
 package com.wimpy.cron
 
 import com.wimpy.core.MtgGoldfishScraper
+import com.wimpy.db.dao.MtgHistory
 import com.wimpy.db.dao.MtgHistoryCrudDao
-import com.wimpy.db.entity.MtgHistory
 import com.wimpy.db.filter.MtgHistoryFilter
 import com.wimpy.db.filter.MtgHistorySpecification
 import com.wimpy.rest.v1.model.MtgQuery
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.EnableScheduling
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.Duration
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.util.concurrent.Executors
-import kotlin.coroutines.CoroutineContext
 
 @Component
 @EnableScheduling
@@ -32,7 +31,7 @@ class PricerUpdateCron constructor(
         LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
 
 
-//    @Scheduled(fixedRate = 5_000L)
+    //    @Scheduled(fixedRate = 5_000L)
     fun scheduleJob() {
         time { updateAllPricesCoroutines() };
     }

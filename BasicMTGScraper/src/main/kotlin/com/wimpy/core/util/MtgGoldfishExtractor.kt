@@ -1,24 +1,34 @@
 package com.wimpy.core.util
 
-import com.wimpy.db.entity.MtgHistory
+import com.wimpy.db.dao.MtgHistory
 import org.jsoup.nodes.Document
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.context.annotation.Configuration
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
 
+
+@Configuration
+@ConfigurationProperties(prefix = "mtg.gold.fish.extract")
+open class MtgGoldfishProperties {
+    //    @Value("\${mtg.gold.fish.extract.price}")
+    lateinit var price: String
+
+    //    @Value("\${mtg.gold.fish.extract.name}")
+    lateinit var name: String
+
+    //    @Value("\${mtg.gold.fish.extract.edition}")
+    lateinit var edition: String
+}
+
 @Component
-open class MtgGoldfishExtractor {
-    @Value("\${mtg.gold.fish.extract.price}")
-    private val priceSelector: String? = null
-
-    @Value("\${mtg.gold.fish.extract.name}")
-    private val nameSelector: String? = null
-
-    @Value("\${mtg.gold.fish.extract.edition}")
-    private val editionSelector: String? = null
+open class MtgGoldfishExtractor(
+    private val mtgGoldfishProperties: MtgGoldfishProperties
+) {
 
 
-    fun extractFields(document: Document, link: String): MtgHistory{
+    fun extractFields(document: Document, link: String): MtgHistory {
         val mtgHistory = MtgHistory()
         mtgHistory.name = extractName(document)
         mtgHistory.price = extractPrice(document)
@@ -29,7 +39,7 @@ open class MtgGoldfishExtractor {
     fun extractPrice(document: Document): BigDecimal {
         return BigDecimal.valueOf(
             document
-                .select(priceSelector)
+                .select(mtgGoldfishProperties.price)
                 .html()
                 .replace("&nbsp;".toRegex(), "").substring(1).toDouble()
         )
@@ -37,14 +47,14 @@ open class MtgGoldfishExtractor {
 
     fun extractName(document: Document): String {
         return document
-            .select(nameSelector)
+            .select(mtgGoldfishProperties.name)
             .text()
             .replace("&nbsp;".toRegex(), "")
     }
 
     fun editionSelector(document: Document): String {
         return document
-            .select(editionSelector)
+            .select(mtgGoldfishProperties.edition)
             .text()
             .replace("&nbsp;".toRegex(), "")
     }

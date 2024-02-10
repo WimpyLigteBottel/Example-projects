@@ -1,11 +1,10 @@
 package com.wimpy.core
 
-import com.google.gson.Gson
 import com.wimpy.core.util.MtgGoldfishExtractor
+import com.wimpy.db.dao.MtgCard
 import com.wimpy.db.dao.MtgCardCrudDao
+import com.wimpy.db.dao.MtgHistory
 import com.wimpy.db.dao.MtgHistoryCrudDao
-import com.wimpy.db.entity.MtgCard
-import com.wimpy.db.entity.MtgHistory
 import com.wimpy.rest.v1.model.MtgQuery
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
