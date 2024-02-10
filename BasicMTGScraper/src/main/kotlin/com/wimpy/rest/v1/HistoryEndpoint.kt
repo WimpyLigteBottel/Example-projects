@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/v1/history")
 class HistoryEndpoint @Autowired constructor(private val mtgHistoryManager: MtgHistoryManager) {
     @GetMapping("/card")
-    private fun findHistory(@RequestParam(required = true) cardName: String): CardHistoryResponse {
-        return mtgHistoryManager.retrieveHistory(cardName)
+    private fun findHistory(@RequestParam(required = true) name: String): CardHistoryResponse {
+        return mtgHistoryManager.retrieveHistory(name)
     }
 
 

@@ -6,9 +6,7 @@ import com.wimpy.db.entity.MtgHistory
 import com.wimpy.db.filter.MtgHistoryFilter
 import com.wimpy.db.filter.MtgHistorySpecification
 import com.wimpy.rest.v1.model.MtgQuery
-import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.annotation.Scheduled
@@ -29,7 +27,6 @@ class PricerUpdateCron constructor(
 
     private val log = LoggerFactory.getLogger(this.javaClass)
 
-    private val context: CoroutineContext = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
 
     private fun toLocalDateTime(instant: Instant): LocalDateTime =
         LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
@@ -51,9 +48,9 @@ class PricerUpdateCron constructor(
         val findAll = mtgHistoryCrudDao.findAll(specification)
         val allCards = findAll.distinctBy { it.name }
 
-        runBlocking(context) {
+        runBlocking(Dispatchers.IO) {
             for (it in allCards) {
-                async { updatePriceOfCard(it) }
+                launch { updatePriceOfCard(it) }
             }
         }
 

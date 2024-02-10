@@ -33,8 +33,15 @@ open class MtgGoldfishScraper @Autowired constructor(
         if (mtgGoldFishQuery.cardName.isBlank() && link.endsWith("#paper"))
             mtgGoldFishQuery.cardName = link.substringAfterLast("/").substringBefore("#paper")
 
+        if (mtgGoldFishQuery.edition.isBlank()) {
+            mtgGoldFishQuery.edition = link
+                .substringAfterLast("https://www.mtggoldfish.com/price/")
+                .substringBeforeLast("/")
+
+        }
+
         // If link is empty construct it yourself
-        if (mtgGoldFishQuery.link.length == 0) {
+        if (mtgGoldFishQuery.link.isEmpty()) {
             link = constructLinkOfCard(mtgGoldFishQuery.cardName, mtgGoldFishQuery.edition)
         }
 
@@ -48,19 +55,21 @@ open class MtgGoldfishScraper @Autowired constructor(
     }
 
     @Transactional
-    open fun saveCardPrice(mtgHistory: MtgHistory): MtgHistory {
+    open fun saveCardPrice(mtgHistory: MtgHistory): List<MtgHistory> {
         val optionalMtgCard = mtgCardCrudDao.findByName(mtgHistory.name)
 
 
         //if empty creates the card and links it up to the history
         optionalMtgCard.ifPresentOrElse({ mtgCard: MtgCard? -> mtgHistory.mtgCard = mtgCard }) {
-            val entity = MtgCard()
-                .setName(mtgHistory.name)
+            val entity = MtgCard(name = mtgHistory.name)
             mtgHistory.mtgCard = mtgCardCrudDao.save(entity)
         }
-        val card = mtgHistoryCrudDao.save(mtgHistory)
-        log.info("saved [entityJson={}]", Gson().toJson(card))
-        return card
+
+        // add entry
+        mtgHistoryCrudDao.save(mtgHistory.copy(id = null))
+
+        return mtgHistoryCrudDao.findByMtgCard(mtgHistory.mtgCard!!);
+
     }
 
     /**

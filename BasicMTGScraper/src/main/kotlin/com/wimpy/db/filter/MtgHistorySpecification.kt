@@ -5,7 +5,7 @@ import org.springframework.data.jpa.domain.Specification
 import java.math.BigDecimal
 import java.time.ZoneOffset
 import java.util.*
-import javax.persistence.criteria.*
+import jakarta.persistence.criteria.*
 
 class MtgHistorySpecification constructor(private val mtgHistoryFilter: MtgHistoryFilter) : Specification<MtgHistory> {
 

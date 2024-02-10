@@ -3,6 +3,7 @@ package com.wimpy.core
 import com.wimpy.core.util.MtgGoldfishExtractor
 import com.wimpy.db.dao.MtgCardCrudDao
 import com.wimpy.db.dao.MtgHistoryCrudDao
+import com.wimpy.rest.v1.model.MtgQuery
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -36,6 +37,8 @@ class MtgGoldfishScraperTest {
 
     @Test
     fun retrieveCardPrice() {
-//        val retrieveCardPrice = mtgGoldfishScraper.retrieveCardPrice(MtgQuery("", "", "https://www.mtggoldfish.com/price/Tenth+Edition/Crucible+of+Worlds#paper"))
+        val retrieveCardPrice = mtgGoldfishScraper.retrieveCardPrice(MtgQuery("", "", "https://www.mtggoldfish.com/price/Tenth+Edition/Crucible+of+Worlds#paper"))
+
+        println()
     }
 }
