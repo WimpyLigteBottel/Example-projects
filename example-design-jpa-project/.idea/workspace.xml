@@ -5,18 +5,28 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2f9b6c11-0cba-47b6-99da-dd79f08f4c23" name="Changes" comment="Adding different version querying using native query and the @query annotation">
-      <change afterPath="$PROJECT_DIR$/../docker-example/DockerFile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../docker-example/docker-compose.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../docker-example/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../docker-example/src/main/kotlin/nel/marco/Config.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../docker-example/src/main/kotlin/nel/marco/CustomController.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../docker-example/src/main/kotlin/nel/marco/Main.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../docker-example/src/main/kotlin/nel/marco/db/entity/Customer.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../docker-example/src/main/kotlin/nel/marco/db/repo/CustomerRepo.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../docker-example/src/main/resources/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../docker-example/src/main/resources/db/migration/V1__Customer.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../docker-example/src/main/resources/db/migration/V2__setup_data.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BasicMTGScraper/src/main/kotlin/com/wimpy/db/dao/entity/MtgCard.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BasicMTGScraper/src/main/kotlin/com/wimpy/db/dao/entity/MtgHistory.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BasicMTGScraper/src/main/kotlin/com/wimpy/rest/v1/models/CardHistoryModel.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BasicMTGScraper/src/main/resources/preload" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BasicMTGScraper/db/database.trace.db" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BasicMTGScraper/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../BasicMTGScraper/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BasicMTGScraper/src/main/kotlin/Application.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BasicMTGScraper/src/main/kotlin/com/wimpy/Launcher.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../BasicMTGScraper/src/main/kotlin/com/wimpy/Launcher.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BasicMTGScraper/src/main/kotlin/com/wimpy/core/MtgGoldfishScraper.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../BasicMTGScraper/src/main/kotlin/com/wimpy/core/MtgGoldfishScraper.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BasicMTGScraper/src/main/kotlin/com/wimpy/core/MtgHistoryManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../BasicMTGScraper/src/main/kotlin/com/wimpy/core/MtgHistoryManager.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BasicMTGScraper/src/main/kotlin/com/wimpy/core/ScraperUtil.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../BasicMTGScraper/src/main/kotlin/com/wimpy/core/ScraperUtil.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BasicMTGScraper/src/main/kotlin/com/wimpy/core/util/MtgGoldfishExtractor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../BasicMTGScraper/src/main/kotlin/com/wimpy/core/util/MtgGoldfishExtractor.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BasicMTGScraper/src/main/kotlin/com/wimpy/cron/PricerUpdateCron.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../BasicMTGScraper/src/main/kotlin/com/wimpy/cron/PricerUpdateCron.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BasicMTGScraper/src/main/kotlin/com/wimpy/db/dao/MtgCardCrudDao.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../BasicMTGScraper/src/main/kotlin/com/wimpy/db/dao/MtgCardCrudDao.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BasicMTGScraper/src/main/kotlin/com/wimpy/db/dao/MtgHistoryCrudDao.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../BasicMTGScraper/src/main/kotlin/com/wimpy/db/dao/MtgHistoryCrudDao.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BasicMTGScraper/src/main/kotlin/com/wimpy/db/filter/MtgHistorySpecification.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../BasicMTGScraper/src/main/kotlin/com/wimpy/db/dao/MtgHistorySpecification.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BasicMTGScraper/src/main/kotlin/com/wimpy/rest/v1/HistoryEndpoint.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../BasicMTGScraper/src/main/kotlin/com/wimpy/rest/v1/HistoryEndpoint.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BasicMTGScraper/src/main/kotlin/com/wimpy/rest/v1/ScraperRestEndpoint.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BasicMTGScraper/src/main/kotlin/com/wimpy/rest/v1/model/CardHistoryModel.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BasicMTGScraper/src/main/kotlin/com/wimpy/rest/v1/model/CardHistoryResponse.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BasicMTGScraper/src/main/kotlin/com/wimpy/rest/v1/model/MtgQuery.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../BasicMTGScraper/src/main/kotlin/com/wimpy/rest/v1/models/MtgQueryRequest.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BasicMTGScraper/src/main/test/com/wimpy/core/MtgGoldfishScraperTest.kt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,22 +74,26 @@
       </map>
     </option>
   </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 7
+}]]></component>
   <component name="ProjectId" id="2F5H1DWWy4LbfWyZKH0G1nqnypY" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="autoscrollFromSource" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File" value="SQL" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../python/Test.py" />
-    <property name="project.structure.last.edited" value="Modules" />
-    <property name="project.structure.proportion" value="0.0" />
-    <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
-  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "git-widget-placeholder": "master",
+    "kotlin-language-version-configured": "true"
+  }
+}]]></component>
   <component name="RunManager" selected="Python.locustfile">
     <configuration name="MarcoDemoDesignApplicationKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.example.marcodemodesign.MarcoDemoDesignApplicationKt" />
@@ -88,19 +102,9 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="JetRunConfigurationType">
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
-      <option name="filePath" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Test (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="marco-demo-design" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -122,6 +126,7 @@
     </configuration>
     <configuration name="Test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="marco-demo-design" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -143,6 +148,7 @@
     </configuration>
     <configuration name="locustfile" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="marco-demo-design" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -214,7 +220,6 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="adding design project (commiting in junk ;_;)" />

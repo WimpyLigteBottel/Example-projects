@@ -1,20 +1,19 @@
 package com.wimpy.core
 
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.io.IOException
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.coroutineContext
 
 @Component
-open class ScraperUtil constructor(private var cookies: MutableMap<String, String> = mutableMapOf()) {
+open class ScraperUtil(private var cookies: MutableMap<String, String> = mutableMapOf()) {
 
     init {
         runBlocking {
-            setupDefaultCookies()
+            launch { setupDefaultCookies() }
         }
 
     }
@@ -38,7 +37,7 @@ open class ScraperUtil constructor(private var cookies: MutableMap<String, Strin
     /**
      * Setup the default cookies to scrap future request a lot faster
      */
-     suspend fun setupDefaultCookies() = try {
+    fun setupDefaultCookies() = try {
         val cookiesFromJsoup = Jsoup.connect(
             "https://www.mtggoldfish.com/price/Throne+of+Eldraine/Edgewall+Innkeeper#paper"
         )
