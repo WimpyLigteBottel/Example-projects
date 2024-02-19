@@ -1,0 +1,46 @@
+<project
+        xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.example</groupId>
+        <artifactId>awesome-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>example-maven-plugin-runner</artifactId>
+    <packaging>jar</packaging>
+
+    <name>example-maven-plugin-runner</name>
+    <url>http://maven.apache.org</url>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.example</groupId>
+                <artifactId>example-maven-plugin-mojo</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>custom-message</goal>
+                            <goal>timestamp</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <customMessage>I want to print this message</customMessage>
+                    <withTime>false</withTime>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+
+    </dependencies>
+</project>
