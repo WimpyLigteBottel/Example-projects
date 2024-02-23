@@ -1,2 +1,8 @@
 info:
   name: a
+  age: 1
+  children:
+    childA:
+      name: ben
+    childB:
+      name: erik

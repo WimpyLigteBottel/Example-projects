@@ -1,2 +1,6 @@
 info:
   name: b
+  surname: b
+  age: 13
+  wife:
+    name: Alex

@@ -3,8 +3,16 @@ package org.example.combine.utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import org.yaml.snakeyaml.Yaml;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.HashMap;
 
 public class YamlUtil {
+
+    private static final Yaml yaml = new Yaml();
 
 
     private static final ObjectMapper jsonObjectMapper = new ObjectMapper();
@@ -48,4 +56,21 @@ public class YamlUtil {
             throw new RuntimeException(e);
         }
     }
+
+
+    public static <T> T loadFile(String path, Class<T> expectResponse) {
+        try {
+            var inputStream = Files.newInputStream(Path.of(path));
+
+            return yaml.loadAs(inputStream, expectResponse);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static HashMap<String, Object> loadFile(String path) {
+        return loadFile(path, HashMap.class);
+    }
+
+
 }
