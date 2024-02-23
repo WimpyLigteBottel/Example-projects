@@ -66,7 +66,7 @@ public class YamlCombiner extends AbstractMojo {
     public void execute() {
 
         if (specs == null || specs.isEmpty()) {
-            throw new RuntimeException("specs is empty!!! you need to specify atleast 2 files");
+            throw new RuntimeException("specs is empty!!! you need to specify atleast 1 file(s)");
         }
 
 

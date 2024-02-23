@@ -26,7 +26,7 @@ class YamlCombinerTest {
     void handleMultipleFiles() {
         var inputPaths = List.of(
                 "src/test/resources/testA.yaml",
-                "src/test/resources/testA.yaml"
+                "src/test/resources/testB.yaml"
         );
 
         var yamlCombiner = new YamlCombiner(inputPaths, "./target/output2.yaml");
