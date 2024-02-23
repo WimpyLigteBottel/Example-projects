@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class YamlUtil {
 
@@ -49,12 +51,34 @@ public class YamlUtil {
      * @return {@link String}
      */
 
-    public static String toYaml(Object input) {
+    public static String toYamlString(Object input) {
         try {
             return yamlObjectMapper.writeValueAsString(input);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * The map will be sorted in semi readable way for open api specs.
+     * <p></p>
+     * <p>
+     * Example:
+     * base properties
+     * paths
+     * components
+     */
+    public static Map<String, Object> sortToOpenApiStyle(Map<String, Object> mapToBeSorted) {
+        //This
+        LinkedHashMap<String, Object> linkedHashMap = new LinkedHashMap<>();
+        linkedHashMap.putAll(mapToBeSorted);
+
+        linkedHashMap.remove("paths");
+        linkedHashMap.put("paths", mapToBeSorted.get("paths"));
+
+        linkedHashMap.remove("components");
+        linkedHashMap.put("components", mapToBeSorted.get("components"));
+        return linkedHashMap;
     }
 
 

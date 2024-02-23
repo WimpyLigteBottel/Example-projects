@@ -7,11 +7,16 @@ import java.util.List;
 
 class YamlCombinerTest {
 
+    String petYaml = "src/test/resources/pets.yaml";
+    String storeYaml = "src/test/resources/store.yaml";
+    String usersYaml = "src/test/resources/users.yaml";
+
+
     @Test
     @DisplayName("Can handle 1 input file only")
     void handleOneFileOnly() {
         var inputPaths = List.of(
-                "src/test/resources/testA.yaml"
+                petYaml
         );
 
         var yamlCombiner = new YamlCombiner(inputPaths, "./target/output1.yaml");
@@ -25,8 +30,8 @@ class YamlCombinerTest {
     @DisplayName("Can handle 2 input files")
     void handleMultipleFiles() {
         var inputPaths = List.of(
-                "src/test/resources/testA.yaml",
-                "src/test/resources/testB.yaml"
+                petYaml,
+                storeYaml
         );
 
         var yamlCombiner = new YamlCombiner(inputPaths, "./target/output2.yaml");
@@ -38,9 +43,9 @@ class YamlCombinerTest {
     @DisplayName("Can handle 3 input files")
     void handleXMultipleFiles() {
         var inputPaths = List.of(
-                "src/test/resources/testA.yaml",
-                "src/test/resources/testB.yaml",
-                "src/test/resources/testC.yaml"
+                petYaml,
+                storeYaml,
+                usersYaml
         );
 
         var yamlCombiner = new YamlCombiner(inputPaths, "./target/output3.yaml");

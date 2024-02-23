@@ -72,9 +72,10 @@ public class YamlCombiner extends AbstractMojo {
 
         var combinedMap = specs
                 .stream()
-                .map(path -> YamlUtil.loadFile(path)) // load the file to map
-                .reduce((a, b) -> MapMerge.deepMerge(a, b)) // merge files 1 by 1
-                .map(x -> YamlUtil.toYaml(x))
+                .map(path -> YamlUtil.loadFile(path))
+                .reduce(MapMerge::deepMerge) // merge files 1 by 1
+                .map(YamlUtil::sortToOpenApiStyle)
+                .map(YamlUtil::toYamlString)
                 .get();
 
 
@@ -86,4 +87,7 @@ public class YamlCombiner extends AbstractMojo {
             throw new RuntimeException(e);
         }
     }
+
+    //
+
 }
