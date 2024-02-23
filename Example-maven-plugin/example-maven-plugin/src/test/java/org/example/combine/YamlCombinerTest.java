@@ -35,22 +35,15 @@ class YamlCombinerTest {
     }
 
     @Test
-    @DisplayName("Can handle 10 input files")
+    @DisplayName("Can handle 3 input files")
     void handleXMultipleFiles() {
         var inputPaths = List.of(
                 "src/test/resources/testA.yaml",
                 "src/test/resources/testB.yaml",
-                "src/test/resources/testA.yaml",
-                "src/test/resources/testB.yaml",
-                "src/test/resources/testA.yaml",
-                "src/test/resources/testB.yaml",
-                "src/test/resources/testA.yaml",
-                "src/test/resources/testB.yaml",
-                "src/test/resources/testA.yaml",
-                "src/test/resources/testB.yaml"
+                "src/test/resources/testC.yaml"
         );
 
-        var yamlCombiner = new YamlCombiner(inputPaths, "./target/output10.yaml");
+        var yamlCombiner = new YamlCombiner(inputPaths, "./target/output3.yaml");
 
         yamlCombiner.execute();
     }

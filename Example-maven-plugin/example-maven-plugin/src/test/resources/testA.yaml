@@ -78,7 +78,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TaskModel'
-components:
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorInfo'
   schemas:
     TaskModel:
       type: object

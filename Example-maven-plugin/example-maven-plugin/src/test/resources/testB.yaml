@@ -37,6 +37,11 @@ paths:
       responses:
         '204':
           description: Task deleted successfully
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorInfo'
 components:
   schemas:
     TaskModel:
