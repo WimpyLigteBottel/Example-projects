@@ -1,4 +1,4 @@
-package org.example;
+package org.example.custom;
 
 
 import org.apache.maven.plugin.AbstractMojo;
@@ -13,7 +13,7 @@ import org.apache.maven.plugins.annotations.Parameter;
  *
  * @name custom-message
  */
-@Mojo(name = "custom-message", defaultPhase = LifecyclePhase.VALIDATE)
+@Mojo(name = "custom-message", defaultPhase = LifecyclePhase.VALIDATE, threadSafe = true)
 public class CustomMessage extends AbstractMojo {
 
     /**

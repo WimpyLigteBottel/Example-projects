@@ -1,4 +1,4 @@
-package org.example;
+package org.example.dateprint;
 
 
 import org.apache.maven.plugin.AbstractMojo;
@@ -16,7 +16,7 @@ import java.time.OffsetDateTime;
  *
  * @timestamp
  */
-@Mojo(name = "timestamp", defaultPhase = LifecyclePhase.VALIDATE)
+@Mojo(name = "timestamp", defaultPhase = LifecyclePhase.VALIDATE, threadSafe = true)
 public class PrintStartDate extends AbstractMojo {
 
 

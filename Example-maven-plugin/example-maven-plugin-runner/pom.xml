@@ -17,6 +17,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>21</java.version>
     </properties>
 
     <build>
@@ -35,6 +36,25 @@
                 <configuration>
                     <customMessage>I want to print this message</customMessage>
                     <withTime>false</withTime>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.example</groupId>
+                <artifactId>example-maven-plugin-mojo</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>combine</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <specs>
+                        <spec>D:\coding repo\Example-projects\Example-maven-plugin\example-maven-plugin-runner\src\main\resources\a.yaml</spec>
+                        <spec>D:\coding repo\Example-projects\Example-maven-plugin\example-maven-plugin-runner\src\main\resources\b.yaml</spec>
+                    </specs>
+                    <output>output</output>
                 </configuration>
             </plugin>
         </plugins>
