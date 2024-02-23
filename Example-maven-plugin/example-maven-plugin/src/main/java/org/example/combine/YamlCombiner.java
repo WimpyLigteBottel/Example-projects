@@ -22,10 +22,10 @@ import java.util.List;
 public class YamlCombiner extends AbstractMojo {
 
 
-    public YamlCombiner() {
+    YamlCombiner() {
     }
 
-    public YamlCombiner(List<String> specs, String ouputPath) {
+    YamlCombiner(List<String> specs, String ouputPath) {
         this.specs = specs;
         this.ouputPath = ouputPath;
     }
