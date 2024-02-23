@@ -51,10 +51,12 @@
                 </executions>
                 <configuration>
                     <specs>
-                        <spec>D:\coding repo\Example-projects\Example-maven-plugin\example-maven-plugin-runner\src\main\resources\a.yaml</spec>
-                        <spec>D:\coding repo\Example-projects\Example-maven-plugin\example-maven-plugin-runner\src\main\resources\b.yaml</spec>
+                        <spec>${project.basedir}\src\main\resources\a.yaml</spec>
+                        <spec>${project.basedir}\src\main\resources\b.yaml</spec>
                     </specs>
-                    <output>output</output>
+                    <ouputPath>
+                        ${project.basedir}\combined2.yaml
+                    </ouputPath>
                 </configuration>
             </plugin>
         </plugins>

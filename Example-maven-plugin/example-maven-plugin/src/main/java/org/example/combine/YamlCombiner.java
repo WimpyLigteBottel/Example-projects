@@ -7,6 +7,11 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.example.combine.utils.MapMerge;
 import org.example.combine.utils.YamlUtil;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,9 +25,9 @@ public class YamlCombiner extends AbstractMojo {
     public YamlCombiner() {
     }
 
-    public YamlCombiner(List<String> specs, String output) {
+    public YamlCombiner(List<String> specs, String ouputPath) {
         this.specs = specs;
-        this.output = output;
+        this.ouputPath = ouputPath;
     }
 
     /**
@@ -41,18 +46,20 @@ public class YamlCombiner extends AbstractMojo {
 
 
     /**
-     * What is the output file that you would like to create
+     * The location where the file will be created.
+     * <p/>
+     * Take note that if the file exists it will be overwritten!
      * <p/>
      * Example:
      * <p/>
-     * The default value will be `combined.yaml`
+     * The default value will be `./combined.yaml`
      */
     @Parameter(
-            name = "output",
+            name = "ouputPath",
             required = true,
-            defaultValue = "combined.yaml"
+            defaultValue = "./combined.yaml"
     )
-    private String output;
+    private String ouputPath;
 
 
     @Override
@@ -63,16 +70,20 @@ public class YamlCombiner extends AbstractMojo {
         }
 
 
-        var listOfYamlMaps = specs
+        var combinedMap = specs
                 .stream()
                 .map(path -> YamlUtil.loadFile(path)) // load the file to map
                 .reduce((a, b) -> MapMerge.deepMerge(a, b)) // merge files 1 by 1
+                .map(x -> YamlUtil.toYaml(x))
                 .get();
 
 
-        System.out.println(YamlUtil.toYaml(listOfYamlMaps));
+        Path newOutputPath = Path.of(ouputPath);
 
-        System.out.println("output " + output);
-
+        try {
+            Files.write(newOutputPath, combinedMap.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

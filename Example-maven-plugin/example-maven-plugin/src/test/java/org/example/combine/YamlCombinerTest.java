@@ -8,15 +8,13 @@ class YamlCombinerTest {
 
 
     @Test
-    void test() {
-
-
+    void checkIfFailGetsCombined() {
         var inputPaths = List.of(
                 "src/test/resources/testA.yaml",
                 "src/test/resources/testB.yaml"
         );
 
-        var yamlCombiner = new YamlCombiner(inputPaths, "output.yaml");
+        var yamlCombiner = new YamlCombiner(inputPaths, "./target/output.yaml");
 
         yamlCombiner.execute();
 
