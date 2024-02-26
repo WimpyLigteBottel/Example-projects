@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-class YamlCombinerTest {
+class YamlCombinerMojoTest {
 
     String petYaml = "src/test/resources/pets.yaml";
     String storeYaml = "src/test/resources/store.yaml";
@@ -19,7 +19,7 @@ class YamlCombinerTest {
                 petYaml
         );
 
-        var yamlCombiner = new YamlCombiner(inputPaths, "./target/output1.yaml");
+        var yamlCombiner = new YamlCombinerMojo(inputPaths, "./target/output1.yaml");
 
         yamlCombiner.execute();
 
@@ -34,7 +34,7 @@ class YamlCombinerTest {
                 storeYaml
         );
 
-        var yamlCombiner = new YamlCombiner(inputPaths, "./target/output2.yaml");
+        var yamlCombiner = new YamlCombinerMojo(inputPaths, "./target/output2.yaml");
 
         yamlCombiner.execute();
     }
@@ -48,7 +48,7 @@ class YamlCombinerTest {
                 usersYaml
         );
 
-        var yamlCombiner = new YamlCombiner(inputPaths, "./target/output3.yaml");
+        var yamlCombiner = new YamlCombinerMojo(inputPaths, "./target/output3.yaml");
 
         yamlCombiner.execute();
     }
