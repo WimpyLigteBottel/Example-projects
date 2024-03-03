@@ -2,6 +2,7 @@ package nel.marco.api
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import org.springframework.retry.annotation.Backoff
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 import kotlin.random.Random
+import kotlin.system.measureTimeMillis
 
 @RestController
 class BaseTestController(private val serviceCallOne: ServiceCallOne, private val serviceCallTwo: ServiceCallTwo) {
@@ -22,25 +24,29 @@ class BaseTestController(private val serviceCallOne: ServiceCallOne, private val
         try {
             log.info("Starting coroutine")
 
-            val result = runBlocking {
-                val answer1 = async(Dispatchers.IO) {
-                    log.info("serviceCallOne started")
-                    serviceCallOne.xSecondCall(4)
-                }
-                val answer2 = async(Dispatchers.IO) {
-                    log.info("ServiceCallTwo started")
-                    serviceCallTwo.xSecondCall(4000)
-                }
-                val await = answer1.await()
-                log.info("serviceCallOne done")
-                val await1 = answer2.await()
-                log.info("ServiceCallTwo done")
-                listOf(await, await1)
+            val result = runBlocking(Dispatchers.IO) {
+                val answer1 = async {
+                    measureTimeMillis {
+                        log.info("serviceCallOne started")
+                        serviceCallOne.xSecondCall(4)
+                        log.info("serviceCallOne done")
+                    }
 
+                }
+                val answer2 = async {
+                    measureTimeMillis {
+                        log.info("ServiceCallTwo started")
+                        serviceCallTwo.xSecondCall(4000)
+                        log.info("ServiceCallTwo done")
+                    }
+
+                }
+                awaitAll(answer1, answer2)
+                log.info("Done coroutine")
+                listOf(answer1.await(), answer2.await())
             }
-            log.info("Done coroutine")
 
-            return "DONE! ${result.sum()}"
+            return "DONE! ${result.sum()}ms"
         } catch (e: Exception) {
             log.error("BaseTestController.landingPage() failed!!!!", e)
             return "FAILED!"
