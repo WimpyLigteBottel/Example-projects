@@ -1,7 +1,5 @@
 package com.example.marcodemodesign.api
 
-import com.example.marcodemodesign.db.entity.Rating
-import com.example.marcodemodesign.db.entity.Review
 import com.example.marcodemodesign.service.ReviewService
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.GetMapping
@@ -12,35 +10,25 @@ import java.time.Instant
 
 
 @RestController
-class BaseTestController(var reviewService: ReviewService) {
+class BaseTestController(val reviewService: ReviewService) {
 
     val log = LoggerFactory.getLogger(this::class.java)
 
     @GetMapping("v1/review")
     fun findReviews(): Any {
-        val function: () -> MutableList<Review> = {
+        return timeMethod {
             reviewService.findAllReviews()
         }
-
-        return timeMethod(function)
     }
 
     @GetMapping("v1/ratings")
     fun findByRetailerId(@RequestParam(required = false, defaultValue = "") retailerId: String): Any {
-        val function: () -> List<Rating> = {
-            reviewService.findAllRatingsFor(retailerId)
-        }
-
-        return timeMethod(function)
+        return timeMethod { reviewService.findAllRatingsFor(retailerId) }
     }
 
     @GetMapping("v2/ratings")
     fun findByRetailerIdVersion(@RequestParam(required = false, defaultValue = "") retailerId: String): Any {
-        val function: () -> List<Rating> = {
-            reviewService.findAllRatingsFor(retailerId, 2)
-        }
-
-        return timeMethod(function)
+        return timeMethod { reviewService.findAllRatingsFor(retailerId, 2) }
     }
 
     fun timeMethod(function: () -> Any): Any {

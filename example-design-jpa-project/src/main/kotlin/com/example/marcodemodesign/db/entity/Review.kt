@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference
 import org.hibernate.Hibernate
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
+import java.time.OffsetDateTime
 import java.util.*
 import javax.persistence.*
 
@@ -22,12 +23,10 @@ data class Review(
     var ratings: MutableList<Rating>? = mutableListOf(),
 
     @CreationTimestamp
-    @Temporal(value = TemporalType.TIMESTAMP)
-    var created: Date? = null,
+    var created: OffsetDateTime = OffsetDateTime.now(),
 
     @UpdateTimestamp
-    @Temporal(value = TemporalType.TIMESTAMP)
-    var updated: Date? = null,
+    var updated: OffsetDateTime = OffsetDateTime.now(),
     ) {
 
     override fun equals(other: Any?): Boolean {
