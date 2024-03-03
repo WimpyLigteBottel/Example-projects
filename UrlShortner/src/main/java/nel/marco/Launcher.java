@@ -96,19 +96,17 @@ class RestEndpoint {
                                 }
                             });
 
-                    MessageFormat messageFormat = new MessageFormat("Map has been cleaned [currentsize={0}]");
-                    String text = messageFormat.format(new Object[]{map.size()});
-                    logger.info(text);
+                    logger.info("Map has been cleaned [currentsize={}]",map.size());
                 });
     }
 
-    @GetMapping("/fillMap")
+    @GetMapping("/v1/fillMap")
     public ResponseEntity<String> fillInternalMap() {
 
         for (int i = 0; i < 1000000; i++) {
             String encodedText = generateUniquePattern();
 
-            map.put(encodedText, Map.entry(encodedText, LocalDateTime.now().plusSeconds(5)));
+            map.put(encodedText, Map.entry(encodedText, LocalDateTime.now().plusSeconds(60)));
         }
 
         MessageFormat messageFormat = new MessageFormat("Map has been filled [size={0}]");
@@ -116,7 +114,7 @@ class RestEndpoint {
         return ResponseEntity.ok(text);
     }
 
-    @GetMapping("/generate")
+    @GetMapping("/v1/generate")
     public ResponseEntity<String> generate(@RequestParam String text) {
         String encodedText = generateUniquePattern();
 
