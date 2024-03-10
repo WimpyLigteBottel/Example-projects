@@ -15,31 +15,16 @@ class GenerateLocustFile(
     val log = LoggerFactory.getLogger(this::class.java)
 
 
-    @GetMapping("/")
-    fun getEndpoint() {
-        log.info(requestMappingHandlerMapping.handlerMethods.toString())
-
-
-        requestMappingHandlerMapping.handlerMethods.forEach {
-            val method = it.key.methodsCondition.methods.first()
-            val pattern = it.key.patternsCondition?.patterns
-            val beanName = it.value.bean
-            val beanMethod = it.value.method.name
-
-            log.info("METHOD=$method; pattern=$pattern ; className=$beanName ; method=$beanMethod")
-        }
-    }
-
-
     @GetMapping("/generate")
     fun generateLocust(): String {
 
-        var base = """
+        val base = """
             
             import random
             import pandas as pd
             from locust import HttpUser, task, between, constant
             
+            #Reads the files and store it as dataframe
             def readFile(fileName):
                 try:
                     # Read the CSV file into a DataFrame
@@ -48,6 +33,7 @@ class GenerateLocustFile(
                 except FileNotFoundError:
                     print("File not found. Please make sure the file exists.")
                     return None
+
 
             class WebsiteUser(HttpUser):
                 wait_time = constant(1)  # wait time between requests, in seconds

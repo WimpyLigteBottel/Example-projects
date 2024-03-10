@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  master:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: locust-custom-image
+    ports:
+      - "5557:5557"
+      - "5558:5558"
+      - "8089:8089"
+    volumes:
+      - ./:/mnt/locust
+    command: -f /mnt/locust/locustfile.py --master -H http://192.168.1.201:8080/ --users 1 --spawn-rate 20 --headless -t 60s
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: locust-custom-image
+    deploy:
+      replicas: 2  # Set the desired number of replicas
+    volumes:
+      - ./:/mnt/locust
+    command: -f /mnt/locust/locustfile.py --worker --master-host master
