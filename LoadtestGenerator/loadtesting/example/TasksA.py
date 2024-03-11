@@ -1,28 +1,17 @@
 import random
 
-import pandas as pd
-from locust import HttpUser, task, constant
+from locust import task, TaskSet
+
+from Utils import readFile
 
 
-def readFile(fileName):
-    try:
-        # Read the CSV file into a DataFrame
-        df = pd.read_csv(fileName, sep=';')
-        return df
-    except FileNotFoundError:
-        print("File not found. Please make sure the file exists.")
-        return None
-
-
-class WebsiteUser(HttpUser):
-    wait_time = constant(1)  # wait time between requests, in seconds
-
+class TaskA(TaskSet):
     # Need this otherwise wrong request content-type octet will be used
     defaultHeaders = {
         'Content-Type': 'application/json'
     }
 
-    put_v1_hello = readFile("example/csvs/put_v1_hello.csv")
+    put_v1_hello = readFile("csvs/put_v1_hello.csv")
 
     @task(1)
     def controllerOne_putHello(self):
@@ -38,9 +27,9 @@ class WebsiteUser(HttpUser):
         # Remove the grouping name for other request
         self.client.request_name = None
 
-    get_v1_hello = readFile("example/csvs/get_v1_hello.csv")
+    get_v1_hello = readFile("csvs/get_v1_hello.csv")
 
-    @task(1)
+    @task(3)
     def controllerOne_getHello(self):
         # Selects the "column" value from csv file which is read as dataframe
         name = random.choice(self.get_v1_hello['Name'])
@@ -54,9 +43,9 @@ class WebsiteUser(HttpUser):
         # Remove the grouping name for other request
         self.client.request_name = None
 
-    post_v1_hello = readFile("example/csvs/post_v1_hello.csv")
+    post_v1_hello = readFile("csvs/post_v1_hello.csv")
 
-    @task(1)
+    @task(2)
     def controllerOne_postHello(self):
         # Selects the "column" value from csv file which is read as dataframe
         body = random.choice(self.post_v1_hello['body'])
