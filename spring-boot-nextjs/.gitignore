@@ -41,3 +41,8 @@ build/
 /.next/
 /out/
 /node_modules/
+
+/src/main/resources/static/_next/
+/src/main/resources/static/404.html
+/src/main/resources/static/index.html
+/src/main/resources/static/index.txt
