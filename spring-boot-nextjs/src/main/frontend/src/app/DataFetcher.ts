@@ -1,23 +1,6 @@
 import { Person } from "./Person";
 import { v4 as uuidv4 } from "uuid";
 
-export async function helloName(name: string) {
-  try {
-    let url = `http://localhost:8080/v1/hello?name=${name}`;
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-
-    const data = await response.text();
-    return JSON.stringify(data); // Convert data to a string
-  } catch (error) {
-    console.error("There was a problem with the fetch operation:", error);
-    return ""; // Return an empty string in case of error
-  }
-}
-
 export async function getPersons(): Promise<Person[]> {
   try {
     let url = `http://localhost:8080/v1/person/`;

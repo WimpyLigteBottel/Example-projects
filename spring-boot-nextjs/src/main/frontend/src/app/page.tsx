@@ -1,14 +1,12 @@
 "use client";
 import { useState, useEffect } from "react";
 import {
-  helloName,
   getPersons,
   createPerson,
   createRandomPerson,
   deletePerson,
 } from "./DataFetcher";
 import { Person } from "./Person";
-import { v4 as uuidv4 } from "uuid";
 
 export default function Home() {
   const [persons, setPersons] = useState<Person[]>([]);
@@ -25,8 +23,8 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div>
-        {persons.map((person) => (
-          <div key={uuidv4()}>
+        {persons.map((person,index) => (
+          <div key={index}>
             <span>name:{person.name} </span>
             <span>age: {person.age} </span>
             <button
