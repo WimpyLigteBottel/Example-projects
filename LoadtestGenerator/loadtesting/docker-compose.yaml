@@ -12,7 +12,7 @@ services:
       - "8089:8089"
     volumes:
       - ./:/mnt/locust
-    command: -f /mnt/locust/locustfile.py --master -H http://192.168.1.201:8080/ --users 1 --spawn-rate 20 --headless -t 60s
+    command: -f /mnt/locust/example/shaped_locustfile.py --master -H http://192.168.1.201:8080/ --users 1 --spawn-rate 20 --headless -t 60s
   worker:
     build:
       context: .
@@ -22,4 +22,4 @@ services:
       replicas: 2  # Set the desired number of replicas
     volumes:
       - ./:/mnt/locust
-    command: -f /mnt/locust/locustfile.py --worker --master-host master
+    command: -f /mnt/locust/example/shaped_locustfile.py --worker --master-host master

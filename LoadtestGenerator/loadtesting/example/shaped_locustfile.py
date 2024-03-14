@@ -1,11 +1,20 @@
 from locust import HttpUser, LoadTestShape, constant
 
-from TasksA import TaskA
+from DeleteTasks import DeleteTasks
+from GetTasks import GetTasks
+from PostTasks import PostTasks
+from PutTasks import PutTasks
 
 
 class WebsiteUser(HttpUser):
     wait_time = constant(1)  # wait time between requests, in seconds
-    tasks = [TaskA]
+    tasks = {
+        GetTasks: 10,   # Adjust the weight according to your needs
+        DeleteTasks: 1,   # Adjust the weight according to your needs
+        PostTasks: 5,   # Adjust the weight according to your needs
+        PutTasks: 3    # Adjust the weight according to your needs
+    }
+
 
 
 class StagesShape(LoadTestShape):
@@ -25,9 +34,9 @@ class StagesShape(LoadTestShape):
     """
 
     stages = [
-        {"duration": 20, "users": 10, "spawn_rate": 5},
-        {"duration": 40, "users": 20, "spawn_rate": 5},
-        {"duration": 60, "users": 40, "spawn_rate": 10},
+        {"duration": 20, "users": 100, "spawn_rate": 20},
+        {"duration": 40, "users": 200, "spawn_rate": 40},
+        {"duration": 60, "users": 400, "spawn_rate": 50},
     ]
 
     def tick(self):
