@@ -12,7 +12,7 @@ class WebsiteUser(HttpUser):
     tasks = {
         GetTasks: 10,   # Adjust the weight according to your needs
         DeleteTasks: 1,   # Adjust the weight according to your needs
-        PostTasks: 5,   # Adjust the weight according to your needs
+        PostTasks: 2,   # Adjust the weight according to your needs
         PutTasks: 3    # Adjust the weight according to your needs
     }
 
@@ -22,7 +22,7 @@ class WebsiteUser(HttpUser):
 
 class StagesShape(LoadTestShape):
     """
-    A simply load test shape class that has different user and spawn_rate at
+    A simple load test shape class that has different user and spawn_rate at
     different stages.
 
     Keyword arguments:
