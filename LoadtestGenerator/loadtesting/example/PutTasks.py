@@ -2,7 +2,7 @@ import random
 
 from locust import task, TaskSet
 
-from Utils import readFile, validateResponse
+from Utils import read_file, validate_response
 
 
 class PutTasks(TaskSet):
@@ -11,7 +11,7 @@ class PutTasks(TaskSet):
         'Content-Type': 'application/json'
     }
 
-    put_v1_hello = readFile("csvs/put_v1_hello.csv")
+    put_v1_hello = read_file("csvs/put_v1_hello.csv")
 
     @task(10)
     def controllerOne_putHello(self):
@@ -24,7 +24,7 @@ class PutTasks(TaskSet):
         # actual request
         response = self.client.put("v1/hello", data=body, headers=self.defaultHeaders)
 
-        validateResponse(response, 200, "PUT DONE!")
+        validate_response(response, 200, "PUT DONE!")
 
         # Remove the grouping name for other request
         self.client.request_name = None

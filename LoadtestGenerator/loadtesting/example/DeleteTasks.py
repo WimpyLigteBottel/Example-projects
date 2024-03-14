@@ -2,7 +2,7 @@ import random
 
 from locust import task, TaskSet
 
-from Utils import readFile, validateResponse
+from Utils import read_file, validate_response
 
 
 class DeleteTasks(TaskSet):
@@ -11,7 +11,7 @@ class DeleteTasks(TaskSet):
         'Content-Type': 'application/json'
     }
 
-    delete_v1_hello = readFile("csvs/delete_v1_hello.csv")
+    delete_v1_hello = read_file("csvs/delete_v1_hello.csv")
 
     @task(2)
     def controllerOne_deleteHello(self):
@@ -24,7 +24,7 @@ class DeleteTasks(TaskSet):
         # actual request
         response = self.client.delete("v1/hello/{0}".format(id), headers=self.defaultHeaders)
 
-        validateResponse(response,200, "DELETE DONE!")
+        validate_response(response, 200, "DELETE DONE!")
 
         # Remove the grouping name for other request
         self.client.request_name = None
