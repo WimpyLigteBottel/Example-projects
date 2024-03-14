@@ -1,5 +1,3 @@
-import random
-
 from locust import task, TaskSet
 
 from Utils import read_file, validate_response
