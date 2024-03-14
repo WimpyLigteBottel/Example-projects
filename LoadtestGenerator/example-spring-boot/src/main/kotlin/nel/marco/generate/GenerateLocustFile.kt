@@ -19,7 +19,6 @@ class GenerateLocustFile(
     fun generateLocust(): String {
 
         val base = """
-            
             import random
             import pandas as pd
             from locust import HttpUser, task, between, constant
@@ -57,7 +56,6 @@ class GenerateLocustFile(
 
                 val method = it.key.methodsCondition.methods.first()
                 val pattern = it.key.patternValues.firstOrNull()?.replaceFirst("/", "")
-                val patternPythonSafe = pattern?.replace("/", "_")
                 val beanName = it.value.bean
                 val beanMethod = it.value.method.name
 
@@ -72,53 +70,27 @@ class GenerateLocustFile(
                     RequestMethod.TRACE -> TODO()
                 }
 
-                val dfName = "${pythonMethodName}_$patternPythonSafe"
+                val dfName = beanMethod
 
-                when (method) {
-                    RequestMethod.GET -> {
-                        methods.add(
-                            """
-                                $dfName = readFile("$dfName.csv")
+                methods.add(
+                    """
+                     # Setup your csv file
+                     $dfName = readFile("$dfName.csv")
+                        
+                     @task(1)
+                     def ${beanName}_${beanMethod}(self):
+                          #Selects random row
+                          row = self.$dfName.sample(n=1)
+                          
+                          #below is samples of access column names
+                          id = row['columnA'].iloc[0]
+                          body = row['columnB'].iloc[0]
+                          
                                 
-                                @task(1)
-                                def ${beanName}_${beanMethod}(self):
-                                    #Selects the "column" value from csv file which is read as dataframe
-                                    name = random.choice(self.$dfName['Name'])
-                                    
-                                    #Groups the request under pattern
-                                    self.client.request_name = "$pattern"
-                                    
-                                    #actual request
-                                    self.client.$pythonMethodName("$pattern",params={'name': name},headers=self.defaultHeaders)
-                                    
-                                    #Remove the grouping name for other request
-                                    self.client.request_name = None
-                            """
-                        )
-                    }
-
-                    else -> {
-                        methods.add(
-                            """
-                                $dfName = readFile("$dfName.csv")
-                                
-                                @task(1)
-                                def ${beanName}_${beanMethod}(self):
-                                    #Selects the "column" value from csv file which is read as dataframe
-                                    body = random.choice(self.$dfName['body'])
-                                    
-                                    #Groups the request under pattern
-                                    self.client.request_name = "$pattern"
-                                    
-                                    #actual request
-                                    self.client.$pythonMethodName("$pattern",data=body,headers=self.defaultHeaders)
-                                    
-                                    #Remove the grouping name for other request
-                                    self.client.request_name = None
-                            """
-                        )
-                    }
-                }
+                          #Replace path variables with {1} / {2} and variable
+                          self.client.$pythonMethodName("$pattern".formated(id),data=body,headers=self.defaultHeaders)
+                    """
+                )
 
 
             }

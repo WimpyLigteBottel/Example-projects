@@ -1,5 +1,3 @@
-import random
-
 from locust import task, TaskSet
 
 from Utils import read_file, validate_response
@@ -16,7 +14,10 @@ class GetTasks(TaskSet):
     @task(9)
     def controllerOne_getHello(self):
         # Selects the "column" value from csv file which is read as dataframe
-        id = random.choice(self.get_v1_hello['id'])
+        row = self.get_v1_hello.sample(n=1)
+
+        id = row['id'].iloc[0]
+        name = row['name'].iloc[0]
 
         # Groups the request under pattern #see https://docs.locust.io/en/stable/writing-a-locustfile.html#grouping-requests
         self.client.request_name = "v1/hello/{id}"

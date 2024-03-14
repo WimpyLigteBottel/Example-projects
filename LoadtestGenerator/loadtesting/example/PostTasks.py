@@ -16,7 +16,10 @@ class PostTasks(TaskSet):
     @task(3)
     def controllerOne_postHello(self):
         # Selects the "column" value from csv file which is read as dataframe
-        body = random.choice(self.post_v1_hello['body'])
+        row = self.post_v1_hello.sample(n=1)
+
+        id = row['id'].iloc[0]
+        body = row['body'].iloc[0]
 
         # Groups the request under pattern
         self.client.request_name = "v1/hello"
