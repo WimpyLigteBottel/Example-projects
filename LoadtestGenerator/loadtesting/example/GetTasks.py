@@ -18,7 +18,7 @@ class GetTasks(TaskSet):
         # Selects the "column" value from csv file which is read as dataframe
         id = random.choice(self.get_v1_hello['id'])
 
-        # Groups the request under pattern
+        # Groups the request under pattern #see https://docs.locust.io/en/stable/writing-a-locustfile.html#grouping-requests
         self.client.request_name = "v1/hello/{id}"
 
         # actual request

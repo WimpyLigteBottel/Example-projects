@@ -19,9 +19,14 @@ def read_file(filename):
 
 
 
+
+
+
 def validate_response(response, expectedStatus, expectedBody):
     """
     Validates the http response received back.
+
+    see https://docs.locust.io/en/stable/writing-a-locustfile.html#validating-responses
 
     :param response: The http response
     :param expectedStatus: the expected http status

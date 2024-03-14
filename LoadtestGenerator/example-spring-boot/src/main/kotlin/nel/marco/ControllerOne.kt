@@ -19,6 +19,10 @@ class ControllerOne {
     @GetMapping("/hello/{id}")
     fun getHello(@PathVariable id: String): String {
         sleepBetween(10, 30)
+
+        if(ThreadLocalRandom.current().nextLong(100) < 2){
+            throw RuntimeException("I SHOULD FAIL")
+        }
         return "GET DONE!"
     }
 
