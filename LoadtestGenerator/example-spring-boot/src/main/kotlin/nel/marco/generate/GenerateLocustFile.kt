@@ -21,7 +21,7 @@ class GenerateLocustFile(
         val base = """
             import random
             import pandas as pd
-            from locust import HttpUser, task, between, constant
+            from locust import HttpUser, task, between, constant_throughput
             
             #Reads the files and store it as dataframe
             def readFile(fileName):
@@ -35,7 +35,7 @@ class GenerateLocustFile(
 
 
             class WebsiteUser(HttpUser):
-                wait_time = constant(1)  # wait time between requests, in seconds
+                wait_time = constant_throughput(1)  # wait time between requests, in seconds
                 
                 #Need this otherwise wrong request content-type octet will be used
                 defaultHeaders = {
@@ -44,6 +44,7 @@ class GenerateLocustFile(
             """.trimIndent()
 
 
+        var readInputs = mutableListOf<String>()
         var methods = mutableListOf<String>()
 
         requestMappingHandlerMapping.handlerMethods
@@ -72,11 +73,14 @@ class GenerateLocustFile(
 
                 val dfName = beanMethod
 
-                methods.add(
-                    """
+                readInputs.add("""
                      # Setup your csv file
                      $dfName = readFile("$dfName.csv")
-                        
+                    """)
+
+
+                methods.add(
+                    """
                      @task(1)
                      def ${beanName}_${beanMethod}(self):
                           #Selects random row
@@ -100,6 +104,12 @@ class GenerateLocustFile(
 
         stringBuilder
             .append(base)
+
+        readInputs.forEach {
+            stringBuilder
+                .append("\n")
+                .append(it)
+        }
 
         methods.forEach {
             stringBuilder
