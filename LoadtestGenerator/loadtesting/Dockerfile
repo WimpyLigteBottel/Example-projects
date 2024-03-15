@@ -1,4 +1,4 @@
-FROM docker.io/library/marcolocust:1.0.0
+FROM docker.io/library/loadtestgenerator_marcolocust:latest
 
 # Copy the entire current directory into the Docker image
 COPY . .

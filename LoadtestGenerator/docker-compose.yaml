@@ -1,6 +1,11 @@
 version: "3.8"
 
 services:
+  marcolocust:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: exit()
   backend:
     container_name: backendloadtest
     build:
@@ -15,6 +20,7 @@ services:
     image: locust-custom-image
     depends_on:
       - backend
+      - marcolocust
     ports:
       - "5557:5557"
       - "5558:5558"
