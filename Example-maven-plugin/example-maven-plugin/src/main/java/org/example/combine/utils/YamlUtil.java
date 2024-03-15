@@ -16,7 +16,6 @@ public class YamlUtil {
 
     private static final Yaml yaml = new Yaml();
 
-
     private static final ObjectMapper jsonObjectMapper = new ObjectMapper();
     private static final ObjectMapper yamlObjectMapper = new ObjectMapper(new YAMLFactory());
 
@@ -70,8 +69,7 @@ public class YamlUtil {
      */
     public static Map<String, Object> sortToOpenApiStyle(Map<String, Object> mapToBeSorted) {
         //This
-        LinkedHashMap<String, Object> linkedHashMap = new LinkedHashMap<>();
-        linkedHashMap.putAll(mapToBeSorted);
+        LinkedHashMap<String, Object> linkedHashMap = new LinkedHashMap<>(mapToBeSorted);
 
         linkedHashMap.remove("paths");
         linkedHashMap.put("paths", mapToBeSorted.get("paths"));

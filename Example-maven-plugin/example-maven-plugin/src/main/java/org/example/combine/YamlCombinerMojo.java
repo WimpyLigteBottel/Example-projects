@@ -5,7 +5,6 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,7 +35,7 @@ public class YamlCombinerMojo extends AbstractMojo {
             name = "specs",
             required = true
     )
-    private List<String> specs = new ArrayList<>();
+    private final List<String> specs;
 
 
     /**
@@ -53,17 +52,14 @@ public class YamlCombinerMojo extends AbstractMojo {
             required = true,
             defaultValue = "./combined.yaml"
     )
-    private String ouputPath;
+    private final String ouputPath;
 
 
     @Override
     public void execute() {
-
         if (specs == null || specs.isEmpty()) {
             throw new RuntimeException("specs is empty!!! you need to specify atleast 1 file(s)");
         }
-
-
 
         yamlCombiner.createCombinedYaml(ouputPath, specs);
     }
