@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+  backend:
+    container_name: backendloadtest
+    build:
+      context: ./example-spring-boot
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+  master-locust:
+    build:
+      context: ./loadtesting
+      dockerfile: Dockerfile
+    image: locust-custom-image
+    depends_on:
+      - backend
+    ports:
+      - "5557:5557"
+      - "5558:5558"
+      - "8089:8089"
+    volumes:
+      - ./example:/locust
+    command: -f ./shaped_locustfile.py --master -H http://host.docker.internal:8080/ --config locust.conf
+  worker:
+    build:
+      context: ./loadtesting
+      dockerfile: Dockerfile
+    image: locust-custom-image
+    depends_on:
+      - master-locust
+    deploy:
+      replicas: 1  # Set the desired number of replicas
+    volumes:
+      - ./loadtesting:/locust
+    command: -f ./shaped_locustfile.py --worker --master-host master-locust --config locust.conf

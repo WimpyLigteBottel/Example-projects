@@ -1,12 +1,10 @@
 # How to run this?
 
-
-1. startup the example-spring-boot service so that it runs on port 8080
-2. Then build in `/loadtesting` the docker-compose file
+1. Then build the docker-compose file
    1. `docker-compose build`
    2. `docker-compose up`
 
-you should see something like this
+you should see something like this once you gone to 8090
 
 ```
 Response time percentiles (approximated)
@@ -21,5 +19,10 @@ Response time percentiles (approximated)
 
 ```
 
-If you dont then that means that you might need update the ip in docker-compose file i was using http://192.168.1.201:8080/ but 
-you need to use your real ip of host machine not docker to allow docker container to find host ran machine
+
+
+# How to get that weird image?
+
+I build ontop of the base locust image with pandas installed to speed up locust rebuild times
+
+`docker build -t marcolocust:1.0.0 .`
