@@ -10,6 +10,8 @@ import java.nio.file.StandardOpenOption;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class YamlCombiner {
@@ -71,28 +73,44 @@ public class YamlCombiner {
 
 
     /**
-     *  This will clean up the refs tags after everything has been combined
-     *  Example:
-     *  <p></p>
-     *  from:
-     *  $ref: './common.yaml#/components/schemas/Error'
-     *  <p></p>
-     *  to:
-     *  $ref: '#/components/schemas/Error'
-     *
+     * This will clean up the refs tags after everything has been combined
+     * Example:
+     * <p></p>
+     * from:
+     * $ref: './common.yaml#/components/schemas/Error'
+     * <p></p>
+     * to:
+     * $ref: '#/components/schemas/Error'
      */
     public String replaceRefTags(String file, List<String> specs) {
+
+        if (specs.size() == 1)
+            return file;
 
         var tempFile = file;
 
         List<String> formattedReferences = specs
                 .stream()
-                .map(x -> "." + x.substring( x.lastIndexOf("/")))
+                .map(x -> "." + x.substring(x.lastIndexOf("/")))
                 .toList();
 
+        Pattern pattern = Pattern.compile("\\.(.*?)#");
+        Matcher matcher = pattern.matcher(tempFile);
 
-        for (String x : formattedReferences) {
-            tempFile = tempFile.replaceAll(x, "");
+
+        while (matcher.find()) {
+
+            var group = matcher.group();
+
+            var isMatchAppearingInSpecList = formattedReferences
+                    .stream()
+                    .anyMatch(x -> x.contains(group.substring(group.lastIndexOf("/"), group.length() - 1)));
+
+            if (isMatchAppearingInSpecList) {
+                tempFile = tempFile.replaceAll(group, "#");
+            }
+
+
         }
 
         return tempFile;
