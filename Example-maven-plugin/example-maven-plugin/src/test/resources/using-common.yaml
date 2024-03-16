@@ -4,3 +4,5 @@ components:
       $ref: './common.yaml#/components/schemas/Error'
     Custom2:
       $ref: './common-second.yaml#/components/schemas/ErrorSecond'
+    Custom3:
+      $ref: './shared/common-third.yaml#/components/schemas/ErrorThird'

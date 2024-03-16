@@ -1,0 +1,11 @@
+components:
+  schemas:
+    ErrorThird:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+      xml:
+        name: category
