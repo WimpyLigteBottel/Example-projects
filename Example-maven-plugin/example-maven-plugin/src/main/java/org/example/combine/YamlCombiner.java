@@ -38,7 +38,7 @@ public class YamlCombiner {
                 .reduce(MapMerge::deepMerge) // merge files 1 by 1
                 .map(this::sortToOpenApiStyle)
                 .map(YamlUtil::toYamlString)
-                .map(x -> replaceRefTags(x, specs)) // cleans up ref tags
+                .map(text -> replaceRefTags(text, specs)) // cleans up ref tags
                 .orElseThrow();
     }
 
@@ -82,12 +82,11 @@ public class YamlCombiner {
      * to:
      * $ref: '#/components/schemas/Error'
      */
-    public String replaceRefTags(String file, List<String> specs) {
-
+    public String replaceRefTags(String text, List<String> specs) {
         if (specs.size() == 1)
-            return file;
+            return text;
 
-        var tempFile = file;
+        var tempFile = text;
 
         List<String> formattedReferences = specs
                 .stream()
@@ -99,12 +98,11 @@ public class YamlCombiner {
 
 
         while (matcher.find()) {
-
             var group = matcher.group();
 
             var isMatchAppearingInSpecList = formattedReferences
                     .stream()
-                    .anyMatch(x -> x.contains(group.substring(group.lastIndexOf("/"), group.length() - 1)));
+                    .anyMatch(filepath -> filepath.contains(group.substring(group.lastIndexOf("/"), group.length() - 1)));
 
             if (isMatchAppearingInSpecList) {
                 tempFile = tempFile.replaceAll(group, "#");

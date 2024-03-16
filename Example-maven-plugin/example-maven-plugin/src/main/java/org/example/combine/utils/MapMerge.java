@@ -7,11 +7,11 @@ import java.util.Map;
 public class MapMerge {
 
     /**
-     * This is not efficient merge but should be good enough to merge 2 maps together.
+     * Deep merge two maps. This method performs a recursive merge of the two maps.
      *
-     * @param inputA
-     * @param inputB
-     * @return
+     * @param inputA The first map.
+     * @param inputB The second map.
+     * @return A new map containing the merged result.
      */
     public static HashMap<String, Object> deepMerge(Map<String, Object> inputA, Map<String, Object> inputB) {
         var newMap = new HashMap<>(inputA);
