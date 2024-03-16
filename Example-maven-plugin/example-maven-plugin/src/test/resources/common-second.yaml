@@ -1,6 +1,6 @@
 components:
   schemas:
-    Error:
+    ErrorSecond:
       type: object
       properties:
         id:

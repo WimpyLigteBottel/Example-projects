@@ -32,6 +32,9 @@ public class MapMerge {
                 newMap.put(key, deepMerge(inputATemp, inputBTemp));
             } else if (value1 instanceof List a && value2 instanceof List b) {
                 newMap.put(key, mergeList(a, b));
+            } else if (value1 != null && value2 == null) {
+                // dont make map merge null
+                newMap.put(key, value1);
             } else {
                 newMap.put(key, value2);
             }

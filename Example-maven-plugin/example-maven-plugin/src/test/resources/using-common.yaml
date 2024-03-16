@@ -1,4 +1,6 @@
 components:
   schemas:
-    CustomResponse:
-      $ref: "./common.yaml#/components/schemas/Error"
+    Custom:
+      $ref: './common.yaml#/components/schemas/Error'
+    Custom2:
+      $ref: './common-second.yaml#/components/schemas/ErrorSecond'
