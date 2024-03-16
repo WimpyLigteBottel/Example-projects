@@ -212,6 +212,8 @@ paths:
           description: User not found
 components:
   schemas:
+    Custom:
+      $ref: './shared/common-third.yaml#/components/schemas/ErrorThird'
     User:
       type: object
       properties:

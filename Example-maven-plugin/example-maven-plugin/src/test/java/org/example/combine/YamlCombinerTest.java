@@ -15,6 +15,11 @@ class YamlCombinerTest {
     String commonThird = "src/test/resources/shared/common-third.yaml";
     String usingCommon = "src/test/resources/using-common.yaml";
 
+    String findResource(String basePath, String path){
+        return basePath + path;
+    }
+
+
     @Test
     @DisplayName("multiple specs references is removed in $ref")
     void expect_multipleRefsToBeUpdated() {
@@ -61,9 +66,6 @@ class YamlCombinerTest {
     }
 
 
-    /**
-     * Currently there is bug regarding this. the ref cleanup is not working correctly on sub folders
-     */
     @Test
     @DisplayName("./shared/common-third.yaml is removed in $ref")
     void expect_fullExternalFileRefToBeUpdated() {
@@ -100,5 +102,27 @@ class YamlCombinerTest {
 
 
         assertEquals(expected, actual);
+    }
+
+    @Test
+    @DisplayName("./shared/common-third.yaml is removed in $ref")
+    void multipleFiles_oneCombining() {
+        var yamlCombiner = new YamlCombiner();
+
+
+        var resources = List.of(
+                findResource("src/test/resources/","/shared/common-third.yaml"),
+                findResource("src/test/resources/","pets.yaml"),
+                findResource("src/test/resources/","store.yaml"),
+                findResource("src/test/resources/","users.yaml")
+        );
+
+        var actual = yamlCombiner.getCombinedYamlOuputAsString(resources);
+
+        //text updated
+        assertTrue(actual.contains("$ref: \"#/components/schemas/ErrorThird\""));
+
+        //these should not exist anymore
+        assertFalse(actual.contains("$ref: \"./shared/common-third.yaml#/components/schemas/ErrorThird\""));
     }
 }
