@@ -31,11 +31,21 @@
                 hx-swap="innerHTML"
         >Click me!
         </button>
+        <button
+                hx-post="/color"
+                hx-target="#result-color"
+                hx-swap="innerHTML"
+        >Change color!
+        </button>
     </form>
 
-    <p id="result">
+    <div id="result">
+        <p th:text="${message}"></p>
+    </div>
+
+    <div id="result-color">
         <p th:text="${message}"/>
-    </p>
+    </div>
 </div>
 </body>
 </html>
