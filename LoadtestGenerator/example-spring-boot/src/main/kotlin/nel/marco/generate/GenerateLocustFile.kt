@@ -22,17 +22,6 @@ class GenerateLocustFile(
             import random
             import pandas as pd
             from locust import HttpUser, task, between, constant_throughput
-            
-            #Reads the files and store it as dataframe
-            def readFile(fileName):
-                try:
-                    # Read the CSV file into a DataFrame
-                    df = pd.read_csv(fileName, sep=';')
-                    return df
-                except FileNotFoundError:
-                    print("File not found. Please make sure the file exists.")
-                    return None
-
 
             class WebsiteUser(HttpUser):
                 wait_time = constant_throughput(1)  # wait time between requests, in seconds
@@ -65,18 +54,17 @@ class GenerateLocustFile(
                     RequestMethod.POST -> "post"
                     RequestMethod.PUT -> "put"
                     RequestMethod.DELETE -> "delete"
-                    RequestMethod.PATCH -> TODO()
-                    RequestMethod.HEAD -> TODO()
-                    RequestMethod.OPTIONS -> TODO()
-                    RequestMethod.TRACE -> TODO()
+                    else -> TODO()
                 }
 
                 val dfName = beanMethod
 
-                readInputs.add("""
+                readInputs.add(
+                    """
                      # Setup your csv file
                      $dfName = readFile("$dfName.csv")
-                    """)
+                    """
+                )
 
 
                 methods.add(
@@ -115,6 +103,74 @@ class GenerateLocustFile(
             stringBuilder
                 .append("\n")
                 .append(it)
+        }
+
+        log.info("XXXXXXXXXXXXXXXXXXXXXXXX")
+        log.info(stringBuilder.toString())
+        log.info("XXXXXXXXXXXXXXXXXXXXXXXX")
+
+        return stringBuilder.toString()
+    }
+
+    @GetMapping("/generate2")
+    fun generateLocust(modelBase: List<GenerateModelBase>): String {
+
+        val base = """
+            
+            import random
+            import pandas as pd
+            from locust import HttpUser, task, between, constant_throughput
+
+            class WebsiteUser(HttpUser):
+                wait_time = constant_throughput(1)  # wait time between requests, in seconds
+                
+                #Need this otherwise wrong request content-type octet will be used
+                defaultHeaders = {
+                    'Content-Type': 'application/json'
+                }
+            """.trimIndent()
+
+        val stringBuilder = StringBuilder()
+
+        stringBuilder
+            .append(base)
+
+        modelBase.forEach {
+
+            val method = it.method
+            val pattern = it.url.replaceFirst("/", "")
+            val beanMethod = it.methodName
+
+
+
+            stringBuilder.append(
+                    """
+                     # Setup your csv file
+                     ${method}_$beanMethod = readFile("${method}_$beanMethod.csv")
+                     
+                    """
+            )
+                .append("\n")
+
+
+            stringBuilder.append(
+                    """
+                     @task(1)
+                     def ${method}_${beanMethod}(self):
+                          #Selects random row
+                          row = self.$beanMethod.sample(n=1)
+                          
+                          #below is samples of access column names
+                          id = row['columnA'].iloc[0]
+                          body = row['columnB'].iloc[0]
+                          
+                                
+                          #Replace path variables with {1} / {2} and variable
+                          self.client.$method("$pattern".format(id),data=body,headers=self.defaultHeaders)
+                    """
+            ).append("\n")
+
+
         }
 
         log.info("XXXXXXXXXXXXXXXXXXXXXXXX")

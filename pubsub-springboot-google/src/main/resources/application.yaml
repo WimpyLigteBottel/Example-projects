@@ -11,3 +11,9 @@ spring:
       pubsub:
         emulator-host: localhost:8085
         project-id: "example"
+
+
+custom:
+  pubsub:
+    topic: messageTopic
+    subscription: messageSubscription
