@@ -1,0 +1,13 @@
+server:
+  port: 8080
+logging:
+  level:
+    root: info
+
+
+spring:
+  cloud:
+    gcp:
+      pubsub:
+        emulator-host: localhost:8085
+        project-id: "example"
