@@ -97,7 +97,7 @@ open class UploadOnRunTime : CommandLineRunner {
                 .toEntity(String::class.java)
                 .block()
 
-            log.info("${response.statusCode};${response.body}")
+             log.info("${response?.statusCode};${response?.body}")
         }
 
     }
