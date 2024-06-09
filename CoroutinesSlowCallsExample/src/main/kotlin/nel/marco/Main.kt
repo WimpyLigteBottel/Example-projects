@@ -1,6 +1,7 @@
 package nel.marco
 
 import kotlinx.coroutines.*
+import org.slf4j.LoggerFactory
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -26,15 +27,16 @@ class Run(
     private val largeAmountParallelCall: LargeAmountParallelCall
 ) : CommandLineRunner {
 
+    private val log = LoggerFactory.getLogger(this::class.java)
+
 
     override fun run(vararg args: String?) {
 
         runBlocking {
-            println(largeAmountParallelCall.exampleWrongSetup())
-            println(largeAmountParallelCall.exampleWrongSetup2())
-            println(largeAmountParallelCall.example())
+            log.info(largeAmountParallelCall.exampleWrongSetup())
+            log.info(largeAmountParallelCall.exampleWrongSetup2())
+            log.info(largeAmountParallelCall.example())
         }
-        println("COMMANDLINE RUNNER DONE!")
 
     }
 
