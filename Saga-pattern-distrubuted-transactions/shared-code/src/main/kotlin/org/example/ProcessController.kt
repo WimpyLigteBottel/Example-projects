@@ -24,7 +24,14 @@ open class ProcessController(
         )
         internalMemory.put(action.globalId, temp)
         notifyMainService.notifyMainServer(temp)
-        log.info("successfully create the $processName! [mainOrderId=${action.globalId};state=${temp.state}]")
+
+        val message = "$processName! [mainOrderId=${action.globalId};state=${temp.state}]"
+        when(temp.state){
+            State.PENDING -> log.debug(message)
+            State.SUCCESS -> log.debug(message)
+            State.ROLLBACK -> log.debug(message)
+            State.FAILED -> log.warn(message)
+        }
     }
 
 
@@ -34,7 +41,6 @@ open class ProcessController(
         notifyMainService.notifyMainServer(action.copy(state = State.ROLLBACK))
         log.info("rollback the $processName! [mainOrderId=${action.globalId};internalId=${action.internalId}]")
     }
-
 
     open fun getRandomState(): State {
         Random().nextInt(0, 100)

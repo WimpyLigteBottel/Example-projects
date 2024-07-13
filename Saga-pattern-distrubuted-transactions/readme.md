@@ -4,6 +4,11 @@
 2. start server-payment
 3. start server-order
 
+## how to launch?
+
+1. build the parent and do `mvn clean install`
+2. then in the `docker-compose up -d --build`
+
 ## Happy scenario:
 
 You can start the process by http://localhost:8080/start?repeat=500 or by default it will create
