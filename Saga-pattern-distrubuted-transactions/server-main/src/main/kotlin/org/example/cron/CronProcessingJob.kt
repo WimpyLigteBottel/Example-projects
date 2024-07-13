@@ -30,16 +30,14 @@ class CronProcessingJob(
     private val log = LoggerFactory.getLogger(this::class.java)
 
 
-    @Scheduled(fixedRate = 100, timeUnit = TimeUnit.MILLISECONDS)
+    @Scheduled(fixedRate = 1000, timeUnit = TimeUnit.MILLISECONDS)
     fun processActions() {
-        mainServerController.startProcess(10)
+        mainServerController.startProcess(1)
     }
 
 
     @Scheduled(fixedRate = 5000, timeUnit = TimeUnit.MILLISECONDS)
     fun successfullTransactions() {
-
-
         val actions = actionRepo.findAll()
             .map { it.value }
             .filter { it.isSuccess() }
@@ -50,8 +48,6 @@ class CronProcessingJob(
 
     @Scheduled(fixedRate = 5000, timeUnit = TimeUnit.MILLISECONDS)
     fun cleanupAllFullyRolledBackTransactions() {
-
-
         val actions = actionRepo.findAll()
             .map { it.value }
             .filter { it.isRolledBacked() }

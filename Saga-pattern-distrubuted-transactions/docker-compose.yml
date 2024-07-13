@@ -1,0 +1,34 @@
+services:
+  order-system:
+    container_name: order-server
+    build: /server-order/.
+    ports:
+      - "8091:8080"
+    environment:
+      SPRING_PROFILE: docker
+    networks:
+      - custom-network
+  payment-system:
+    container_name: paymentServer
+    build: /server-payment/.
+    ports:
+      - "8092:8080"
+    environment:
+      SPRING_PROFILE: docker
+    networks:
+      - custom-network
+  main-application:
+    depends_on:
+      - order-system
+      - payment-system
+    container_name: mainServer
+    build: /server-main/.
+    ports:
+      - "8080:8080"
+    networks:
+      - custom-network
+    environment:
+      SPRING_PROFILE: docker
+networks:
+  custom-network:
+    driver: bridge

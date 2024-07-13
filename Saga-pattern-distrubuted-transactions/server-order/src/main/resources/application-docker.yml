@@ -1,0 +1,6 @@
+server:
+  port: 8080
+  name: "order"
+
+
+main-server-url: "http://host.docker.internal:8080"
