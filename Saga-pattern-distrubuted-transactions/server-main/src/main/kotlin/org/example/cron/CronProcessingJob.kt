@@ -32,6 +32,7 @@ class CronProcessingJob(
 
     @Scheduled(fixedRate = 1000, timeUnit = TimeUnit.MILLISECONDS)
     fun processActions() {
+        log.info("Starting event process")
         mainServerController.startProcess(1)
     }
 
