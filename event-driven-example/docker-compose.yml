@@ -1,7 +1,0 @@
-version: '3'
-services:
-  order:
-    container_name: orderApp
-    build: ./order
-    ports:
-      - "8080:8090"
