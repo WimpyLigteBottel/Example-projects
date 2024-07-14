@@ -2,7 +2,9 @@ package com.example.caching
 
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.RemovalCause
+import kotlinx.coroutines.*
 import org.slf4j.LoggerFactory
+import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.cache.CacheManager
@@ -35,7 +37,7 @@ class CacheConfig {
     val log = LoggerFactory.getLogger(CacheConfig::class.java)
     @Bean
     fun cacheManager(): CacheManager {
-        val cacheManager = CaffeineCacheManager("delay")
+        val cacheManager = CaffeineCacheManager("delay", "delayV2")
         cacheManager.setCaffeine(caffeineBuilder())
 
         return cacheManager
@@ -60,7 +62,7 @@ class CacheConfig {
 class RestController(
     val delayService: DelayService,
     var cacheManager: CacheManager
-) {
+) : CommandLineRunner {
 
     @GetMapping
     fun initalLoad(): String {
@@ -77,6 +79,32 @@ class RestController(
 
         return "${manager.nativeCache.stats()}"
     }
+
+    override fun run(vararg args: String?) {
+        val measure1 = measureTimeMillis {
+            repeat(10) {
+                delayService.delayInMiliseconds(1000)
+            }
+        }
+
+        println("Done! $measure1 ms")
+
+
+        val measure2 = measureTimeMillis {
+            runBlocking(Dispatchers.IO) {
+                withContext(Dispatchers.IO) {
+                    repeat(5) {
+                        println(delayService.delayInMilisecondsCoroutine(1000).toString() + " result returned v2")
+                    }
+                    delay(5000)
+                    println("I have waited for cache to clear")
+                    println(delayService.delayInMilisecondsCoroutine(1000).toString() + " result returned v2")
+
+                }
+            }
+        }
+        println("V2 => Done! $measure2 ms")
+    }
 }
 
 @Service
@@ -87,6 +115,13 @@ class DelayService {
     fun delayInMiliseconds(amount: Long) {
         log.info("CACHE MISS $amount delay")
         TimeUnit.MILLISECONDS.sleep(amount)
+    }
+
+    @Cacheable("delayV2")
+    suspend fun delayInMilisecondsCoroutine(amount: Long): Long {
+        log.info("V2 => CACHE MISS $amount delay")
+        delay(1000)
+        return amount
     }
 }
 
