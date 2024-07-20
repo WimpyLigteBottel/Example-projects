@@ -11,7 +11,7 @@ import org.springframework.context.event.ContextClosedEvent;
 /**
  * Extend this class and @Component this service
  */
-abstract class StartupSetup implements CommandLineRunner, ApplicationListener<ContextClosedEvent> {
+public abstract class StartupSetup implements CommandLineRunner, ApplicationListener<ContextClosedEvent> {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 

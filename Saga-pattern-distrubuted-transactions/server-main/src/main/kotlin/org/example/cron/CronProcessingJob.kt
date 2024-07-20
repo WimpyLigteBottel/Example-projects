@@ -30,10 +30,10 @@ class CronProcessingJob(
     private val log = LoggerFactory.getLogger(this::class.java)
 
 
-    @Scheduled(fixedRate = 1000, timeUnit = TimeUnit.MILLISECONDS)
+    @Scheduled(fixedRate = 5000, timeUnit = TimeUnit.MILLISECONDS)
     fun processActions() {
         log.info("Starting event process")
-        mainServerController.startProcess(1)
+        mainServerController.startProcess(100)
     }
 
 

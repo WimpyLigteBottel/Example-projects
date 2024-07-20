@@ -2,6 +2,7 @@ package nel.marco;
 
 import jakarta.servlet.http.HttpServletResponse;
 import nel.marco.util.ServiceDiscoveryStartupUtil;
+import nel.marco.util.StartupSetup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -40,30 +42,14 @@ public class Launcher {
     }
 }
 
-@Component // This is used for another project service discovery
-class StartupSetup implements CommandLineRunner, ApplicationListener<ContextClosedEvent>{
+@Component
+class ServiceDiscoverSetup extends StartupSetup {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    @Autowired
-    private WebServerApplicationContext applicationContext;
-
-    @Value("${application.name}")
-    String applicationName;
-
-    @Value("${discovery.service.port}")
-    String discoveryServicePort;
-
-    @Override
-    public void run(String... args) throws Exception {
-        String port = String.valueOf(applicationContext.getWebServer().getPort());
-        ServiceDiscoveryStartupUtil.registerService(port, discoveryServicePort, applicationName);
-    }
-
-    @Override
-    public void onApplicationEvent(ContextClosedEvent event) {
-        String port = String.valueOf(applicationContext.getWebServer().getPort());
-        ServiceDiscoveryStartupUtil.deregisterService(port, discoveryServicePort, applicationName);
+    public ServiceDiscoverSetup(
+            @Value("${discovery.service.port}") String discoveryServicePort,
+            @Value("${application.name}") String applicationName,
+            WebServerApplicationContext applicationContext) {
+        super(discoveryServicePort, applicationName, applicationContext);
     }
 }
 
@@ -81,7 +67,7 @@ class RestEndpoint {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExecutorService executor = Executors.newFixedThreadPool(1);
 
-    private final Map<String, Map.Entry<String, LocalDateTime>> map = new HashMap<>(10000);
+    private final Map<String, Map.Entry<String, LocalDateTime>> map = new ConcurrentHashMap<>(10000);
 
     @Scheduled(fixedRate = 5, timeUnit = TimeUnit.SECONDS)
     public void cleanup() {
