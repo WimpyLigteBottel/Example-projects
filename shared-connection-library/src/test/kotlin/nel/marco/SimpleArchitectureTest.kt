@@ -39,21 +39,20 @@ class SimpleArchitectureTest {
         val applicationClasses = classes.withPackage(yourBaseApplicationPackage)
         val hiddenClasses = classes.withPackage(hiddenPackage).map { it.fullyQualifiedName }
 
-        applicationClasses.forEach { classDeclaration ->
+        val rulesBroken = applicationClasses.map { classDeclaration ->
             val hiddenImportsUsed = classDeclaration.containingFile.imports
                 .map { it.name }
                 .filter { import -> import in hiddenClasses }
-                .toMutableList()
 
             val classReferences = hiddenClasses.mapNotNull {
                 if (classDeclaration.text.contains(it)) it else null
             }
 
-            val combinedClassNames = classReferences + hiddenImportsUsed
+            classDeclaration to (classReferences + hiddenImportsUsed)
+        }.filter { it.second.isNotEmpty() }
 
-            if (combinedClassNames.isNotEmpty()) {
-                fail<String>("${classDeclaration.name} contains invalid references [hiddenClasses=$combinedClassNames]")
-            }
+        if (rulesBroken.isNotEmpty()) {
+            fail<String>("rules have been broken \n" + rulesBroken.joinToString("\n"))
         }
     }
 
