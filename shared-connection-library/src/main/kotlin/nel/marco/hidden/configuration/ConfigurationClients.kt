@@ -9,55 +9,51 @@ import org.springframework.core.env.Environment
 import org.springframework.web.reactive.function.client.WebClient
 
 @Configuration
-class ConfigurationClient(
-    environment: Environment
-) {
-    private val config: ConfigProperties = when {
-        environment.matchesProfiles("pro") -> ConfigurationClientsProperties.pro
-        environment.matchesProfiles("stg") -> ConfigurationClientsProperties.stg
-        else -> ConfigurationClientsProperties.stg
+open class ConfigurationClients {
+
+    @Bean
+    open fun configProperties(environment: Environment): ConfigProperties {
+        val configProperties = when {
+            environment.matchesProfiles("pro") -> ConfigurationClientsProperties.pro
+            environment.matchesProfiles("stg") -> ConfigurationClientsProperties.stg
+            else -> ConfigurationClientsProperties.test
+        }
+        return configProperties
     }
 
     @Bean
-    fun orderBasicHttpClient(webClient: WebClient.Builder) =
+    open fun orderBasicHttpClient(webClient: WebClient.Builder, config: ConfigProperties) =
         OrderBasicHttpClient(webClient.baseUrl(config.orderUrl).build())
 
     @Bean
-    fun orderDeliveryHttpClient(webClient: WebClient.Builder) =
+    open fun orderDeliveryHttpClient(webClient: WebClient.Builder, config: ConfigProperties) =
         OrderDeliveryHttpClient(webClient.baseUrl(config.deliveryUrl).build())
 
     @Bean
-    fun customerHttpClient(webClient: WebClient.Builder) =
+    open fun customerHttpClient(webClient: WebClient.Builder, config: ConfigProperties) =
         CustomerHttpClient(webClient.baseUrl(config.customerUrl).build())
 }
 
 object ConfigurationClientsProperties {
-    val stg = ConfigProperties.ConfigurationStg(
-        "http://stg.url:8080",
-        "http://stg.url:8081",
-        "http://stg.url:8082",
+    val stg = ConfigProperties(
+        orderUrl = "http://stg.url:8080",
+        deliveryUrl = "http://stg.url:8081",
+        customerUrl = "http://stg.url:8082",
     )
-    val pro = ConfigProperties.ConfigurationPro(
-        "http://pro.url:8080",
-        "http://pro.url:8081",
-        "http://pro.url:8082",
+    val pro = ConfigProperties(
+        orderUrl = "http://pro.url:8080",
+        deliveryUrl = "http://pro.url:8081",
+        customerUrl = "http://pro.url:8082",
+    )
+    val test = ConfigProperties(
+        orderUrl = "http://test.url:8080",
+        deliveryUrl = "http://test.url:8081",
+        customerUrl = "http://test.url:8082",
     )
 }
 
-sealed class ConfigProperties {
-    abstract val orderUrl: String
-    abstract val deliveryUrl: String
-    abstract val customerUrl: String
-
-    class ConfigurationStg(
-        override val orderUrl: String,
-        override val deliveryUrl: String,
-        override val customerUrl: String
-    ) : ConfigProperties()
-
-    class ConfigurationPro(
-        override val orderUrl: String,
-        override val deliveryUrl: String,
-        override val customerUrl: String
-    ) : ConfigProperties()
-}
+class ConfigProperties(
+    val orderUrl: String,
+    val deliveryUrl: String,
+    val customerUrl: String
+)
