@@ -5,13 +5,7 @@ import nel.marco.example.a.dto.DeliveryInfo
 import nel.marco.example.a.dto.Order
 import nel.marco.exposed.customer.CustomerService
 import nel.marco.exposed.order.OrderService
-import nel.marco.hidden.annotation.UsageMarker
 
-@UsageMarker(
-    emptyArray(),
-    emptyArray(),
-    emptyArray()
-)
 class ApplicationAContract(
     private val orderService: OrderService,
     private val customerService: CustomerService
