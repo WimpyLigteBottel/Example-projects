@@ -4,74 +4,77 @@ import com.lemonappdev.konsist.api.Konsist
 import com.lemonappdev.konsist.api.architecture.KoArchitectureCreator.assertArchitecture
 import com.lemonappdev.konsist.api.architecture.Layer
 import com.lemonappdev.konsist.api.ext.list.withPackage
+import nel.marco.hidden.dto.ApplicationEnum
+import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
 import org.junit.jupiter.api.Test
 
 class ArchitectureTest {
 
     //internal
-    val service = Layer("service", "nel.marco.internal.service..")
-    val dto = Layer("dto", "nel.marco.internal.dto..")
-    val annotation = Layer("annotation", "nel.marco.internal.annotation..")
-
+    val exposed = Layer("service", "nel.marco.exposed..")
 
     // hidden
-    val clients = Layer("integration", "nel.marco.hidden.clients..")
-    val configuration = Layer("configuration", "nel.marco.hidden.configuration..")
+    val hidden = Layer("integration", "nel.marco.hidden..")
 
-    // can only depend on internal
-    val example = Layer("example", "nel.marco.example..")
-
+    val scopeFromProject = Konsist.scopeFromProject("shared-connection-library")
 
     @Test
-    fun `example code can depend on domain`() {
-        val classes = Konsist
-            .scopeFromProject("shared-connection-library")
-            .classes()
+    fun `example is not allowed to depend on hidden package`() {
+        val classes = scopeFromProject.classes()
 
-        val exampleClasses = classes
-            .withPackage("nel.marco.example..")
+        val exampleClasses = classes.withPackage("nel.marco.example..")
 
-        val hiddenClasses = classes
-            .withPackage("nel.marco.hidden..")
-            .map { it.fullyQualifiedName }
+        val hiddenClasses = classes.withPackage("nel.marco.hidden..").map { it.fullyQualifiedName }
 
         exampleClasses.forEach { classDeclaration ->
-            val containHiddenClasses = classDeclaration.containingFile.imports
-                .map { it.name }
-                .filter { import -> import in hiddenClasses }
-                .toMutableList()
+            val hiddenImportsUsed =
+                classDeclaration.containingFile.imports.map { it.name }.filter { import -> import in hiddenClasses }
+                    .toMutableList()
 
-            hiddenClasses.forEach {
-                if(classDeclaration.text.contains(it)){
-                    containHiddenClasses.add(it)
-                }
+            val classReferences = hiddenClasses.mapNotNull {
+                if (classDeclaration.text.contains(it)) it else null
             }
 
-            if (containHiddenClasses.isNotEmpty()) {
-                fail<String>("${classDeclaration.name} contains invalid references [hiddenClasses=$containHiddenClasses]")
+            val combinedClassNames = classReferences + hiddenImportsUsed
+
+            if (combinedClassNames.isNotEmpty()) {
+                fail<String>("${classDeclaration.name} contains invalid references [hiddenClasses=$combinedClassNames]")
             }
         }
-
     }
 
     @Test
-    fun `domain is allowed to depend on clients`() {
-        Konsist
-            .scopeFromProduction()
-            .assertArchitecture {
-                service.dependsOn(clients, dto, annotation)
-            }
+    fun `examples cant depend on hidden`() {
+        val applicationA = Layer("example.a", "nel.marco.example.a..")
+        val applicationB = Layer("example.b", "nel.marco.example.b..")
+        val applicationC = Layer("example.c", "nel.marco.example.c..")
+        val applicationD = Layer("example.d", "nel.marco.example.d..")
+
+        scopeFromProject.assertArchitecture {
+            applicationA.dependsOn(exposed)
+            applicationB.dependsOn(exposed)
+            applicationC.dependsOn(exposed)
+            applicationD.dependsOn(exposed)
+        }
+
+        assertThat(ApplicationEnum.entries.size)
+            .withFailMessage("apply a rule for the new application")
+            .isEqualTo(4)
     }
 
     @Test
-    fun `clients should not depend on anything`() {
-        Konsist
-            .scopeFromProduction()
-            .assertArchitecture {
-                configuration.dependsOn(clients)
-                clients.dependsOnNothing()
-            }
+    fun `exposed is allowed to depend on hidden`() {
+        scopeFromProject.assertArchitecture {
+            exposed.dependsOn(hidden)
+        }
+    }
+
+    @Test
+    fun `hidden should not depend on anything`() {
+        scopeFromProject.assertArchitecture {
+            hidden.dependsOnNothing()
+        }
     }
 
 

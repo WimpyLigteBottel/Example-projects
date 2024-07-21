@@ -1,12 +1,16 @@
 package nel.marco.example.a.dto
 
 
-data class OrderApplicationA(
+data class Order(
     val orderId: String,
-    val deliveryInfo: DeliveryInfoApplicationA
+    val deliveryInfo: DeliveryInfo
 )
 
-data class DeliveryInfoApplicationA(
+data class DeliveryInfo(
     val orderId: String,
-    val deliveryId: String
+    val deliveryId: String?
+)
+
+data class Customer(
+    val customerId: String,
 )

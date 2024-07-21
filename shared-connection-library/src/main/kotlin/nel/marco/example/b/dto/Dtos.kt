@@ -6,5 +6,8 @@ data class Order(
 )
 data class DeliveryInfo(
     val orderId: String,
-    val deliveryId: String
+    val deliveryId: String? = null
+)
+data class Customer(
+    val customerId: String,
 )

@@ -1,22 +1,34 @@
 package nel.marco.example.a
 
-import nel.marco.example.a.dto.DeliveryInfoApplicationA
-import nel.marco.example.a.dto.OrderApplicationA
-import nel.marco.internal.service.OrderService
+import nel.marco.example.a.dto.Customer
+import nel.marco.example.a.dto.DeliveryInfo
+import nel.marco.example.a.dto.Order
+import nel.marco.exposed.customer.CustomerService
+import nel.marco.exposed.order.OrderService
 
 class ApplicationAContract(
     private val orderService: OrderService,
+    private val customerService: CustomerService
 ) {
-    fun findDetailedOrder(orderId: String): OrderApplicationA {
+    suspend fun findDetailedOrder(orderId: String): Order {
 
         val findDetailedOrder = orderService.findDetailedOrder(orderId)
 
-        return OrderApplicationA(
+        return Order(
             orderId = findDetailedOrder.orderId,
-            deliveryInfo = DeliveryInfoApplicationA(
+            deliveryInfo = DeliveryInfo(
                 orderId = findDetailedOrder.orderId,
-                deliveryId = findDetailedOrder.deliveryInfo.deliveryId
+                deliveryId = findDetailedOrder.deliveryInfo?.deliveryId
             )
+        )
+    }
+
+    suspend fun findCustomer(customerId: String): Customer {
+
+        val customer = customerService.findCustomer(customerId)
+
+        return Customer(
+            customerId = customer.id
         )
     }
 }

@@ -1,21 +1,16 @@
 package nel.marco.example.b
 
+import nel.marco.example.b.dto.Customer
 import nel.marco.example.b.dto.DeliveryInfo
 import nel.marco.example.b.dto.Order
-import nel.marco.hidden.clients.BasicOrder
-import nel.marco.hidden.clients.OrderBasicHttpClient
-import nel.marco.internal.service.OrderService
-import org.springframework.web.reactive.function.client.WebClient
-//import nel.marco.hidden.clients.DeliveryInfo as HiddenDeliveryInfo
+import nel.marco.exposed.customer.CustomerService
+import nel.marco.exposed.order.OrderService
 
 class ApplicationBContract(
     private val orderService: OrderService,
+    private val customerService: CustomerService
 ) {
-    fun findDetailedOrder(orderId: String): Order {
-
-        val httpClientOrder = BasicOrder(orderId)
-        val deliverInfo = nel.marco.hidden.clients.DeliveryInfo("")
-        val customHttpClient = OrderBasicHttpClient(WebClient.create())
+    suspend fun findDetailedOrder(orderId: String): Order {
 
         val findDetailedOrder = orderService.findDetailedOrder(orderId)
 
@@ -23,17 +18,27 @@ class ApplicationBContract(
             orderId = findDetailedOrder.orderId,
             deliveryInfo = DeliveryInfo(
                 orderId = findDetailedOrder.orderId,
-                deliveryId = findDetailedOrder.deliveryInfo.deliveryId
+                deliveryId = findDetailedOrder.deliveryInfo?.deliveryId
             )
         )
     }
 
-    fun findDeliveryInfo(orderId: String): DeliveryInfo {
+    suspend fun findDeliveryInfo(orderId: String): DeliveryInfo {
         val deliveryInfo = orderService.findDeliveryInfo(orderId)
 
         return DeliveryInfo(
-            orderId = deliveryInfo.orderId,
+            orderId = orderId,
             deliveryId = deliveryInfo.deliveryId
+        )
+    }
+
+
+    suspend fun findCustomer(customerId: String): Customer {
+
+        val customer = customerService.findCustomer(customerId)
+
+        return Customer(
+            customerId = customer.id
         )
     }
 }

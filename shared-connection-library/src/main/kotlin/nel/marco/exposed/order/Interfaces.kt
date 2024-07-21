@@ -1,11 +1,11 @@
-package nel.marco.internal.service
+package nel.marco.exposed.order
 
-import nel.marco.internal.annotation.UsageMarker
-import nel.marco.internal.dto.ApplicationEnum
-import nel.marco.internal.dto.DeliveryInfo
-import nel.marco.internal.dto.Order
+import nel.marco.hidden.annotation.UsageMarker
+import nel.marco.hidden.dto.ApplicationEnum
+import nel.marco.exposed.order.dto.Order
 import nel.marco.hidden.clients.OrderBasicHttpClient
 import nel.marco.hidden.clients.OrderDeliveryHttpClient
+import nel.marco.exposed.order.dto.DeliveryInfo
 
 interface OrderService {
 
@@ -17,13 +17,14 @@ interface OrderService {
             "find out what happened to delivery"
         ]
     )
-    fun findDetailedOrder(orderId: String): Order
+    suspend fun findDetailedOrder(orderId: String): Order
 
     @UsageMarker(
         applications = [ApplicationEnum.ApplicationB],
         consumingServices = [OrderDeliveryHttpClient::class],
         businessProblemBeingSolved = ["find out what happened to delivery"]
     )
-    fun findDeliveryInfo(orderId: String): DeliveryInfo
+    suspend fun findDeliveryInfo(orderId: String): DeliveryInfo
+
 }
 

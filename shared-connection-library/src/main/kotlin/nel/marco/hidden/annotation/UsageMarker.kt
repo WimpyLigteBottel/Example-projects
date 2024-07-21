@@ -1,6 +1,6 @@
-package nel.marco.internal.annotation
+package nel.marco.hidden.annotation
 
-import nel.marco.internal.dto.ApplicationEnum
+import nel.marco.hidden.dto.ApplicationEnum
 import kotlin.annotation.AnnotationTarget.*
 import kotlin.reflect.KClass
 
