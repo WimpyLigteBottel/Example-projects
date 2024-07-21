@@ -4,18 +4,14 @@ import com.lemonappdev.konsist.api.Konsist
 import com.lemonappdev.konsist.api.architecture.KoArchitectureCreator.assertArchitecture
 import com.lemonappdev.konsist.api.architecture.Layer
 import com.lemonappdev.konsist.api.ext.list.withPackage
-import nel.marco.hidden.dto.ApplicationEnum
-import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
 import org.junit.jupiter.api.Test
 
 class ArchitectureTest {
 
-    //internal
     val exposed = Layer("service", "nel.marco.exposed..")
-
-    // hidden
     val hidden = Layer("integration", "nel.marco.hidden..")
+    val example = Layer("example", "nel.marco.example..")
 
     val scopeFromProject = Konsist.scopeFromProject("shared-connection-library")
 
@@ -46,21 +42,9 @@ class ArchitectureTest {
 
     @Test
     fun `examples cant depend on hidden`() {
-        val applicationA = Layer("example.a", "nel.marco.example.a..")
-        val applicationB = Layer("example.b", "nel.marco.example.b..")
-        val applicationC = Layer("example.c", "nel.marco.example.c..")
-        val applicationD = Layer("example.d", "nel.marco.example.d..")
-
         scopeFromProject.assertArchitecture {
-            applicationA.dependsOn(exposed)
-            applicationB.dependsOn(exposed)
-            applicationC.dependsOn(exposed)
-            applicationD.dependsOn(exposed)
+            example.dependsOn(exposed)
         }
-
-        assertThat(ApplicationEnum.entries.size)
-            .withFailMessage("apply a rule for the new application")
-            .isEqualTo(4)
     }
 
     @Test
@@ -76,6 +60,4 @@ class ArchitectureTest {
             hidden.dependsOnNothing()
         }
     }
-
-
 }
