@@ -91,3 +91,19 @@ interface OrderService {
     fun findDeliveryInfo(orderId: String): DeliveryInfo
 }
 ```
+
+
+
+## What are the golden rules to follow in when doing something like this
+
+1. The same team making these changes needs approval from another team to make sure no business logic creeps in
+Ideally there should be 2 approvals from outside team
+
+2. There should be clear split of entities/model/dto between integration and domain.
+
+Example:
+
+clients models should not go past the `internal` package to the outside world
+consumers of the libraries should only interact with `internal` package.
+
+3.

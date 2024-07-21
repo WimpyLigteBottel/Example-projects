@@ -23,7 +23,7 @@ public annotation class UsageMarker(
      * Example:
      * - Get the info to discover if the delivery actually happened
      */
-    val whatDoesItSolve: Array<String>,
+    val businessProblemBeingSolved: Array<String>,
 
     /**
      * This contains the list of httpClient it is consuming which you need

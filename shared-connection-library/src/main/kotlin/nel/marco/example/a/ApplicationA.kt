@@ -1,17 +1,8 @@
-package nel.marco.exampleConsumption
+package nel.marco.example.a
 
-import nel.marco.internal.OrderService
-
-data class OrderApplicationA(
-    val orderId: String,
-    val deliveryInfo: DeliveryInfoApplicationA
-)
-
-data class DeliveryInfoApplicationA(
-    val orderId: String,
-    val deliveryId: String
-)
-
+import nel.marco.example.a.dto.DeliveryInfoApplicationA
+import nel.marco.example.a.dto.OrderApplicationA
+import nel.marco.internal.service.OrderService
 
 class ApplicationAContract(
     private val orderService: OrderService,
