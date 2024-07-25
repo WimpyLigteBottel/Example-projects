@@ -4,6 +4,12 @@ import java.time.OffsetDateTime
 
 data class Customer(
     val id: String,
+    val accountReference: String? = null
+)
+
+
+data class DetailedCustomer(
+    val id: String,
     val firstName: String? = null,
     val lastName: String? = null,
     val email: String? = null,

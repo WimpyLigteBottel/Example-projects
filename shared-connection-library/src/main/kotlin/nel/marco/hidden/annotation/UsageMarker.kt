@@ -1,7 +1,8 @@
 package nel.marco.hidden.annotation
 
 import nel.marco.hidden.dto.ApplicationEnum
-import kotlin.annotation.AnnotationTarget.*
+import kotlin.annotation.AnnotationTarget.CLASS
+import kotlin.annotation.AnnotationTarget.FUNCTION
 import kotlin.reflect.KClass
 
 

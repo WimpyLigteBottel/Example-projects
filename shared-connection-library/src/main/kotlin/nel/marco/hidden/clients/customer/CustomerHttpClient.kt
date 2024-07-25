@@ -1,4 +1,4 @@
-package nel.marco.hidden.clients
+package nel.marco.hidden.clients.customer
 
 import org.springframework.web.reactive.function.client.WebClient
 
