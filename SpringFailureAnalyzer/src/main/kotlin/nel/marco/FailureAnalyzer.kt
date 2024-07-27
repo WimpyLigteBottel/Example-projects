@@ -14,13 +14,11 @@ class FailureAnalyzer : AbstractFailureAnalyzer<InvalidHelloMessageException>() 
     override fun analyze(rootFailure: Throwable, cause: InvalidHelloMessageException): FailureAnalysis {
         val description = """You might have invalid properties configured. 
             |Exception message:  `${cause.message}`""".trimMargin()
-        return FailureAnalysis(description, getAction(), cause)
-    }
 
-
-    private fun getAction(): String {
-        return """
+        val action = """
                 1. Your message should contain 'Hello'
                 """.trimIndent()
+
+        return FailureAnalysis(description, action, cause)
     }
 }
