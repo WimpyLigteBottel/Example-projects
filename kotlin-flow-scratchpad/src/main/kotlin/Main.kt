@@ -1,16 +1,39 @@
 package nel.marco
 
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.toList
+import kotlin.system.measureTimeMillis
+
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-fun main() {
-    val name = "Kotlin"
-    //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-    // to see how IntelliJ IDEA suggests fixing it.
-    println("Hello, " + name + "!")
+suspend fun main() {
 
-    for (i in 1..5) {
-        //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-        // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-        println("i = $i")
+    val time = measureTimeMillis {
+
+        val fast = generateNumbers(10)
+        val slow = generateNumbers(10)
+
+        withContext(Dispatchers.IO) {
+            val a = async(Dispatchers.IO) { fast.toList() }
+            val b = async(Dispatchers.IO) { slow.toList() }
+
+            awaitAll(a, b)
+
+            println(a.await())
+            println(b.await())
+
+        }
+    }
+    println("$time ms")
+}
+
+
+suspend fun generateNumbers(amountOfNumber: Int) = withContext(Dispatchers.IO) {
+    flow {
+        repeat(amountOfNumber) {
+            delay(1000)
+            emit(it)
+        }
     }
 }
