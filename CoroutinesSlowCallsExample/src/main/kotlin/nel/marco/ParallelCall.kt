@@ -1,8 +1,6 @@
 package nel.marco
 
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import org.springframework.stereotype.Component
 import kotlin.system.measureTimeMillis
 
@@ -13,7 +11,7 @@ class ParallelCall {
     /**
      * This call is wrong because the X.await() is being wrong.
      */
-    suspend fun exampleWrongSetup() = coroutineScope {
+    suspend fun exampleWrongSetup() = withContext(Dispatchers.IO) {
         println("$className: starting = exampleWrongSetup")
         val total = measureTimeMillis {
             val answer1 = async { longRunning() }.await() // Will cause it to do the async call then wait till done
@@ -24,10 +22,10 @@ class ParallelCall {
         }
 
         //return not necessary
-        return@coroutineScope "$$className: exampleWrongSetup = $total ms"
+        return@withContext "$$className: exampleWrongSetup = $total ms"
     }
 
-    suspend fun example() = coroutineScope {
+    suspend fun example() = withContext(Dispatchers.IO) {
         println("$className: starting = example")
         val total = measureTimeMillis {
             val answer1 = async { longRunning() } //This is better
@@ -38,7 +36,7 @@ class ParallelCall {
         }
 
         //return not necessary
-        return@coroutineScope "$className: example = $total ms"
+        return@withContext "$className: example = $total ms"
     }
 
 

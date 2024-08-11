@@ -1,14 +1,18 @@
 package nel.marco
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.retry.annotation.EnableRetry
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
+import java.util.concurrent.TimeUnit
 
 @SpringBootApplication
 @EnableRetry
@@ -30,14 +34,15 @@ class Run(
     private val log = LoggerFactory.getLogger(this::class.java)
 
 
+    @Scheduled(fixedRate = 1, timeUnit = TimeUnit.SECONDS)
     override fun run(vararg args: String?) {
-
         runBlocking {
-            log.info(largeAmountParallelCall.exampleWrongSetup())
-            log.info(largeAmountParallelCall.exampleWrongSetup2())
-            log.info(largeAmountParallelCall.example())
+            withContext(Dispatchers.IO) {
+                log.info(largeAmountParallelCall.exampleWrongSetup())
+                log.info(largeAmountParallelCall.exampleWrongSetup2())
+                log.info(largeAmountParallelCall.example())
+            }
         }
-
     }
 
 }

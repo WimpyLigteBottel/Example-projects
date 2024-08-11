@@ -15,7 +15,7 @@ class MainServerController(
     @GetMapping("/start")
     fun startProcess(@RequestParam(required = false, defaultValue = "1") repeat: Int) {
         for (x in 0..repeat)
-            processingService.startProcess(RequestingOrder())
+                processingService.startProcess(RequestingOrder())
 
     }
 

@@ -15,16 +15,16 @@ class LargeAmountParallelCall {
 
     val client = WebClient.create("http://localhost:8080")
 
-    suspend fun example() = coroutineScope {
+    suspend fun example() = withContext(Dispatchers.IO) {
         val total = measureTimeMillis {
             val jobs = List(20) {
-                async(Dispatchers.IO) { retrieveUsers() }
+                async { retrieveUsers() }
 
             }
             jobs.awaitAll()
         }
 
-        return@coroutineScope "${className}: example = $total ms"
+        return@withContext "${className}: example = $total ms"
     }
 
     /**
