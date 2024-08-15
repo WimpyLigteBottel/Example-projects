@@ -26,7 +26,7 @@ suspend fun sharedStateFlowExample() {
         processMessagesWhenReceivingEvent(people)
 
         //Generate numbers and emit to each people
-        generateNumbers(10, 100)
+        generateNumbers(10, 1000)
             .collect { number ->
                 people.forEach {
                     launch { it.second.emit(number.toString()) }
@@ -42,7 +42,7 @@ suspend fun sharedStateFlowExample() {
 /**
  * This launches collect action ON EACH flow and will endlessly listen
  */
-private fun CoroutineScope.processMessagesWhenReceivingEvent(persons: MutableList<Pair<String, MutableSharedFlow<String>>>) {
+private fun CoroutineScope.processMessagesWhenReceivingEvent(persons: List<Pair<String, MutableSharedFlow<String>>>) {
     persons.forEach { person ->
         launch {
             person.second
@@ -58,10 +58,7 @@ private fun CoroutineScope.processMessagesWhenReceivingEvent(persons: MutableLis
 }
 
 
-suspend fun createMutableSharedFlows() = mutableListOf<Pair<String, MutableSharedFlow<String>>>(
-    "a" to MutableSharedFlow(),
-    "b" to MutableSharedFlow()
-)
+suspend fun createMutableSharedFlows() = ('a' .. 'z').map { "Person $it" to MutableSharedFlow<String>() }
 
 
 /**
