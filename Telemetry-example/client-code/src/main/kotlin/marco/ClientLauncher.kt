@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.reactive.function.client.WebClient
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
 
 
 @SpringBootApplication
@@ -36,6 +38,7 @@ class ClientCode(
                     .queryParam("version", "1.0.0")
                     .queryParam("config", "<custom>")
                     .queryParam("application-name", "ABC")
+                    .queryParam("offsetDateTime", OffsetDateTime.now().withOffsetSameInstant(ZoneOffset.UTC))
                     .build()
             }
             .retrieve()
