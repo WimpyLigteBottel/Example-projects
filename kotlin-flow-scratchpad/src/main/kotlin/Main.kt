@@ -2,9 +2,9 @@ package nel.marco
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
 
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
@@ -18,31 +18,50 @@ fun main() {
  * Showcases how single event can be consumed by multiple other flows and perform an action
  */
 suspend fun sharedStateFlowExample() {
-    val personA = MutableSharedFlow<String>()
-    val personB = MutableSharedFlow<String>()
+    val people = createMutableSharedFlows()
 
     withContext(Dispatchers.IO) {
-        launch {
-            personA.collect {
-                println(it)
-            }
-        }
-        launch {
-            personB.collect {
-                println(it)
-            }
-        }
 
+        //Listen to messages
+        processMessagesWhenReceivingEvent(people)
+
+        //Generate numbers and emit to each people
         generateNumbers(10, 100)
-            .collect {
-                personA.emit("Person A = $it")
-                personB.emit("Person B = $it")
+            .collect { number ->
+                people.forEach {
+                    launch { it.second.emit(number.toString()) }
+                }
             }
 
+        // stops the entire context when it gets here otherwise it pauses forever
         cancel("Stop processing because flows go on forever!")
     }
 
 }
+
+/**
+ * This launches collect action ON EACH flow and will endlessly listen
+ */
+private fun CoroutineScope.processMessagesWhenReceivingEvent(persons: MutableList<Pair<String, MutableSharedFlow<String>>>) {
+    persons.forEach { person ->
+        launch {
+            person.second
+                .onCompletion {
+                    println("${person.first}: I am done! (Think of this like finally block)")
+                }
+                .collect {
+                    val name = person.first
+                    println("$name processed $it")
+                }
+        }
+    }
+}
+
+
+suspend fun createMutableSharedFlows() = mutableListOf<Pair<String, MutableSharedFlow<String>>>(
+    "a" to MutableSharedFlow(),
+    "b" to MutableSharedFlow()
+)
 
 
 /**
@@ -55,4 +74,9 @@ suspend fun generateNumbers(amountOfNumber: Int, delayAmount: Long = 1000) = wit
             emit(it)
         }
     }
+        .onStart { println("Starting to generate numbers") }
+        .onCompletion {
+            println("Done generating numbers")
+            cancel("Done generating numbers")
+        }
 }
