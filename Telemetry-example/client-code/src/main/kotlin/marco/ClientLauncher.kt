@@ -35,6 +35,7 @@ class ClientCode(
             .get()
             .uri { builder ->
                 builder
+                    .path("/${OffsetDateTime.now()}")
                     .queryParam("version", "1.0.0")
                     .queryParam("config", "<custom>")
                     .queryParam("application-name", "ABC")
