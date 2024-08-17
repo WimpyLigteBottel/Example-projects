@@ -3,25 +3,32 @@ package nel.marco;
 
 import kotlinx.coroutines.BuildersKt;
 import kotlinx.coroutines.Dispatchers;
-import nel.marco.exposed.customer.CustomerServiceImpl;
-import nel.marco.hidden.clients.customer.CustomerHttpClient;
-import nel.marco.hidden.clients.customer.DetailedCustomerHttpClient;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.example.KotlinClass;
 
 public class JavaClass {
     public static void main(String[] args) {
         System.out.println("Hello from java!");
+        new JavaClass();
+    }
 
-        var customerService = new CustomerServiceImpl(
-                new CustomerHttpClient(WebClient.builder().build()),
-                new DetailedCustomerHttpClient(WebClient.builder().build())
-        );
+    public JavaClass(){
+        request();
+        suspendFunction();
+    }
 
 
+    void request() {
+        var clazz = new KotlinClass();
+        //normal kotlin function
+        System.out.println(clazz.sendRequest());
+    }
+
+    void suspendFunction() {
+        var clazz = new KotlinClass();
         try {
             var x = BuildersKt.runBlocking(
                     Dispatchers.getDefault(),//context to be ran on
-                    (coroutineScope, continuation) -> customerService.findCustomer("id", continuation)
+                    (coroutineScope, continuation) -> clazz.suspendCode(continuation)
             );
 
             System.out.println(x);

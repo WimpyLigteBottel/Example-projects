@@ -1,9 +1,9 @@
 package org.example
 
 
-class KotlinClass {
+open class KotlinClass {
 
-    fun sendRequest(): String {
-        return "Kotlin code"
-    }
+    fun sendRequest(): String = "Kotlin code"
+
+    suspend fun suspendCode() = "suspend kotlin code"
 }
