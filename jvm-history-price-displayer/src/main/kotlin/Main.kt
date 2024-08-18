@@ -6,7 +6,7 @@ import org.knowm.xchart.XYChartBuilder
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.*
-import kotlin.random.Random
+import java.util.concurrent.ThreadLocalRandom
 
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
@@ -23,9 +23,9 @@ fun main() {
     chart.styler.isXAxisTicksVisible = true // Ensure x-axis tick marks are visible
     chart.styler.xAxisLabelRotation = 65 // Rotate labels for better visibility (optional)
 
-    val apples = generateData("Apple", 14)
-    val banana = generateData("Banana", 7)
-    val candy = generateData("Candy", 21)
+    val apples = generateData("Apple", 7)
+    val banana = generateData("Banana", 3)
+    val candy = generateData("Candy", 5)
 
     chart.addSeries(apples.first().name, apples.map { it.localDate }, apples.map { it.price })
     chart.addSeries(banana.first().name, banana.map { it.localDate }, banana.map { it.price })
@@ -48,7 +48,7 @@ fun generateData(name: String, pastDays: Long = 14): List<History> {
             History(
                 id = UUID.randomUUID().toString(),
                 name = name,
-                price = Random.nextDouble(20.0, 80.0),
+                price = ThreadLocalRandom.current().nextDouble(20.0, 80.0),
                 localDate = LocalDate.now().minusDays(it).toDate()
             )
         }.sortedBy { it.localDate }
