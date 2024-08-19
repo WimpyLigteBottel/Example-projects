@@ -52,6 +52,8 @@ class QueueService {
         return queueNumber
     }
 
+    fun clearQueue() = map.clear()
+
 
     private fun generateUUID() = UUID(Date().time, UUID.randomUUID().leastSignificantBits)
 
