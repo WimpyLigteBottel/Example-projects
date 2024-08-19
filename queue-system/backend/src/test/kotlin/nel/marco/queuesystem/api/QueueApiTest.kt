@@ -65,5 +65,7 @@ class QueueApiTest {
         assertThat(queueApi.getQueue()).containsOnlyOnce(queueNumber1, queueNumber2, queueNumber3)
         queueApi.process()
         assertThat(queueApi.getQueue()).containsOnlyOnce(queueNumber2, queueNumber3)
+        queueApi.process()
+        assertThat(queueApi.getQueue()).containsOnlyOnce(queueNumber3)
     }
 }
