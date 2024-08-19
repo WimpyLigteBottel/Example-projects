@@ -3,7 +3,7 @@ package nel.marco.queuesystem.service
 import nel.marco.queuesystem.api.QueueNumber
 import org.springframework.stereotype.Service
 import java.util.*
-import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.locks.StampedLock
 
@@ -22,7 +22,7 @@ class QueueService {
 
     //Atomic to make it thread-safe
     private val lastKnownNumber: AtomicLong = AtomicLong(0)
-    private val map = ConcurrentHashMap<String, DomainQueueNumber>()
+    private val queue = LinkedBlockingQueue<DomainQueueNumber>()
     private val stampedLock = StampedLock()
 
 
@@ -32,28 +32,25 @@ class QueueService {
             val uuid = generateUUID()
             val queueNumber = lastKnownNumber.getAndIncrement()
             val domainQueueNumber = DomainQueueNumber(uuid.toString(), queueNumber)
-            map[uuid.toString()] = domainQueueNumber
+            queue.add(domainQueueNumber)
             return domainQueueNumber
         } finally {
             stampedLock.unlock(stamp)
         }
     }
 
-    fun getQueue(): List<DomainQueueNumber> = map.values.toList().sortedBy { x -> x.number }
+    fun getQueue(): List<DomainQueueNumber> = queue.toList()
 
-    fun getQueueNumber(id: String): DomainQueueNumber? = map[id]
+    fun getQueueNumber(id: String): DomainQueueNumber? = queue.firstOrNull { it.id == id }
 
     fun processOldestInQueue(): DomainQueueNumber? {
-        val queue = getQueue()
-        val queueNumber = queue.firstOrNull {
-            return map.remove(it.id)
-        }
+        if (queue.size > 0)
+           return queue.remove()
 
-        return queueNumber
+        return null
     }
 
-    fun clearQueue() = map.clear()
-
+    fun clearQueue() = queue.clear()
 
     private fun generateUUID() = UUID(Date().time, UUID.randomUUID().leastSignificantBits)
 
