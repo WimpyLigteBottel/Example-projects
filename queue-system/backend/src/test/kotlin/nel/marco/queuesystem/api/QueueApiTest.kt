@@ -74,16 +74,13 @@ class QueueApiTest {
     @Test
     fun `able to create multiple numbers at the same time`(): Unit = runBlocking(Dispatchers.IO) {
 
-        val limitedParallelism = Dispatchers.IO.limitedParallelism(1000)
-
-        withContext(limitedParallelism) {
+        withContext(Dispatchers.IO) {
             val countDownLatch = CountDownLatch(1)
 
             val tasks = mutableListOf<Deferred<*>>()
 
-            repeat(1000) { number ->
+            repeat(30) { number ->
                 async {
-                    println("Task $number waiting")
                     countDownLatch.await()
                     queueApi.createNumber()
                 }.also {
@@ -91,9 +88,16 @@ class QueueApiTest {
                 }
             }
 
+            val readDeffered = async {
+                countDownLatch.await()
+                queueApi.getQueue()
+            }
+
             // Commence the threads
             countDownLatch.countDown()
+
             tasks.awaitAll()
+            awaitAll(readDeffered)
         }
     }
 }

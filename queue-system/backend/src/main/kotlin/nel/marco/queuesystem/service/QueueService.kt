@@ -33,16 +33,16 @@ class QueueService {
         return stampedLock.withWriteLock {
             DomainQueueNumber(generateUUID().toString(), lastKnownNumber.getAndIncrement())
                 .also {
-                    log.info("$it created")
+                    log.info("created $it")
                     queue.add(it)
                 }
         }
     }
 
-    fun getQueue(): List<DomainQueueNumber> = queue.toList()
+    fun getQueue(): List<DomainQueueNumber> = stampedLock.withReadLock { queue }.toList()
 
     fun getQueueNumber(id: String): DomainQueueNumber? {
-        return stampedLock.withOptimisticRead {
+        return stampedLock.withReadLock {
             queue.firstOrNull { it.id == id }
         }
     }
@@ -63,18 +63,22 @@ class QueueService {
 
     fun <T> StampedLock.withWriteLock(function: () -> T): T {
         val writeLock = this.writeLock()
+        log.info("creating writeLock [lock=$writeLock]")
         return try {
             function.invoke()
         } finally {
+            log.info("releasing writeLock [lock=$writeLock]")
             this.unlockWrite(writeLock)
         }
     }
 
-    fun <T> StampedLock.withOptimisticRead(function: () -> T): T {
+    fun <T> StampedLock.withReadLock(function: () -> T): T {
         val lock = this.readLock()
+        log.info("creating readlock [lock=$lock]")
         return try {
             function.invoke()
         } finally {
+            log.info("releasing readlock [lock=$lock]")
             this.unlockRead(lock)
         }
     }
