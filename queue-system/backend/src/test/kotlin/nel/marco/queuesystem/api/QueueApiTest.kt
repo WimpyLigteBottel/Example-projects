@@ -25,7 +25,7 @@ class QueueApiTest {
     fun `createNumber is added to queue`() {
         val actual = queueApi.createNumber()
 
-        assertThat(actual).isEqualTo(queueApi.getQueue(actual.id))
+        assertThat(actual).isEqualTo(queueApi.getQueueNumber(actual.id))
     }
 
     @Test
@@ -51,9 +51,9 @@ class QueueApiTest {
     fun `once processed can't get old queueNumber`() {
         val queueNumber = queueApi.createNumber()
 
-        assertThat(queueApi.getQueue(queueNumber.id)).isEqualTo(queueNumber)
+        assertThat(queueApi.getQueueNumber(queueNumber.id)).isEqualTo(queueNumber)
         queueApi.process()
-        assertThat(queueApi.getQueue(queueNumber.id)).isEqualTo(null)
+        assertThat(queueApi.getQueueNumber(queueNumber.id)).isEqualTo(null)
     }
 
     @Test

@@ -24,7 +24,7 @@ class QueueApi(
     fun createNumber() = queueService.createNextNumber().convert()
 
     @GetMapping("/queue/{id}")
-    fun getQueue(@PathVariable id: String) = queueService.getQueueNumber(id)?.convert()
+    fun getQueueNumber(@PathVariable id: String) = queueService.getQueueNumber(id)?.convert()
 
     @PostMapping("/process")
     fun process() = queueService.processOldestInQueue()?.convert()
