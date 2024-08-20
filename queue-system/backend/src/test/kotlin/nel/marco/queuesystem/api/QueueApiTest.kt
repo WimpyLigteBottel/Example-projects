@@ -1,11 +1,13 @@
 package nel.marco.queuesystem.api
 
+import kotlinx.coroutines.*
 import nel.marco.queuesystem.service.QueueService
 import org.assertj.core.api.AssertionsForInterfaceTypes.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import java.util.concurrent.CountDownLatch
 
 @SpringBootTest
 class QueueApiTest {
@@ -67,5 +69,31 @@ class QueueApiTest {
         assertThat(queueApi.getQueue()).containsOnlyOnce(queueNumber2, queueNumber3)
         queueApi.process()
         assertThat(queueApi.getQueue()).containsOnlyOnce(queueNumber3)
+    }
+
+    @Test
+    fun `able to create multiple numbers at the same time`(): Unit = runBlocking(Dispatchers.IO) {
+
+        val limitedParallelism = Dispatchers.IO.limitedParallelism(1000)
+
+        withContext(limitedParallelism) {
+            val countDownLatch = CountDownLatch(1)
+
+            val tasks = mutableListOf<Deferred<*>>()
+
+            repeat(1000) { number ->
+                async {
+                    println("Task $number waiting")
+                    countDownLatch.await()
+                    queueApi.createNumber()
+                }.also {
+                    tasks.add(it)
+                }
+            }
+
+            // Commence the threads
+            countDownLatch.countDown()
+            tasks.awaitAll()
+        }
     }
 }
