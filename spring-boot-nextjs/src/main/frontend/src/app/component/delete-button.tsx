@@ -18,5 +18,4 @@ const DeleteButton = ({ person }) => {
   );
 };
 
-
 export default DeleteButton;

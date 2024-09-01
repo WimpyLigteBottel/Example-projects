@@ -13,12 +13,12 @@ const CreateButton = () => {
       onClick={() => {
         setIsLoading(true);
         createRandomPerson();
-        setTimeout(()=>{
-            setIsLoading(false);
+        setTimeout(() => {
+          setIsLoading(false);
         }, 100);
       }}
     >
-       {!isLoading ? "Create random User!" : <Spinner />}
+      {!isLoading ? "Create random User!" : <Spinner />}
     </button>
   );
 };
