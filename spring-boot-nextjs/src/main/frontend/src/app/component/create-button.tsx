@@ -1,4 +1,5 @@
-import { createRandomPerson } from "./person/POST-person-fetcher";
+"use client";
+import { createRandomPerson } from "@/integration/POST-person-fetcher";
 
 const CreateButton = () => {
   return (

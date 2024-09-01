@@ -1,5 +1,5 @@
 "use client";
-import type { Person } from "./Person";
+import type { Person } from "@/model/Person";
 import useSWR from "swr";
 import { mutate } from "swr";
 

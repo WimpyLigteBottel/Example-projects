@@ -1,7 +1,7 @@
 "use client";
-import { Person } from "./Person";
+import { Person } from "@/model/Person";
 import { v4 as uuidv4 } from "uuid";
-import { invalidatePerson } from "./GET-person-fetcher";
+import { invalidatePerson } from "@/integration/GET-person-fetcher";
 
 export function createRandomPerson() {
   let randomAge = Math.floor(Math.random() * 100);
