@@ -4,10 +4,11 @@ import { Person } from "@person/person";
 import DeleteButton from "@/component/delete-button";
 import Spinner from "@/component/spinner/spinner";
 import { usePerson } from "@/integration/GET-person-fetcher";
+import { v4 as uuidv4 } from "uuid";
 
 function displayPerson(person: Person, index: number) {
   return (
-    <div key={index} className={"person"}>
+    <div key={uuidv4()} className={"person"}>
       <span>name:{person.name}</span>
       <span>age: {person.age}</span>
       <br />
