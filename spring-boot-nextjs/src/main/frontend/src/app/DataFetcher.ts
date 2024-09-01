@@ -1,21 +1,32 @@
 import { Person } from "./Person";
 import { v4 as uuidv4 } from "uuid";
+import useSWR from 'swr'
+import { mutate } from "swr"
+
+
+
+export function usePerson() {
+  const { data, error, isLoading } = useSWR(`/v1/person/`, getPersons)
+
+  return {
+    persons: data,
+    isLoading,
+    isError: error
+  }
+}
+
+
+export function invalidatePerson(){
+   mutate('v1/person/')
+}
 
 export async function getPersons(): Promise<Person[]> {
-  try {
-    let url = `http://localhost:8080/v1/person/`;
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("There was a problem with the fetch operation:", error);
-    return [];
-  }
+  return await fetch(`http://localhost:8080/v1/person/`)
+    .then((res) => res.json())
+    .catch(err => {
+         console.error("There was a problem with the fetch operation:", err);
+         return [];
+    })
 }
 
 export async function deletePerson(id: string) {
@@ -27,6 +38,8 @@ export async function deletePerson(id: string) {
         "Content-Type": "application/json",
       },
     });
+
+    invalidatePerson()
 
     if (!response.ok) {
       throw new Error("Network response was not ok");
@@ -55,6 +68,9 @@ export async function createPerson(person: Person) {
       },
       body: JSON.stringify(person),
     });
+
+    invalidatePerson()
+
 
     if (!response.ok) {
       throw new Error("Network response was not ok");

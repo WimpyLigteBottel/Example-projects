@@ -1,29 +1,29 @@
 "use client";
 import { useState, useEffect } from "react";
 import {
-  getPersons,
+    usePerson,
+    invalidatePerson,
   createPerson,
   createRandomPerson,
   deletePerson,
 } from "./DataFetcher";
 import { Person } from "./Person";
+import useSWR, { SWRConfig } from 'swr'
+
 
 export default function Home() {
-  const [persons, setPersons] = useState<Person[]>([]);
+  const {persons, isLoading} = usePerson()
 
-  useEffect(() => {
-    const setupPersons = async () => {
-      let tempPersons = await getPersons();
-      setPersons(tempPersons);
-    };
+    if(isLoading){
 
-    setupPersons();
-  }, []); // Empty dependency array to run effect only once when component mounts
+    return <div> Loading... </div>
+    }
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div>
-        {persons.map((person,index) => (
+        <span>Something</span>
+        {persons!.map((person,index) => (
           <div key={index}>
             <span>name:{person.name} </span>
             <span>age: {person.age} </span>
@@ -31,7 +31,6 @@ export default function Home() {
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
               onClick={async () => {
                 await deletePerson(person.id);
-                setPersons(await getPersons());
               }}
             >
               Remove
@@ -44,7 +43,6 @@ export default function Home() {
       <button
         onClick={async () => {
           await createRandomPerson();
-          setPersons(await getPersons());
         }}
       >
         Click me!
