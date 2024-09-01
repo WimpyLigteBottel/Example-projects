@@ -2,9 +2,13 @@
 import type { Person } from "@/model/Person";
 import useSWR from "swr";
 import { mutate } from "swr";
+import { sleep } from "@/integration/Integration-util";
 
-function getPersons() {
-  return fetch(`http://localhost:8080/v1/person/`).then((res) => res.json());
+async function getPersons() {
+  await sleep(1000);
+  return await fetch(`http://localhost:8080/v1/person/`).then((res) =>
+    res.json(),
+  );
 }
 
 export function usePerson() {

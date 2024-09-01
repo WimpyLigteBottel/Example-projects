@@ -2,6 +2,7 @@
 
 import { Person } from "@person/person";
 import DeleteButton from "@/component/delete-button";
+import Spinner from "@/component/spinner/spinner";
 import { usePerson } from "@/integration/GET-person-fetcher";
 
 function displayPerson(person: Person, index: number) {
@@ -19,7 +20,7 @@ const PersonsComponent = () => {
   const { persons, isLoading } = usePerson<Person>();
 
   if (isLoading) {
-    return <div> Loading... </div>;
+    return <Spinner />;
   }
 
   return (
