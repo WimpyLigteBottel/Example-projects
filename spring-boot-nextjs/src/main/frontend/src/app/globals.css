@@ -16,6 +16,20 @@
   }
 }
 
+.person {
+    padding-top: 25px;
+    padding-bottom: 25px;
+    display: flex;
+    flex-direction: column;
+}
+
+.clickMeBtn {
+    border: 1px solid red;
+    border-radius: 20px;
+    padding: 10px;
+    background-color: gray;
+}
+
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(

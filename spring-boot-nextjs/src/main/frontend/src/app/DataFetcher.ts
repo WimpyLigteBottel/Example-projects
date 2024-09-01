@@ -4,9 +4,8 @@ import useSWR from 'swr'
 import { mutate } from "swr"
 
 
-
 export function usePerson() {
-  const { data, error, isLoading } = useSWR(`/v1/person/`, getPersons)
+  const { data,isLoading, error } = useSWR(`/v1/person/`, getPersons)
 
   return {
     persons: data,
@@ -17,7 +16,7 @@ export function usePerson() {
 
 
 export function invalidatePerson(){
-   mutate('v1/person/')
+   mutate('/v1/person/')
 }
 
 export async function getPersons(): Promise<Person[]> {
@@ -38,8 +37,6 @@ export async function deletePerson(id: string) {
         "Content-Type": "application/json",
       },
     });
-
-    invalidatePerson()
 
     if (!response.ok) {
       throw new Error("Network response was not ok");
@@ -68,9 +65,6 @@ export async function createPerson(person: Person) {
       },
       body: JSON.stringify(person),
     });
-
-    invalidatePerson()
-
 
     if (!response.ok) {
       throw new Error("Network response was not ok");
