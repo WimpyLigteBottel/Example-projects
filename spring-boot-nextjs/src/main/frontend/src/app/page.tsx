@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useState, useEffect } from "react";
 import { usePerson } from "./person/GET-person-fetcher";
 import { createRandomPerson } from "./person/POST-person-fetcher";

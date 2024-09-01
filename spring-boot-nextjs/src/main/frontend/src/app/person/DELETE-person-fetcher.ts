@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Person } from "./Person";
 import { v4 as uuidv4 } from "uuid";
 import { invalidatePerson } from "./GET-person-fetcher";
