@@ -1,36 +1,31 @@
-"use client";
+"use client"
 import { useState, useEffect } from "react";
-import {
-    usePerson,
-    invalidatePerson,
-  createPerson,
-  createRandomPerson,
-  deletePerson,
-} from "./DataFetcher";
-import { Person } from "./Person";
-import useSWR, { SWRConfig } from 'swr'
+import { usePerson } from "./person/GET-person-fetcher";
+import { createRandomPerson } from "./person/POST-person-fetcher";
+import { deletePerson } from "./person/DELETE-person-fetcher";
 
+import { Person } from "./person/person";
+import CreateButton from "./create-button";
 
-export default function Home() {
-  const {persons, isLoading} = usePerson()
+function Home() {
+  const { persons, isLoading } = usePerson();
 
-    if(isLoading){
-        return <div> Loading... </div>
-    }
+  if (isLoading) {
+    return <div> Loading... </div>;
+  }
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div>
         <span>People</span>
-        {persons!.map((person,index) => (
+        {persons!.map((person, index) => (
           <div key={index} className={"person"}>
             <span>name:{person.name}</span>
             <span>age: {person.age}</span>
             <button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-              onClick={async () => {
-                await deletePerson(person.id);
-                await invalidatePerson();
+              onClick={() => {
+                deletePerson(person.id);
               }}
             >
               Remove
@@ -40,15 +35,9 @@ export default function Home() {
         ))}
       </div>
 
-      <button
-        className="clickMeBtn"
-        onClick={async () => {
-          await createRandomPerson();
-          await invalidatePerson();
-        }}
-      >
-        Click me!
-      </button>
+      <CreateButton />
     </main>
   );
 }
+
+export default Home;

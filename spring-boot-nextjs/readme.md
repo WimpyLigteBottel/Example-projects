@@ -8,7 +8,25 @@ possible and how.
 # How do i do it?
 
 1. package /compile it like normal with the following command
-`npm run build`
+
+```bash
+cd src/main/frontend
+npm run build
+````
+
 Note: i run windows so you might need to use something else for mac or linux based systems because of the copy command
-3. in the pom directory run `mvn clean package`
-4. The when you do the base url `localhost:8080` you should land on the landing page
+
+
+2. Build the backend `mvn clean package`
+
+3. The when you do the base url `http://localhost:8080` you should land on the landing page
+
+# How to edit frontend and run backend
+
+Sometimes you would like to edit the frontend but still use the backend. This is easy as follows
+
+
+```bash
+cd src/main/frontend
+npm run dev
+```
