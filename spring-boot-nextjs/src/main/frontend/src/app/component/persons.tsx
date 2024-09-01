@@ -4,7 +4,7 @@ import { Person } from "@person/person";
 import DeleteButton from "@/component/delete-button";
 import { usePerson } from "@/integration/GET-person-fetcher";
 
-function displayPerson(person, index) {
+function displayPerson(person: Person, index: number) {
   return (
     <div key={index} className={"person"}>
       <span>name:{person.name}</span>
@@ -16,7 +16,7 @@ function displayPerson(person, index) {
 }
 
 const PersonsComponent = () => {
-  const { persons, isLoading } = usePerson();
+  const { persons, isLoading } = usePerson<Person>();
 
   if (isLoading) {
     return <div> Loading... </div>;
