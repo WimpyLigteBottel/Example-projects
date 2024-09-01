@@ -12,6 +12,9 @@ import org.springframework.web.reactive.function.client.WebClient
 import java.time.Duration
 import java.time.OffsetDateTime
 import java.util.*
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
 
 @SpringBootApplication
@@ -28,41 +31,56 @@ open class Endpoint {
     private val log = LoggerFactory.getLogger(this::class.java)
 
     val requests = mutableListOf<RecordRequest>()
+    var exec = Executors.newVirtualThreadPerTaskExecutor()
+    val create = WebClient.create()
+
 
     @GetMapping("/hello")
     fun handleFile(
         @RequestParam("name", required = false) name: String? = null,
     ): String {
-        log.info("/hello?name=$name")
+//        log.info("/hello?name=$name   |||| ${Thread.currentThread().name}")
         val request = RecordRequest("http://localhost:8080/hello", "GET", listOf(name), OffsetDateTime.now())
         requests.add(request)
         return "Hello $name"
     }
 
+    @GetMapping("/clear")
+    fun handleFile() {
+        requests.clear()
+        exec = Executors.newVirtualThreadPerTaskExecutor()
+    }
+
     @GetMapping("/replay")
     fun replay() {
-        val create = WebClient.create()
         var lastOffsetDateTime: OffsetDateTime = requests.first().time
         val requestWithDelay = requests.map {
-            it.copy(sleepTime = 0)
+            val sleepTime = Duration.between(lastOffsetDateTime, it.time).toMillis()
+            lastOffsetDateTime = it.time
+            it.copy(sleepTime = sleepTime)
         }
-        log.info("Going to replay ${requestWithDelay.size} events")
+        log.info("XXXXXXXXXXXXXXXXXXXXXXXXXXGoing to replay ${requestWithDelay.size} events")
 
+        val latch = CountDownLatch(1)
         val now = OffsetDateTime.now()
         val sleepDuration = AtomicLong(0)
         requestWithDelay.forEach {
-            Thread.startVirtualThread {
-                Thread.sleep(sleepDuration.getAndAdd(it.sleepTime!!))
+            exec.submit {
+                val sleepDurationX = sleepDuration.getAndAdd(it.sleepTime!!)
+                latch.await()
+                Thread.sleep(sleepDurationX)
                 create
                     .get()
                     .uri("http://localhost:8080/hello?name=${it.parameters.first()}")
                     .retrieve()
                     .toBodilessEntity()
                     .block()
-            }.join()
+            }
         }
+        latch.countDown()
+        exec.shutdown()
+        exec.awaitTermination(5, TimeUnit.SECONDS)
         val after = OffsetDateTime.now()
-        println("Done!")
         log.info("This took [time=${Duration.between(now, after).toMillis()}ms]")
         log.info(
             "original took [time={}ms]",
@@ -81,9 +99,7 @@ data class RecordRequest(
 )
 
 @Component
-open class StartupCommand(
-    val endpoint: Endpoint
-) : CommandLineRunner {
+open class StartupCommand() : CommandLineRunner {
 
     val create = WebClient.create()
 
@@ -91,15 +107,14 @@ open class StartupCommand(
 
     override fun run(vararg args: String?) {
         kotlin.runCatching {
-            val times = 1000
-            repeat(times) {
-                request()
+            repeat(10) {
+                val times = 10000
+                repeat(times) {
+                    request()
+                }
+                replay()
+                clear()
             }
-            Thread.sleep(1000)
-            log.info("Done $times requests")
-            replay()
-            Thread.sleep(1000)
-            replay()
         }
 
         System.exit(1)
@@ -119,6 +134,15 @@ open class StartupCommand(
         create
             .get()
             .uri("http://localhost:8080/replay")
+            .retrieve()
+            .toEntity(String::class.java)
+            .block()
+    }
+
+    private fun clear() {
+        create
+            .get()
+            .uri("http://localhost:8080/clear")
             .retrieve()
             .toEntity(String::class.java)
             .block()
