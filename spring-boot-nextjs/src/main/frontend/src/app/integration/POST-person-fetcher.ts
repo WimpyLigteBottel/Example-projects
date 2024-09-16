@@ -2,11 +2,10 @@
 import { Person } from "@/model/Person";
 import { v4 as uuidv4 } from "uuid";
 import { invalidatePerson } from "@/integration/GET-person-fetcher";
+import { baseUrl } from "@/integration/properties";
 
 export function createRandomPerson() {
-  let randomAge = Math.floor(Math.random() * 100);
-
-  const newPerson = new Person("", uuidv4(), randomAge);
+  const newPerson = new Person("", uuidv4(), Math.floor(Math.random() * 100));
 
   createPerson(newPerson).then((response) => {
     invalidatePerson();
@@ -14,7 +13,7 @@ export function createRandomPerson() {
 }
 
 export function createPerson(person: Person) {
-  return fetch(`http://localhost:8080/v1/person/`, {
+  return fetch(`${baseUrl}/v1/person/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

@@ -25,8 +25,14 @@ Note: i run windows so you might need to use something else for mac or linux bas
 
 Sometimes you would like to edit the frontend but still use the backend. This is easy as follows
 
-
+Run the frontend
 ```bash
 cd src/main/frontend
 npm run dev
+```
+
+Use prettier to format my code
+```bash
+cd src/main/frontend
+npm run lint
 ```

@@ -3,12 +3,10 @@ import type { Person } from "@/model/Person";
 import useSWR from "swr";
 import { mutate } from "swr";
 import { sleep } from "@/integration/Integration-util";
+import { baseUrl } from "@/integration/properties";
 
 async function getPersons() {
-  await sleep(1000);
-  return await fetch(`http://localhost:8080/v1/person/`).then((res) =>
-    res.json(),
-  );
+  return await fetch(`${baseUrl}/v1/person/`).then((res) => res.json());
 }
 
 export function usePerson() {
