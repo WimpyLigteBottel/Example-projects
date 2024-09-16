@@ -33,19 +33,20 @@ class ClientCode(
     override fun run(vararg args: String?) {
         val toBodilessEntity = client
             .get()
-            .uri("/") { uri ->
-                val map = linkedMapOf<String,Any>(
+            .uri { uri ->
+                val variables = linkedMapOf<String, Any>(
+                    "pathParam" to UUID.randomUUID().toString(),
                     "version" to "1.0.0",
                     "config" to "<custom>",
                     "application-name" to "<application-name>",
                     "offsetDateTime" to OffsetDateTime.now().toString(),
                 )
-                uri.path("${UUID.randomUUID()}")
+                uri.path("/{pathParam}")
                 uri.queryParam("version", "{version}")
                 uri.queryParam("config", "{config}")
                 uri.queryParam("application-name", "{application-name}")
                 uri.queryParam("offsetDateTime", "{offsetDateTime}")
-                uri.build(map)
+                uri.build(variables)
             }
             .retrieve()
             .toEntity(String::class.java)
