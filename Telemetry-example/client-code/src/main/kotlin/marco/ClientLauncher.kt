@@ -5,13 +5,13 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.stereotype.Component
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.util.DefaultUriBuilderFactory
+import java.net.URI
+import java.net.URLEncoder
 import java.time.OffsetDateTime
-import java.time.ZoneOffset
+import java.util.*
 
 
 @SpringBootApplication
@@ -25,22 +25,30 @@ fun main(args: Array<String>) {
 @Component
 class ClientCode(
     @Value("\${telemetry.server.url}") private val serverUri: String
-): CommandLineRunner {
+) : CommandLineRunner {
 
-    private val client = WebClient.builder().clientConnector(ReactorClientHttpConnector()).baseUrl(serverUri).build()
+    private val client = WebClient
+        .builder()
+        .uriBuilderFactory(DefaultUriBuilderFactory(serverUri).apply {
+            encodingMode = DefaultUriBuilderFactory.EncodingMode.NONE
+        })
+        .baseUrl(serverUri)
+        .build()
     private val log = LoggerFactory.getLogger(this::class.java)
 
     override fun run(vararg args: String?) {
         val toBodilessEntity = client
             .get()
-            .uri { builder ->
-                builder
-                    .path("/${OffsetDateTime.now()}")
-                    .queryParam("version", "1.0.0")
-                    .queryParam("config", "<custom>")
-                    .queryParam("application-name", "ABC")
-                    .queryParam("offsetDateTime", OffsetDateTime.now().withOffsetSameInstant(ZoneOffset.UTC))
-                    .build()
+            .uri("/") { uri ->
+                uri.path("${UUID.randomUUID()}")
+                uri.queryParam("version", "1.0.0".encode())
+                uri.queryParam("config", "<custom>".encode())
+                uri.queryParam("application-name", "ABC")
+                uri.queryParam(
+                    "offsetDateTime",
+                    OffsetDateTime.now().toString().encode()
+                )
+                URI(uri.build().toString())
             }
             .retrieve()
             .toEntity(String::class.java)
@@ -52,4 +60,6 @@ class ClientCode(
         log.info("Going to shutdown now!")
         System.exit(0)
     }
+
+    fun String.encode() = URLEncoder.encode(this, Charsets.UTF_8)
 }

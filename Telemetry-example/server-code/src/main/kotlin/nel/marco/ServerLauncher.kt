@@ -31,7 +31,7 @@ class InputController(
 
     @GetMapping("/report/{path}")
     fun helloWorld(
-        @PathVariable("path") path: OffsetDateTime,
+        @PathVariable("path") path: String,
         @RequestParam allParams: Map<String, Any>): String {
         log.info("path: $path")
         log.info("received: ${allParams}")
