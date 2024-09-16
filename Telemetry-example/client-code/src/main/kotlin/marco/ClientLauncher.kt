@@ -7,9 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
-import org.springframework.web.util.DefaultUriBuilderFactory
-import java.net.URI
-import java.net.URLEncoder
 import java.time.OffsetDateTime
 import java.util.*
 
@@ -29,9 +26,6 @@ class ClientCode(
 
     private val client = WebClient
         .builder()
-        .uriBuilderFactory(DefaultUriBuilderFactory(serverUri).apply {
-            encodingMode = DefaultUriBuilderFactory.EncodingMode.NONE
-        })
         .baseUrl(serverUri)
         .build()
     private val log = LoggerFactory.getLogger(this::class.java)
@@ -40,15 +34,18 @@ class ClientCode(
         val toBodilessEntity = client
             .get()
             .uri("/") { uri ->
-                uri.path("${UUID.randomUUID()}")
-                uri.queryParam("version", "1.0.0".encode())
-                uri.queryParam("config", "<custom>".encode())
-                uri.queryParam("application-name", "ABC")
-                uri.queryParam(
-                    "offsetDateTime",
-                    OffsetDateTime.now().toString().encode()
+                val map = linkedMapOf<String,Any>(
+                    "version" to "1.0.0",
+                    "config" to "<custom>",
+                    "application-name" to "<application-name>",
+                    "offsetDateTime" to OffsetDateTime.now().toString(),
                 )
-                URI(uri.build().toString())
+                uri.path("${UUID.randomUUID()}")
+                uri.queryParam("version", "{version}")
+                uri.queryParam("config", "{config}")
+                uri.queryParam("application-name", "{application-name}")
+                uri.queryParam("offsetDateTime", "{offsetDateTime}")
+                uri.build(map)
             }
             .retrieve()
             .toEntity(String::class.java)
@@ -61,5 +58,4 @@ class ClientCode(
         System.exit(0)
     }
 
-    fun String.encode() = URLEncoder.encode(this, Charsets.UTF_8)
 }
