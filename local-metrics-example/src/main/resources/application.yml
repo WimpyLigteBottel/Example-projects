@@ -1,0 +1,17 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, prometheus
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  defaults:
+    metrics:
+      export:
+        enabled: true
+
+
+
+#management.endpoints.web.exposure.include=*

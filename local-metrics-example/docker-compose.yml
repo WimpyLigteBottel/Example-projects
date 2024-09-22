@@ -1,0 +1,21 @@
+version: '3'
+services:
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - "./prometheus.yml:/etc/prometheus/prometheus.yml"
+    networks:
+      - custom-network
+    ports:
+      - "9090:9090"
+networks:
+  custom-network:
+    driver: bridge
+
+
+#scrape_configs:
+#  - job_name: 'spring-boot-application'
+#    metrics_path: '/actuator/prometheus'
+#    scrape_interval: 15s # This can be adjusted based on our needs
+#    static_configs:
+#      - targets: ['localhost:8080']
