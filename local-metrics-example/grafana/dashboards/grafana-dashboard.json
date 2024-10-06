@@ -24,7 +24,7 @@
       "datasource": {
         "default": false,
         "type": "prometheus",
-        "uid": "ee038i2hm8dfkb"
+        "uid": "ae03ai9acynlsd"
       },
       "fieldConfig": {
         "defaults": {
@@ -104,11 +104,11 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "ee038i2hm8dfkb"
+            "uid": "ae03ai9acynlsd"
           },
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "http_server_requests_seconds_count",
+          "expr": "up",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -135,6 +135,6 @@
   "timezone": "browser",
   "title": "Home dashboard",
   "uid": "be037e4dqoi68b",
-  "version": 2,
+  "version": 1,
   "weekStart": ""
 }
