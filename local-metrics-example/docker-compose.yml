@@ -1,21 +1,21 @@
 version: '3'
 services:
   prometheus:
-    image: prom/prometheus
+    image: prom/prometheus:latest
     volumes:
-      - "./prometheus.yml:/etc/prometheus/prometheus.yml"
+      - "./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml"
     networks:
       - custom-network
     ports:
       - "9090:9090"
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/dashboard.yaml:/etc/grafana/provisioning/dashboards/main.yaml
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+      - ./grafana/provisioning:/etc/grafana/provisioning
 networks:
   custom-network:
     driver: bridge
-
-
-#scrape_configs:
-#  - job_name: 'spring-boot-application'
-#    metrics_path: '/actuator/prometheus'
-#    scrape_interval: 15s # This can be adjusted based on our needs
-#    static_configs:
-#      - targets: ['localhost:8080']
