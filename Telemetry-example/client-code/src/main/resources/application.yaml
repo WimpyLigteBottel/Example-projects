@@ -2,4 +2,4 @@ server:
   port: 8081
 telemetry:
   server:
-    url: http://localhost:8080/report
+    url: http://localhost:8081/report

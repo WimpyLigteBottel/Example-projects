@@ -6,6 +6,10 @@ import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.stereotype.Component
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.reactive.function.client.WebClient
 import java.time.OffsetDateTime
 import java.util.*
@@ -16,6 +20,34 @@ class ClientLauncher
 
 fun main(args: Array<String>) {
     runApplication<ClientLauncher>(*args)
+}
+
+@RestController
+class ServerSide(
+) {
+
+    private val log = LoggerFactory.getLogger(this::class.java)
+
+    @GetMapping("/report")
+    fun helloWorld(@RequestParam allParams: Map<String, Any>): String {
+        log.info("received: ${allParams}")
+        return "$allParams"
+    }
+
+    @GetMapping("/report/{path}")
+    fun helloWorld(
+        @PathVariable("path") path: String,
+        @RequestParam allParams: Map<String, Any>
+    ): String {
+        log.info("-------- backend --------")
+        log.info("path: $path")
+        allParams.forEach {
+            log.info("${it.key} -> ${it.value}")
+        }
+        log.info("-------- backend --------")
+        return "$allParams"
+    }
+
 }
 
 
@@ -39,23 +71,40 @@ class ClientCode(
                     "version" to "1.0.0",
                     "config" to "<custom>",
                     "application-name" to "<application-name>",
-                    "offsetDateTime" to OffsetDateTime.now().toString(),
+                    "offsetDateTime" to OffsetDateTime.now(),
+                    "datesTimes" to listOf(
+                        OffsetDateTime.now(),
+                        OffsetDateTime.now(),
+                        OffsetDateTime.now()
+                    ).toTypedArray(),
+                    "names" to listOf("A", "B", "C", "D").toTypedArray(),
                 )
                 uri.path("/{pathParam}")
                 uri.queryParam("version", "{version}")
                 uri.queryParam("config", "{config}")
                 uri.queryParam("application-name", "{application-name}")
                 uri.queryParam("offsetDateTime", "{offsetDateTime}")
-                uri.build(variables)
+                uri.queryParam("datesTimes", "{datesTimes}")
+                uri.queryParam("names", "{names}")
+                val uriCompiled = uri.build(variables)
+                log.info("-------- Request --------")
+                log.info("full uri == $uriCompiled")
+                log.info("path == ${uriCompiled.path}")
+                log.info("query == ${uriCompiled.query}")
+                log.info("-------- Request --------")
+
+                uriCompiled
             }
             .retrieve()
             .toEntity(String::class.java)
             .block()
 
+
+        log.info("-------- client --------")
         log.info("status = ${toBodilessEntity?.statusCode}")
         log.info("body = ${toBodilessEntity?.body}")
+        log.info("-------- client --------")
 
-        log.info("Going to shutdown now!")
         System.exit(0)
     }
 
