@@ -2,12 +2,11 @@ package nel.marco
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
-import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.retry.annotation.EnableRetry
+import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import org.springframework.web.bind.annotation.GetMapping
@@ -16,6 +15,7 @@ import java.util.concurrent.TimeUnit
 
 @SpringBootApplication
 @EnableRetry
+@EnableScheduling
 open class Launcher
 
 
@@ -29,19 +29,19 @@ class Run(
     private val serieCall: SerieCall,
     private val parallelCall: ParallelCall,
     private val largeAmountParallelCall: LargeAmountParallelCall
-) : CommandLineRunner {
+) {
 
     private val log = LoggerFactory.getLogger(this::class.java)
 
 
-    @Scheduled(fixedRate = 1, timeUnit = TimeUnit.SECONDS)
-    override fun run(vararg args: String?) {
+    @Scheduled(fixedRate = 5, timeUnit = TimeUnit.SECONDS)
+    fun run() {
         runBlocking {
-            withContext(Dispatchers.IO) {
-                log.info(largeAmountParallelCall.exampleWrongSetup())
-                log.info(largeAmountParallelCall.exampleWrongSetup2())
-                log.info(largeAmountParallelCall.example())
-            }
+            log.info("XXXXXXXXXXXXXXXX")
+            log.info(largeAmountParallelCall.exampleWrongSetup())
+            log.info(largeAmountParallelCall.exampleWrongSetup2())
+            log.info(largeAmountParallelCall.example(Dispatchers.IO))
+            log.info(largeAmountParallelCall.example(Dispatchers.Default))
         }
     }
 
@@ -54,7 +54,6 @@ class Users {
 
     @GetMapping("/users")
     fun getUsers(): String {
-        Thread.sleep(1000)
         return "Users"
     }
 
