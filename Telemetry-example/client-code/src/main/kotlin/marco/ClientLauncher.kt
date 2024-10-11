@@ -37,13 +37,15 @@ class ServerSide(
     @GetMapping("/report/{path}")
     fun helloWorld(
         @PathVariable("path") path: String,
-        @RequestParam allParams: Map<String, Any>
+        @RequestParam allParams: Map<String, Any>,
+        @RequestParam names: List<String>
     ): String {
         log.info("-------- backend --------")
-        log.info("path: $path")
         allParams.forEach {
             log.info("${it.key} -> ${it.value}")
         }
+        log.info("path: $path")
+        log.info("names: $names")
         log.info("-------- backend --------")
         return "$allParams"
     }
@@ -65,7 +67,8 @@ class ClientCode(
     override fun run(vararg args: String?) {
         val toBodilessEntity = client
             .get()
-            .uri { uri ->
+            .uri("/{pathParam}") { uri ->
+                val names = listOf("A+", "B,", "C&", "D:","! * ' ( ) ; : @ & = + \$ , / ? % # [ ]")
                 val variables = linkedMapOf<String, Any>(
                     "pathParam" to UUID.randomUUID().toString(),
                     "version" to "1.0.0",
@@ -75,17 +78,20 @@ class ClientCode(
                     "datesTimes" to listOf(
                         OffsetDateTime.now(),
                         OffsetDateTime.now(),
-                        OffsetDateTime.now()
                     ).toTypedArray(),
-                    "names" to listOf("A", "B", "C", "D").toTypedArray(),
+                    "names" to names,
                 )
-                uri.path("/{pathParam}")
                 uri.queryParam("version", "{version}")
                 uri.queryParam("config", "{config}")
                 uri.queryParam("application-name", "{application-name}")
                 uri.queryParam("offsetDateTime", "{offsetDateTime}")
                 uri.queryParam("datesTimes", "{datesTimes}")
-                uri.queryParam("names", "{names}")
+
+                names.forEachIndexed { index, s ->
+                    variables["names$index"] = s
+                    uri.queryParam("names", "{names$index}")
+                }
+
                 val uriCompiled = uri.build(variables)
                 log.info("-------- Request --------")
                 log.info("full uri == $uriCompiled")
