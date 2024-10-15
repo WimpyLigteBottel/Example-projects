@@ -38,10 +38,19 @@ class Run(
     fun run() {
         runBlocking {
             log.info("XXXXXXXXXXXXXXXX")
-            log.info(largeAmountParallelCall.exampleWrongSetup())
-            log.info(largeAmountParallelCall.exampleWrongSetup2())
-            log.info(largeAmountParallelCall.example(Dispatchers.IO))
-            log.info(largeAmountParallelCall.example(Dispatchers.Default))
+            log.info(largeAmountParallelCall.exampleWrongSetup(2))
+            log.info(largeAmountParallelCall.exampleWrongSetup2(2))
+
+            var coreSize = Runtime.getRuntime().availableProcessors()
+            println("coreSize = $coreSize")
+            log.info(largeAmountParallelCall.example(Dispatchers.IO, coreSize))
+            log.info(largeAmountParallelCall.example(Dispatchers.Default, coreSize))
+
+
+            coreSize = Runtime.getRuntime().availableProcessors() + 1
+            println("coreSize = $coreSize")
+            log.info(largeAmountParallelCall.example(Dispatchers.IO, coreSize))
+            log.info(largeAmountParallelCall.example(Dispatchers.Default, coreSize))
         }
     }
 

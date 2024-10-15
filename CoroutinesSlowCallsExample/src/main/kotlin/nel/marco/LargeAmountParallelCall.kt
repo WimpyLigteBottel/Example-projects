@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
+import java.lang.Thread.currentThread
 import java.lang.Thread.sleep
 import kotlin.system.measureTimeMillis
 
@@ -17,11 +18,10 @@ class LargeAmountParallelCall {
 
     val client = WebClient.create("http://localhost:8080")
 
-    suspend fun example(dispatcher: CoroutineDispatcher) = withContext(dispatcher) {
+    suspend fun example(dispatcher: CoroutineDispatcher, callAmount: Int) = withContext(dispatcher) {
         val total = measureTimeMillis {
-            val jobs = List(10000) {
+            val jobs = List(callAmount) {
                 async { retrieveUsers() }
-
             }
             jobs.awaitAll()
         }
@@ -32,10 +32,10 @@ class LargeAmountParallelCall {
     /**
      * This is still running in main thread and one by one
      */
-    fun exampleWrongSetup(): String {
+    fun exampleWrongSetup(callAmount:Int): String {
         val total = measureTimeMillis {
             runBlocking(Dispatchers.Unconfined) {
-                val jobs = List(20) {
+                val jobs = List(callAmount) {
                     async { retrieveUsers() }
                 }
 
@@ -49,10 +49,10 @@ class LargeAmountParallelCall {
     /**
      * This is still running in main thread and one by one
      */
-    fun exampleWrongSetup2(): String {
+    fun exampleWrongSetup2(callAmount:Int): String {
         val total = measureTimeMillis {
             runBlocking {
-                val jobs = List(20) {
+                val jobs = List(callAmount) {
                     async { retrieveUsers() }
                 }
 
@@ -64,7 +64,8 @@ class LargeAmountParallelCall {
     }
 
     private suspend fun retrieveUsers(): String = coroutineScope {
-        sleep(100)
+//        println("${currentThread().name}")
+        sleep(3000)
 
         client
             .get()
