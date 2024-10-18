@@ -8,12 +8,11 @@ import java.util.concurrent.Executors
 
 
 val workers = Executors.newFixedThreadPool(2).asCoroutineDispatcher()
+val countDownLatch = CountDownLatch(1)
+
 
 fun main(): Unit {
     runBlocking(workers) {
-
-
-        val countDownLatch = CountDownLatch(1)
 
         println("Launching tasks!")
 
@@ -27,6 +26,7 @@ fun main(): Unit {
         launch(workers) {
             println("Worker B: YOU CAN START!")
             countDownLatch.countDown()
+            println("Worker B: DONE!")
         }
     }
 }
