@@ -1,47 +1,51 @@
 package nel.marco
 
-import kotlinx.coroutines.*
 import java.lang.Thread.sleep
 import java.util.concurrent.CountDownLatch
 import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 
 val message = ThreadLocal<String>()
 
 
-fun main(): Unit = runBlocking() {
-    val countDownLatch = CountDownLatch(1)
+fun main(): Unit {
+    runBlocking {
+        val countDownLatch = CountDownLatch(1)
 
-    //Manager says a message in the store
-    managerSaySomething()
+        // Setting up some context
+        val manager = Thread.currentThread().name
+        message.set("$manager said: \"Remember RED Apples on top!\"")
+        println(message.get())
 
-    val sharingContext = Dispatchers.Default + message.asContextElement()
-    val context = Dispatchers.Default
+        tellWorker("A", countDownLatch, this.coroutineContext)
+        tellWorker("B", countDownLatch, this.coroutineContext)
 
-    tellWorker("A", countDownLatch, sharingContext)
-    tellWorker("B", countDownLatch, context)
+        sleep(500)
+        countDownLatch.countDown()
 
-    sleep(500)
-    countDownLatch.countDown()
-
-}
-
-private fun managerSaySomething() {
-    // Setting up some context
-    val manager = Thread.currentThread().name
-    message.set("$manager said: \"Remember RED Apples on top!\"")
-    println(message.get())
+    }
 }
 
 private fun CoroutineScope.tellWorker(
     name: String,
     countDownLatch: CountDownLatch,
-    contextElement: CoroutineContext,
+    contextElement: CoroutineContext? = null,
 ) {
-    launch(contextElement) {
-        countDownLatch.await()
-        val worker = Thread.currentThread().name
-        println("$worker $name: Remembers what manager said -> ${message.get()}") // Will remember
+    if (contextElement == null) {
+        launch {
+            countDownLatch.await()
+            val worker = Thread.currentThread().name
+            println("$worker $name: Remembers what manager said -> ${message.get()}") // Will remember
+        }
+    } else {
+        launch(contextElement) {
+            countDownLatch.await()
+            val worker = Thread.currentThread().name
+            println("$worker $name: Remembers what manager said -> ${message.get()}") // Will remember
+        }
     }
 }
 
