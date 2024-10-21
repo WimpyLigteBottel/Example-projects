@@ -10,7 +10,6 @@ import kotlinx.coroutines.runBlocking
 
 val message = ThreadLocal<String>()
 
-
 /*
 1. Will the workers remember what the manager said?
 - Yes?
