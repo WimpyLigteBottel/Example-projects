@@ -15,7 +15,7 @@ val countDownLatch = CountDownLatch(1)
 What is going to print?
 
 1.
-Worker A: Tell me when i can start!
+Worker A: Tell me when I can start!
 Worker B: YOU CAN START!
 Worker B: DONE!
 Worker A: DONE!
