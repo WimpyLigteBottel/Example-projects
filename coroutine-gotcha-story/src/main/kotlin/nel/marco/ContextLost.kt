@@ -23,36 +23,28 @@ val message = ThreadLocal<String>()
 
 fun main(): Unit {
     runBlocking {
-        val countDownLatch = CountDownLatch(1)
 
         // Setting up some context
         val manager = Thread.currentThread().name
         message.set("$manager said: \"Remember RED Apples on top!\"")
         println(message.get())
 
-        tellWorker("A", countDownLatch, this.coroutineContext)
-        tellWorker("B", countDownLatch, this.coroutineContext)
-
-        sleep(500)
-        countDownLatch.countDown()
-
+        tellWorker("A", this.coroutineContext)
+        tellWorker("B", this.coroutineContext)
     }
 }
 
 private fun CoroutineScope.tellWorker(
     name: String,
-    countDownLatch: CountDownLatch,
     contextElement: CoroutineContext? = null,
 ) {
     if (contextElement == null) {
         launch {
-            countDownLatch.await()
             val worker = Thread.currentThread().name
             println("$worker $name: Remembers what manager said -> ${message.get()}") // Will remember
         }
     } else {
         launch(contextElement) {
-            countDownLatch.await()
             val worker = Thread.currentThread().name
             println("$worker $name: Remembers what manager said -> ${message.get()}") // Will remember
         }
