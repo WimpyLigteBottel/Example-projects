@@ -30,7 +30,7 @@ Worker A: Tell me when i can start!
 
 
 fun main(): Unit {
-    runBlocking(workers) {
+    runBlocking {
 
         println("Launching tasks!")
 
