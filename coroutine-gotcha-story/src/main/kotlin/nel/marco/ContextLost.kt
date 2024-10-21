@@ -11,6 +11,16 @@ import kotlinx.coroutines.runBlocking
 val message = ThreadLocal<String>()
 
 
+/*
+1. Will the workers remember what the manager said?
+- Yes?
+- No?
+
+2. What about now?
+- Yes
+- No
+ */
+
 fun main(): Unit {
     runBlocking {
         val countDownLatch = CountDownLatch(1)
