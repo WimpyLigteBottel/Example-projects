@@ -29,24 +29,13 @@ fun main(): Unit {
         message.set("$manager said: \"Remember RED Apples on top!\"")
         println(message.get())
 
-        tellWorker("A", this.coroutineContext)
-        tellWorker("B", this.coroutineContext)
-    }
-}
-
-private fun CoroutineScope.tellWorker(
-    name: String,
-    contextElement: CoroutineContext? = null,
-) {
-    if (contextElement == null) {
         launch {
-            val worker = Thread.currentThread().name
-            println("$worker $name: Remembers what manager said -> ${message.get()}") // Will remember
+            val threadName = Thread.currentThread().name
+            println("$threadName A: Remembers what manager said -> ${message.get()}") // Will remember
         }
-    } else {
-        launch(contextElement) {
-            val worker = Thread.currentThread().name
-            println("$worker $name: Remembers what manager said -> ${message.get()}") // Will remember
+        launch {
+            val threadName = Thread.currentThread().name
+            println("$threadName B: Remembers what manager said -> ${message.get()}") // Will remember
         }
     }
 }
