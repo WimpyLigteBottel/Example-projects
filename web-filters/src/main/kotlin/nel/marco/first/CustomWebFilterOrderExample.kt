@@ -1,31 +1,39 @@
-package nel.marco
+package nel.marco.first
 
-import org.springframework.stereotype.Component
+import org.springframework.core.annotation.Order
 import org.springframework.web.server.ServerWebExchange
 import org.springframework.web.server.WebFilter
 import org.springframework.web.server.WebFilterChain
 import reactor.core.publisher.Mono
-import java.util.UUID
 
-const val CUSTOM_ID = "CUSTOM-ID"
 
 //@Component
-class CustomWebFilter : WebFilter {
+@Order(10)
+class CustomWebFilterOrder : WebFilter {
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<java.lang.Void> {
         return chain.filter(exchange).doOnSuccess {
-            println("CUSTOM_ID " + exchange.getAttribute(CUSTOM_ID))
-        }
-    }
-}
-
-//@Component
-class CustomContextFilter : WebFilter {
-    override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<java.lang.Void> {
-        return chain.filter(exchange).doOnSuccess {
-            println("CUSTOM-ID ADDED")
-            exchange.attributes[CUSTOM_ID] = UUID.randomUUID().toString()
+            println("Hello i have run 1st")
         }
     }
 }
 
 
+//@Component
+@Order(20)
+class CustomWebFilter2Order : WebFilter {
+    override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<java.lang.Void> {
+        return chain.filter(exchange).doOnSuccess {
+            println("Hello i have run 2nd")
+        }
+    }
+}
+
+//@Component
+@Order(30)
+class CustomWebFilter3Order : WebFilter {
+    override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<java.lang.Void> {
+        return chain.filter(exchange).doOnSuccess {
+            println("Hello i have run 3rd")
+        }
+    }
+}

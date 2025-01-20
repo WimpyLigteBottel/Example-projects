@@ -3,14 +3,14 @@ package nel.marco.aspect
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.reactor.ReactorContext
 import kotlinx.coroutines.runBlocking
-import nel.marco.CustomContext
+import nel.marco.third.CustomContext
 import org.aspectj.lang.annotation.Aspect
 import org.aspectj.lang.annotation.Before
 import org.springframework.stereotype.Component
 import kotlin.coroutines.coroutineContext
 
 @Aspect
-@Component
+//@Component
 class HelloWorldAspect {
 
     @Before("@within(org.springframework.web.bind.annotation.RestController)")

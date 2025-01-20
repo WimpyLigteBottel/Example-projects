@@ -2,20 +2,20 @@ logging.level:
   root: INFO
 
   # General Spring Debugging
-  org.springframework.context: DEBUG
-  org.springframework.beans.factory: DEBUG
-  org.springframework.web.servlet.DispatcherServlet: DEBUG
-
-    # AOP and Proxy Debugging
-  org.springframework.aop.framework: DEBUG
-  org.springframework.aop.interceptor: DEBUG
-  org.springframework.aop.aspectj: DEBUG
-  org.springframework.aop.framework.CglibAopProxy: DEBUG
-  org.springframework.aop.framework.JdkDynamicAopProxy: DEBUG
-
-    # Aspect Matching
-  org.aspectj.weaver.tools: DEBUG
-  org.aspectj.weaver.reflect: TRACE
-
-    # Bean Lifecycle
-  org.springframework.beans.factory.support.DefaultListableBeanFactory: DEBUG
+#  org.springframework.context: DEBUG
+#  org.springframework.beans.factory: DEBUG
+#  org.springframework.web.servlet.DispatcherServlet: DEBUG
+#
+#    # AOP and Proxy Debugging
+#  org.springframework.aop.framework: DEBUG
+#  org.springframework.aop.interceptor: DEBUG
+#  org.springframework.aop.aspectj: DEBUG
+#  org.springframework.aop.framework.CglibAopProxy: DEBUG
+#  org.springframework.aop.framework.JdkDynamicAopProxy: DEBUG
+#
+#    # Aspect Matching
+#  org.aspectj.weaver.tools: DEBUG
+#  org.aspectj.weaver.reflect: TRACE
+#
+#    # Bean Lifecycle
+#  org.springframework.beans.factory.support.DefaultListableBeanFactory: DEBUG

@@ -1,6 +1,7 @@
 package nel.marco
 
 import kotlinx.coroutines.reactor.ReactorContext
+import nel.marco.third.CustomContext
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -22,8 +23,9 @@ fun main(args: Array<String>) {
 @Component
 class OnStartUp : CommandLineRunner {
     override fun run(vararg args: String?) {
-        WebClient.create("http://localhost:8080").get().uri("/hello-world").retrieve().toBodilessEntity().block()
+        val result = WebClient.create("http://localhost:8080").get().uri("/hello-world").retrieve().bodyToMono(String::class.java).block()
 
+        println(result)
         System.exit(0)
     }
 
@@ -35,8 +37,8 @@ class Users {
 
     @GetMapping("/hello-world")
     suspend fun getUsers(): String {
-        someCoroutineHandler()
-        return "Users"
+//        someCoroutineHandler()
+        return "Hello from the controller"
     }
 
 

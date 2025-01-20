@@ -1,4 +1,4 @@
-package nel.marco
+package nel.marco.third
 
 import kotlinx.coroutines.reactor.asCoroutineContext
 import kotlinx.coroutines.runBlocking
@@ -8,9 +8,7 @@ import org.springframework.web.server.ServerWebExchange
 import org.springframework.web.server.WebFilter
 import org.springframework.web.server.WebFilterChain
 import reactor.core.publisher.Mono
-import reactor.util.context.Context
 import java.util.*
-import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.CoroutineContext
 
 
@@ -22,7 +20,7 @@ class CustomContext(private val customId: String) : CoroutineContext.Element {
     fun getCustomId(): String = customId
 }
 
-@Component
+//@Component
 @Order(1)
 class CoroutineCustomWebFilter : WebFilter {
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
@@ -30,12 +28,12 @@ class CoroutineCustomWebFilter : WebFilter {
             .filter(exchange)
             .contextWrite { ctx ->
                 println("UPDATING CustomContext ")
-                ctx.put(CustomContext.Key, CustomContext(UUID.randomUUID().toString()))
+                ctx.put(CustomContext, CustomContext(UUID.randomUUID().toString()))
             }
     }
 }
 
-@Component
+//@Component
 @Order(2)
 class CoroutineCustomContextFilter : WebFilter {
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
