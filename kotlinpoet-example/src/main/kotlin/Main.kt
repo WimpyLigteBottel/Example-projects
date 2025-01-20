@@ -1,41 +1,42 @@
 package nel.marco
 
+import java.time.OffsetDateTime
+
 public interface HumanI {
-    public val age: kotlin.Int
+    public val age: Int
 }
 
 public interface ParentI {
-    public val name: kotlin.String
+    public val name: String
 }
-
-data class Parent(
-    override val name: kotlin.String,
-) : ParentI
-
-data class Human(
-    override val age: kotlin.Int,
-) : HumanI
 
 public data class HumanParent(
-    override val age: kotlin.Int,
-    override val name: kotlin.String,
-) : HumanI,
-    ParentI {
-    fun toHuman() = Human(age)
+    override val age: Int,
+    override val name: String,
+) : HumanI, ParentI
 
-    fun toParent() = Parent(name)
-}
+
+// If has property oneOf
+//   - MUST HAVE 'discriminator'
+//
+sealed class Human(
+    open val name: String? = null,
+)
+
+data class Parent(
+    override val name: String,
+    val age: Int,
+) : Human(name = name)
+
+data class Alien(
+    override val name: String,
+    val age: OffsetDateTime,
+) : Human(name = name)
 
 fun main() {
-    val parent = Parent("parent")
-    val human = Human(10)
+    val human = Parent("human", 10)
+    val alien = Alien("alien", OffsetDateTime.now().withYear(2000))
 
-    val humanParent = HumanParent(human.age, parent.name)
-
-    val humanI = humanParent.toHuman()
-    val parentI = humanParent.toParent()
-    println("HumanParent is ${humanParent is ParentI}   && $humanI")
-    println("HumanParent is ${humanParent is HumanI}    && $parentI")
-
-    println(humanParent)
+    println(human)
+    println(alien)
 }
