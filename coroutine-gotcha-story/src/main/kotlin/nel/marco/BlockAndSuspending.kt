@@ -19,10 +19,10 @@ fun main(): Unit {
 private fun blocking() {
     val workers = Executors.newFixedThreadPool(1).asCoroutineDispatcher()
 
-    runBlocking {
+    runBlocking(workers) {
         repeat(10) {
             launch(workers) {
-                sleep(1000)
+                sleep(1000) // blocking
                 println("DONE!")
             }
         }
@@ -32,10 +32,10 @@ private fun blocking() {
 private fun suspending() {
     val workers = Executors.newFixedThreadPool(1).asCoroutineDispatcher()
 
-    runBlocking {
+    runBlocking(workers) {
         repeat(10) {
             launch(workers) {
-                delay(1000)
+                delay(1000) // suspending
                 println("DONE!")
             }
         }

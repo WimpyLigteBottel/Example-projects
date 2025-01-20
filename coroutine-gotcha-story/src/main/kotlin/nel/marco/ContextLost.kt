@@ -1,47 +1,41 @@
 package nel.marco
 
-import kotlinx.coroutines.*
 import java.lang.Thread.sleep
 import java.util.concurrent.CountDownLatch
 import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 
 val message = ThreadLocal<String>()
 
+/*
+1. Will the workers remember what the manager said?
+- Yes?
+- No?
 
-fun main(): Unit = runBlocking() {
-    val countDownLatch = CountDownLatch(1)
+2. What about now?
+- Yes
+- No
+ */
 
-    //Manager says a message in the store
-    managerSaySomething()
+fun main(): Unit {
+    runBlocking {
 
-    val sharingContext = Dispatchers.Default + message.asContextElement()
-    val context = Dispatchers.Default
+        // Setting up some context
+        val manager = Thread.currentThread().name
+        message.set("$manager said: \"Remember RED Apples on top!\"")
+        println(message.get())
 
-    tellWorker("A", countDownLatch, sharingContext)
-    tellWorker("B", countDownLatch, context)
-
-    sleep(500)
-    countDownLatch.countDown()
-
-}
-
-private fun managerSaySomething() {
-    // Setting up some context
-    val manager = Thread.currentThread().name
-    message.set("$manager said: \"Remember RED Apples on top!\"")
-    println(message.get())
-}
-
-private fun CoroutineScope.tellWorker(
-    name: String,
-    countDownLatch: CountDownLatch,
-    contextElement: CoroutineContext,
-) {
-    launch(contextElement) {
-        countDownLatch.await()
-        val worker = Thread.currentThread().name
-        println("$worker $name: Remembers what manager said -> ${message.get()}") // Will remember
+        launch {
+            val threadName = Thread.currentThread().name
+            println("$threadName A: Remembers what manager said -> ${message.get()}") // Will remember
+        }
+        launch {
+            val threadName = Thread.currentThread().name
+            println("$threadName B: Remembers what manager said -> ${message.get()}") // Will remember
+        }
     }
 }
 
