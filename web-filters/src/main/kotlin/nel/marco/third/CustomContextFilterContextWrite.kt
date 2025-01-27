@@ -11,8 +11,8 @@ import org.springframework.web.server.WebFilterChain
 import reactor.core.publisher.Mono
 
 
-@Order(HIGHEST_PRECEDENCE)
-@Component
+//@Order(HIGHEST_PRECEDENCE)
+//@Component
 class CustomContextFilterContextWrite : WebFilter {
     override fun filter(
         exchange: ServerWebExchange,

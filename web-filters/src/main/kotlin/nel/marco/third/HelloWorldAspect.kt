@@ -1,20 +1,18 @@
-package nel.marco.aspect
+package nel.marco.third
 
 import kotlin.coroutines.coroutineContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.reactor.ReactorContext
-import kotlinx.coroutines.reactor.asCoroutineContext
 import kotlinx.coroutines.runBlocking
 import nel.marco.second.CUSTOM_ID
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
-import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 import reactor.util.context.ContextView
 
 @Aspect
-@Component
+//@Component
 class HelloWorldAspect {
 
     @Around("@within(org.springframework.web.bind.annotation.RestController)")

@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono
 const val CUSTOM_ID = "CUSTOM-ID"
 
 //@Component
-@Order(2)
+@Order(1)
 class CustomWebFilter : WebFilter {
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
         return chain.filter(exchange).doOnSuccess {
@@ -20,7 +20,7 @@ class CustomWebFilter : WebFilter {
     }
 }
 
-@Order(1)
+@Order(2)
 //@Component
 class CustomContextFilter : WebFilter {
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
