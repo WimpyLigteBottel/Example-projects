@@ -37,7 +37,7 @@ class Users {
 
     @GetMapping("/hello-world")
     suspend fun getUsers(): String {
-        someCoroutineHandler()
+//        someCoroutineHandler()
         return "Hello from the controller"
     }
 

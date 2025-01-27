@@ -25,8 +25,9 @@ class CustomWebFilter : WebFilter {
 class CustomContextFilter : WebFilter {
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
         return chain.filter(exchange).doOnSuccess {
-            println("CUSTOM-ID ADDED")
-            exchange.attributes[CUSTOM_ID] = UUID.randomUUID().toString()
+            val uuid = UUID.randomUUID().toString()
+            println("CUSTOM-ID ADDED [uuid: $uuid]")
+            exchange.attributes[CUSTOM_ID] = uuid
         }
     }
 }
