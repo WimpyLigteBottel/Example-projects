@@ -1,38 +1,24 @@
 package nel.marco.aspect
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.reactor.ReactorContext
-import kotlinx.coroutines.runBlocking
-import nel.marco.third.CustomContext
+import nel.marco.second.CUSTOM_ID
+import org.aspectj.lang.ProceedingJoinPoint
+import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
-import org.aspectj.lang.annotation.Before
 import org.springframework.stereotype.Component
-import kotlin.coroutines.coroutineContext
+import reactor.core.publisher.Mono
 
 @Aspect
-//@Component
+@Component
 class HelloWorldAspect {
 
-    @Before("@within(org.springframework.web.bind.annotation.RestController)")
-     fun helloWorld() {
+    @Around("@within(org.springframework.web.bind.annotation.RestController)")
+    fun helloWorld(pjp: ProceedingJoinPoint): Mono<Any> {
         println("HELLO THIS IS THE ASPECT")
 
-        runBlocking {
-            someCoroutineHandler()
-        }
-
-    }
-
-    suspend fun someCoroutineHandler() {
-        val customContext = coroutineContext[ReactorContext]?.context?.get<CustomContext>(CustomContext)
-        println("2nd. Accessed CUSTOM_ID in Coroutine: ${customContext?.getCustomId()}")
-        breakingContext()
-    }
-
-    fun breakingContext() {
-        runBlocking(Dispatchers.IO) {
-            val customContext = coroutineContext[CustomContext.Key]
-            println("3rd. Accessed CUSTOM_ID in broken context: ${customContext?.getCustomId()}")
+        return Mono.deferContextual { ctx ->
+            println("2nd. Accessed CUSTOM_ID in HelloWorldAspect.deferContextual: ${ctx.get<String>(CUSTOM_ID)}")
+            pjp.proceed() as Mono<out Any>?
         }
     }
+
 }

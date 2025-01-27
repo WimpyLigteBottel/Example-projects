@@ -1,14 +1,17 @@
 package nel.marco.second
 
+import java.util.UUID
+import org.springframework.core.annotation.Order
+import org.springframework.stereotype.Component
 import org.springframework.web.server.ServerWebExchange
 import org.springframework.web.server.WebFilter
 import org.springframework.web.server.WebFilterChain
 import reactor.core.publisher.Mono
-import java.util.UUID
 
 const val CUSTOM_ID = "CUSTOM-ID"
 
 //@Component
+@Order(2)
 class CustomWebFilter : WebFilter {
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<java.lang.Void> {
         return chain.filter(exchange).doOnSuccess {
@@ -17,6 +20,7 @@ class CustomWebFilter : WebFilter {
     }
 }
 
+@Order(1)
 //@Component
 class CustomContextFilter : WebFilter {
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<java.lang.Void> {

@@ -1,6 +1,7 @@
 package nel.marco.first
 
 import org.springframework.core.annotation.Order
+import org.springframework.stereotype.Component
 import org.springframework.web.server.ServerWebExchange
 import org.springframework.web.server.WebFilter
 import org.springframework.web.server.WebFilterChain
@@ -8,7 +9,7 @@ import reactor.core.publisher.Mono
 
 
 //@Component
-@Order(10)
+@Order(3)
 class CustomWebFilterOrder : WebFilter {
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<java.lang.Void> {
         return chain.filter(exchange).doOnSuccess {
@@ -19,7 +20,7 @@ class CustomWebFilterOrder : WebFilter {
 
 
 //@Component
-@Order(20)
+@Order(2)
 class CustomWebFilter2Order : WebFilter {
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<java.lang.Void> {
         return chain.filter(exchange).doOnSuccess {
@@ -29,7 +30,7 @@ class CustomWebFilter2Order : WebFilter {
 }
 
 //@Component
-@Order(30)
+@Order(1)
 class CustomWebFilter3Order : WebFilter {
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<java.lang.Void> {
         return chain.filter(exchange).doOnSuccess {

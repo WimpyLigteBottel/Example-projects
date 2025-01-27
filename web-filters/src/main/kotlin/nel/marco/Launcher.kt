@@ -1,7 +1,6 @@
 package nel.marco
 
 import kotlinx.coroutines.reactor.ReactorContext
-import nel.marco.third.CustomContext
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.reactive.function.client.WebClient
 import kotlin.coroutines.coroutineContext
+import nel.marco.second.CUSTOM_ID
 
 @SpringBootApplication
 open class Launcher
@@ -37,14 +37,14 @@ class Users {
 
     @GetMapping("/hello-world")
     suspend fun getUsers(): String {
-//        someCoroutineHandler()
+        someCoroutineHandler()
         return "Hello from the controller"
     }
 
 
     suspend fun someCoroutineHandler() {
-        val customContext = coroutineContext[ReactorContext]?.context?.get<CustomContext>(CustomContext)
-        println("1st. Accessed CUSTOM_ID in Coroutine: ${customContext?.getCustomId()}")
+        val custom_ID = coroutineContext[ReactorContext]?.context?.get<String>(CUSTOM_ID)
+        println("1st. Accessed CUSTOM_ID in RestController.Coroutine: ${custom_ID}}")
     }
 
 }
