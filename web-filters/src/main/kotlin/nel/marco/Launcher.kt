@@ -43,7 +43,7 @@ class Users {
 
 
     suspend fun someCoroutineHandler() {
-        val custom_ID = coroutineContext[ReactorContext]?.context?.get<String>(CUSTOM_ID)
+        val custom_ID = coroutineContext[ReactorContext]?.context?.getOrEmpty<String>(CUSTOM_ID)
         println("1st. Accessed CUSTOM_ID in RestController.Coroutine: ${custom_ID}}")
     }
 

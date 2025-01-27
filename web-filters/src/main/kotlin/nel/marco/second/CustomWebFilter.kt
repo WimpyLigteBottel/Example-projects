@@ -13,7 +13,7 @@ const val CUSTOM_ID = "CUSTOM-ID"
 //@Component
 @Order(2)
 class CustomWebFilter : WebFilter {
-    override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<java.lang.Void> {
+    override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
         return chain.filter(exchange).doOnSuccess {
             println("CUSTOM_ID " + exchange.getAttribute(CUSTOM_ID))
         }
@@ -23,7 +23,7 @@ class CustomWebFilter : WebFilter {
 @Order(1)
 //@Component
 class CustomContextFilter : WebFilter {
-    override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<java.lang.Void> {
+    override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
         return chain.filter(exchange).doOnSuccess {
             println("CUSTOM-ID ADDED")
             exchange.attributes[CUSTOM_ID] = UUID.randomUUID().toString()
