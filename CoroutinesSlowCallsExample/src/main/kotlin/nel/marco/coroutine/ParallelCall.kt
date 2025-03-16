@@ -1,4 +1,4 @@
-package nel.marco
+package nel.marco.coroutine
 
 import kotlinx.coroutines.*
 import org.springframework.stereotype.Component
