@@ -53,7 +53,7 @@ public class JavaParallel {
                 .map(x -> CompletableFuture.supplyAsync(this::retrieveUsers, executors))
                 .toList();
 
-        CompletableFuture.allOf(futures.toArray(new CompletableFuture[30])).join();
+        CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new)).join();
 
         long total = Duration.between(startTime, Instant.now()).toMillis();
         return getClass().getSimpleName() + ": example = " + total + " ms";
