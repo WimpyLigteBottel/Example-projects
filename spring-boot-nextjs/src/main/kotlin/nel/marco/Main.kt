@@ -22,7 +22,20 @@ fun main() {
 class HelloWorld {
 
     @GetMapping(value = ["/hello"])
-    fun getStaticPage(@RequestParam(required = false) name: String): String {
+    fun getStaticPage(
+        @RequestParam(required = false) name: String? = null,
+        @RequestParam name1: String = "name1",
+        @RequestParam name2: String? = "name2",
+        @RequestParam(defaultValue = "3name") name3: String = "name3",
+        @RequestParam name4: String = "name4",
+    ): String {
+
+        println("name $name")
+        println("name1 $name1")
+        println("name2 $name2")
+        println("name3 $name3")
+        println("name4 $name4")
+
         return "hello $name!"
     }
 
