@@ -3,7 +3,7 @@ package nel.marco
 fun main() {
 
     firstSequenceExample()
-    secondSequenceExample()
+//    secondSequenceExample()
 
 }
 

@@ -15,10 +15,12 @@ fun main() {
  *
  * Question: What do you think the result will be?
  *
- *  A -> 1,2,3
- *  B -> 3
- *  C -> exception?
  *
+ * ```
+ *  - A -> 1,2,3
+ *  - B -> 3
+ *  - C -> exception?
+ * ```
  */
 fun firstExample() {
     val result =
@@ -32,10 +34,11 @@ fun firstExample() {
 /**
  * Question: What do you think the result will be?
  *
- *  A -> 1,2,3
- *  B -> 3
- *  C -> exception?
- *
+ * ```
+ * - A -> 1,2,3
+ * - B -> 3
+ * - C -> exception?
+ * ```
  */
 fun secondExample() {
     val result =
@@ -50,10 +53,11 @@ fun secondExample() {
 /**
  * Question: What do you think the result will be?
  *
- *  A -> 2
- *  B -> 3
- *  C -> exception?
- *
+ * ```
+ * - A -> 2
+ * - B -> 3
+ * - C -> exception?
+ * ```
  */
 fun thirdExample() {
     val result =
@@ -69,10 +73,11 @@ fun thirdExample() {
 /**
  * Question: What do you think the result will be?
  *
- *  A -> 2
- *  B -> 3
- *  C -> exception?
- *
+ *  ```
+ *  - A -> 2
+ *  - B -> 3
+ *  - C -> exception?
+ *  ```
  */
 fun fourthExample() {
     val result =

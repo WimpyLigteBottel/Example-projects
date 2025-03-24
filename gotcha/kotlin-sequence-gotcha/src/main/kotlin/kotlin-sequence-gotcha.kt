@@ -5,6 +5,7 @@ fun main() {
     gotcha2()
     gotcha3()
     gotcha4()
+    gotcha5()
 }
 
 /**
@@ -68,4 +69,19 @@ fun gotcha4() {
         .toList()
 
     println("4. gotcha  [counter=$counter]")
+}
+
+
+/**
+ * What will the result be?
+ */
+fun gotcha5() {
+
+    var counter = 0
+    listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+        .asSequence()
+        .map { counter++ }
+        .find { it == 5 }
+
+    println("5. gotcha  [counter=$counter]")
 }
