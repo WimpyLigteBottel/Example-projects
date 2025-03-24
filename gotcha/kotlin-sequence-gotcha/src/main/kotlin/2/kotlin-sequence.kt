@@ -26,5 +26,5 @@ fun secondSequenceExample() {
             .take(3)
             .toList()
 
-    println("firstSequenceExample $result")
+    println("secondSequenceExample $result")
 }

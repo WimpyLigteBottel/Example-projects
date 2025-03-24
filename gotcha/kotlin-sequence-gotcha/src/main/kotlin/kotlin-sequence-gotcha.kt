@@ -17,7 +17,6 @@ fun gotcha() {
     var counter = 0
     listOf(1, 2, 3)
         .asSequence()
-        .filter { it != 0 }
         .map { counter++ }
 
     println("1. gotcha  [counter=$counter]")
@@ -32,7 +31,7 @@ fun gotcha2() {
     var counter = 0
     listOf(1, 2, 3)
         .asSequence()
-        .filter { it != 0 }
+        .filter { it != 0 } // filter added
         .map { counter++ }
         .toList()
 
