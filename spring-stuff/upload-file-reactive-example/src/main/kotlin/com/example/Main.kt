@@ -34,21 +34,22 @@ open class UploadOnRunTime : CommandLineRunner {
 
     override fun run(vararg args: String?) {
         kotlin.runCatching {
-            singleUpload()
+//            singleUpload()
             mutlipleUpload()
+        }.onFailure {
+            log.error(it.message,it)
         }
     }
 
     private fun mutlipleUpload() {
         val builder = MultipartBodyBuilder()
-        val file = ClassPathResource("picture.jpg").file
 
         for (x in 1..10) {
             builder
-                .part("files", file.readBytes())
+                .part("files", ClassPathResource("picture.jpg").file.readBytes())
                 .header(
                     "Content-Disposition",
-                    ContentDisposition.formData().name("files").filename(x.toString()).build().toString()
+                    ContentDisposition.formData().name("files").filename("picture-$x.jpg").build().toString()
                 )
         }
 
@@ -65,19 +66,18 @@ open class UploadOnRunTime : CommandLineRunner {
     private fun singleUpload() {
         val builder = MultipartBodyBuilder()
 
-        val file = ClassPathResource("picture.jpg").file
         builder
-            .part("file1", file.readBytes())
+            .part("file1",  ClassPathResource("picture.jpg").file.readBytes())
             .header(
                 "Content-Disposition",
-                ContentDisposition.formData().name("file1").filename(file.name).build().toString()
+                ContentDisposition.formData().name("file1").filename("picture.jpg").build().toString()
             )
 
         builder
-            .part("file2", file.readBytes())
+            .part("file2",  ClassPathResource("picture-2.jpg").file.readBytes())
             .header(
                 "Content-Disposition",
-                ContentDisposition.formData().name("file2").filename(file.name).build().toString()
+                ContentDisposition.formData().name("file2").filename("picture-2.jpg").build().toString()
             )
 
         val response = WebClient.create().post().uri("http://localhost:8080/upload")
