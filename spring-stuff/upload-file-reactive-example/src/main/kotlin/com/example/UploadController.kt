@@ -42,7 +42,7 @@ class UploadController {
     }
 
     private fun createCopy(file: FilePart) {
-        log.info("fileName={}", file.name())
+        log.info("fileName={}", file.filename())
         val x =
             Path.of("C:\\code\\Example-projects\\spring-stuff\\upload-file-reactive-example\\target\\${file.filename()}")
         file.transferTo(x).toFuture().join()
