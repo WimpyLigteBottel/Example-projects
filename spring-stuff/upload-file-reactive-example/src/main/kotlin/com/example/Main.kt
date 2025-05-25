@@ -7,17 +7,10 @@ import org.springframework.boot.runApplication
 import org.springframework.core.io.ClassPathResource
 import org.springframework.http.ContentDisposition
 import org.springframework.http.client.MultipartBodyBuilder
-import org.springframework.http.codec.multipart.FilePart
 import org.springframework.stereotype.Component
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestPart
-import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
-import reactor.core.publisher.Flux
-import java.nio.file.Path
-import java.util.*
 
 @SpringBootApplication
 open class Launcher
@@ -34,10 +27,10 @@ open class UploadOnRunTime : CommandLineRunner {
 
     override fun run(vararg args: String?) {
         kotlin.runCatching {
-//            singleUpload()
+            singleUpload()
             mutlipleUpload()
         }.onFailure {
-            log.error(it.message,it)
+            log.error(it.message, it)
         }
     }
 
@@ -67,14 +60,14 @@ open class UploadOnRunTime : CommandLineRunner {
         val builder = MultipartBodyBuilder()
 
         builder
-            .part("file1",  ClassPathResource("picture.jpg").file.readBytes())
+            .part("file1", ClassPathResource("picture.jpg").file.readBytes())
             .header(
                 "Content-Disposition",
                 ContentDisposition.formData().name("file1").filename("picture.jpg").build().toString()
             )
 
         builder
-            .part("file2",  ClassPathResource("picture-2.jpg").file.readBytes())
+            .part("file2", ClassPathResource("picture-2.jpg").file.readBytes())
             .header(
                 "Content-Disposition",
                 ContentDisposition.formData().name("file2").filename("picture-2.jpg").build().toString()
