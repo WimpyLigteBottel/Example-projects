@@ -1,0 +1,14 @@
+resilience4j:
+  timelimiter:
+    instances:
+      backendA:
+        timeoutDuration: 1s
+        cancelRunningFuture: false
+  retry:
+    instances:
+      backendA:
+        maxAttempts: 3
+        waitDuration: 100ms
+        enableExponentialBackoff: true
+        exponentialBackoffMultiplier: 2
+
