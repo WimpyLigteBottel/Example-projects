@@ -1,27 +1,33 @@
 import { useState } from 'react'
-import { fetchData } from './FetchUtil'
 import './Example.css'
 
 
 export function V1Example() {
-  const [waitAmount, setWaitAmount] = useState(1000)
+  const [counter, setCounter] = useState(0)
+
+  const handleButtonAction = (value) => {
+    setCounter(counter + value)
+
+    // 1. What will the counter be?
+
+    // 2. What will it be now?
+    // setCounter(counter + value)
+  }
 
   return (
     <>
-      <h1>V1 - no loading</h1>
+      <h1>V1 - react counter gotcha!</h1>
       <div className="card">
-        <button onClick={() => setWaitAmount(waitAmount + 1000)}>
-          Increase wait amount ({waitAmount}ms)
-        </button><br /><br /><br />
-
-        <button onClick={() => fetchData(waitAmount, false)} className={"button-green"}>
-          {"SUCCESS"}
+        <button onClick={() => handleButtonAction(1)} className={"button-green"}>
+          +
         </button>
 
-        <button onClick={() => fetchData(waitAmount, true)} className={"button-red"}>
-          {"I WILL ALWAYS FAIL!"}
+        <button onClick={() => handleButtonAction(-1)} className={"button-red"}>
+          -
         </button>
       </div>
+
+      <h1>{counter}</h1>
     </>
   )
 }

@@ -1,48 +1,51 @@
 import { useState } from 'react'
-import { fetchDataV2 as fetchData } from './FetchUtil'
 import './Example.css'
 
-
-
-
 export function V2Example() {
-  const [waitAmount, setWaitAmount] = useState(1000)
-  const [isLoading, setIsLoading] = useState(false)
+  const [textInputValue, setTextInputValue] = useState('');
 
-  const handleFetch = async (waitAmount, shouldFail) => {
-    setIsLoading(true)
-    await fetchData(waitAmount, shouldFail)
-    setIsLoading(false)
-  }
+  const [items, setItems] = useState([
+    'apple',
+    'banana',
+  ]);
 
-  if (isLoading) {
-    return <div>'Loading...' </div>
+  function handleAddItem(value) {
+    items.push(value)
+    setItems(items);
+    //1.  Will this work?
   }
 
   return (
-    <>
-      <h1>V2 - Loading included</h1>
-      <div className="card">
-        <button onClick={() => setWaitAmount(waitAmount + 1000)}>
-          Increase wait amount ({waitAmount}ms)
-        </button><br /><br /><br />
+    <div>
+      <h1>V2 - Mutate state gotcha!</h1>
+      {itemListDisplay(items)}
 
-        <button
-          onClick={() => handleFetch(waitAmount, false)}
-          disabled={isLoading}
-          className={"button-green"}>
-          {"SUCCESS"}
-        </button>
+      {formDisplay(handleAddItem, textInputValue, setTextInputValue)}
 
-        <button
-          onClick={() => handleFetch(waitAmount, true)}
-          disabled={isLoading}
-          className={"button-red"}>
-          {"I WILL ALWAYS FAIL!"}
-        </button>
-      </div>
-    </>
+    </div>
   )
 }
 
-export default V2Example
+
+export default V2Example;
+
+
+function formDisplay(handleAddItem, textInputValue, setTextInputValue) {
+  return <div>
+    <input value={textInputValue} onChange={event => setTextInputValue(event.target.value)} />
+    <button onClick={() => { handleAddItem(textInputValue) }}>Add item</button>
+  </div >;
+}
+
+function itemListDisplay(items) {
+  return <ul>
+    {items.map((item, index) => {
+      return (
+        <li key={index}>
+          {item}
+        </li>
+      );
+    })}
+  </ul>;
+}
+
