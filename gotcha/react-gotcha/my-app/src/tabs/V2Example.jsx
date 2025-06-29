@@ -12,7 +12,7 @@ export function V2Example() {
   function handleAddItem(value) {
     items.push(value)
     setItems(items);
-    //1.  Will this work?
+    //1.  When i click add item. What will be displayed?
   }
 
   return (
@@ -20,22 +20,20 @@ export function V2Example() {
       <h1>V2 - Mutate state gotcha!</h1>
       {itemListDisplay(items)}
 
-      {formDisplay(handleAddItem, textInputValue, setTextInputValue)}
-
+      <div>
+        <input
+          value={textInputValue}
+          onChange={event => setTextInputValue(event.target.value)}
+        />
+        <button
+          onClick={() => { handleAddItem(textInputValue) }}>Add item</button>
+      </div >
     </div>
   )
 }
 
 
 export default V2Example;
-
-
-function formDisplay(handleAddItem, textInputValue, setTextInputValue) {
-  return <div>
-    <input value={textInputValue} onChange={event => setTextInputValue(event.target.value)} />
-    <button onClick={() => { handleAddItem(textInputValue) }}>Add item</button>
-  </div >;
-}
 
 function itemListDisplay(items) {
   return <ul>
