@@ -3,6 +3,7 @@ import './App.css'
 import { V1Example } from './tabs/V1Example'
 import { V2Example } from './tabs/V2Example'
 import { V3Example } from './tabs/V3Example'
+import V4Example from "./tabs/V4Example.jsx";
 
 
 
@@ -17,6 +18,9 @@ function getView(displayView) {
     case "V3": {
       return <V3Example />
     }
+    case "V4": {
+      return <V4Example />
+    }
   }
 }
 
@@ -29,6 +33,7 @@ function App() {
       <button onClick={() => setDisplayView("V1")}>1</button>
       <button onClick={() => setDisplayView("V2")}>2</button>
       <button onClick={() => setDisplayView("V3")}>3</button>
+      <button onClick={() => setDisplayView("V4")}>4</button>
     </div>
     <div>
       {getView(displayView)}
