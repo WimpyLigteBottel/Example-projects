@@ -23,20 +23,20 @@ export function V4Example() {
     let abortController = useRef(null);
 
 
-    // useEffect(() => {
-    //     return () => {
-    //         if (abortController.current) {
-    //             abortController.current.abort();
-    //         }
-    //     };
-    // }, []);
+    useEffect(() => {
+        return () => {
+            if (abortController.current) {
+                abortController.current.abort();
+            }
+        };
+    }, []);
 
     // 1. multi fetching
     // 2, how to fix?
     // 3. Do the secret thing ;) Nav (look at the console log
 
 
-    const goFetchHandler = async () => {
+    const fetchHandler = async () => {
         console.log('Gotcha V4: Start')
         setLoading(true)
 
@@ -63,7 +63,7 @@ export function V4Example() {
         <>
             <h1>V4 - Double click submit problem!!!!</h1>
             <div className="card">
-                <button onClick={() => goFetchHandler()} className={"button-green"}>
+                <button onClick={fetchHandler} className={"button-green"}>
                     Fetch data
                 </button>
 
