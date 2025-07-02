@@ -23,17 +23,17 @@ export function V4Example() {
     let abortController = useRef(null);
 
 
-    useEffect(() => {
-        return () => {
-            if (abortController.current) {
-                abortController.current.abort();
-            }
-        };
-    }, []);
+    // useEffect(() => {
+    //     return () => {
+    //         if (abortController.current) {
+    //             abortController.current.abort();
+    //         }
+    //     };
+    // }, []);
 
     // 1. multi fetching
     // 2, how to fix?
-    // 3. Do the secret thing ;) Nav
+    // 3. Do the secret thing ;) Nav (look at the console log
 
 
     const goFetchHandler = async () => {
@@ -50,6 +50,10 @@ export function V4Example() {
             .finally(() => {
                 setLoading(false)
             })
+
+        if(fetchData["products"].length != 0){
+            console.log('FETCH STILL HAPPENED')
+        }
 
         setProducts(fetchData["products"])
 

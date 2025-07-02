@@ -4,6 +4,7 @@ import { V1Example } from './tabs/V1Example'
 import { V2Example } from './tabs/V2Example'
 import { V3Example } from './tabs/V3Example'
 import V4Example from "./tabs/V4Example.jsx";
+import V5Example from "./tabs/V5Example.jsx";
 
 
 
@@ -21,6 +22,9 @@ function getView(displayView) {
     case "V4": {
       return <V4Example />
     }
+    case "V5": {
+      return <V5Example />
+    }
   }
 }
 
@@ -34,6 +38,7 @@ function App() {
       <button onClick={() => setDisplayView("V2")}>2</button>
       <button onClick={() => setDisplayView("V3")}>3</button>
       <button onClick={() => setDisplayView("V4")}>4</button>
+      <button onClick={() => setDisplayView("V5")}>5</button>
     </div>
     <div>
       {getView(displayView)}
