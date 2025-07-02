@@ -2,11 +2,15 @@ import './Example.css'
 import {useEffect, useRef, useState} from "react";
 
 
-async function fetchInformation(delay,abortController) {
-    return await fetch(`https://dummyjson.com/products/?delay=${delay}&limit=5`, {signal: abortController.signal})
+async function fetchInformation(delay, signal) {
+    return await fetch(`https://dummyjson.com/products/?delay=${delay}&limit=5`, {signal: signal})
         .then(res => res.json())
-        .catch((error)=>{
-            console.error('FAILED: ',error)
+        .catch((error) => {
+            if(error.name == 'AbortError'){
+                console.log('Canceled request')
+            }else {
+                console.error('FAILED: ', error)
+            }
             return {products: []}
         })
 }
@@ -21,7 +25,6 @@ export function V4Example() {
 
     useEffect(() => {
         return () => {
-            // Cleanup function to abort any pending requests
             if (abortController.current) {
                 abortController.current.abort();
             }
@@ -37,14 +40,13 @@ export function V4Example() {
         console.log('Gotcha V4: Start')
         setLoading(true)
 
-        if(abortController.current){
-            abortController.current.abort('Another request happened')
+        if (abortController.current) {
+            abortController.current.abort()
         }
 
-        let newC = new AbortController()
-        abortController.current = newC
+        abortController.current =  new AbortController()
 
-        let fetchData = await fetchInformation(2000,newC)
+        let fetchData = await fetchInformation(2000, abortController.current.signal)
             .finally(() => {
                 setLoading(false)
             })
@@ -57,10 +59,9 @@ export function V4Example() {
         <>
             <h1>V4 - Double click submit problem!!!!</h1>
             <div className="card">
-                <button  onClick={() => goFetchHandler()} className={"button-green"}>
+                <button onClick={() => goFetchHandler()} className={"button-green"}>
                     Fetch data
                 </button>
-
 
 
                 <br/>
@@ -74,7 +75,7 @@ export function V4Example() {
 
 function itemListDisplay(items) {
     return <ul>
-        {items.map((item,index) => {
+        {items.map((item, index) => {
             return (
                 <li key={index}>
                     {item.id} - {item.title}
