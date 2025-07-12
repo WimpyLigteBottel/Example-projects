@@ -1,14 +1,56 @@
 resilience4j:
-  timelimiter:
+  circuitbreaker:
+    configs:
+      default:
+        register-health-indicator: true
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        permitted-number-of-calls-in-half-open-state: 3
+        automatic-transition-from-open-to-half-open-enabled: true
+        wait-duration-in-open-state: 5s
+        failure-rate-threshold: 50
+        event-consumer-buffer-size: 10
     instances:
       backendA:
-        timeoutDuration: 1s
-        cancelRunningFuture: false
-  retry:
-    instances:
-      backendA:
-        maxAttempts: 3
-        waitDuration: 100ms
-        enableExponentialBackoff: true
-        exponentialBackoffMultiplier: 2
+        base-config: default
 
+  retry:
+    configs:
+      default:
+        max-attempts: 3
+        wait-duration: 10ms
+        enable-exponential-backoff: true
+        exponential-backoff-multiplier: 2
+    instances:
+      backendA:
+        base-config: default
+
+  timelimiter:
+    configs:
+      default:
+        timeout-duration: 3s
+        cancel-running-future: true
+    instances:
+      backendA:
+        base-config: default
+
+  bulkhead:
+    configs:
+      default:
+        max-concurrent-calls: 10
+        max-wait-duration: 2s
+    instances:
+      backendA:
+        base-config: default
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+  health:
+    circuitbreakers:
+      enabled: true

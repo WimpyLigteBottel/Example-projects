@@ -7,10 +7,13 @@ import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.scheduling.annotation.EnableScheduling
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.reactive.function.client.WebClient
+import java.util.concurrent.TimeUnit
 import kotlin.system.measureTimeMillis
 
 
@@ -39,12 +42,29 @@ class ControllerAdvise() {
 }
 
 @Service
+@EnableScheduling
 class StartupRequest : CommandLineRunner {
 
     override fun run(vararg args: String?) {
         runBlocking {
-            retryExample()
+            retryDecoratorExample()
+//            retryExample()
 //            timeoutExample()
+        }
+    }
+
+    @Scheduled(fixedRate = 1, timeUnit = TimeUnit.SECONDS)
+    fun retryDecoratorExample() {
+        runBlocking {
+            kotlin.runCatching {
+                println(
+                    WebClient.create().get().uri("http://localhost:8080/decorator").retrieve()
+                        .toEntity(String::class.java)
+                        .awaitSingle()
+                )
+            }.onFailure {
+                println("retry webclient failed: " + it.message)
+            }
         }
     }
 
