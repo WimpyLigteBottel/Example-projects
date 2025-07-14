@@ -30,7 +30,8 @@ class ExampleDecoratorRestController(
 
     @GetMapping("/decorator")
     suspend fun retry(): String {
-        return exampleService.retryFlow()
+        println("before: ${Thread.currentThread().name}")
+        return exampleService.simple()
     }
 }
 
@@ -38,7 +39,7 @@ class ExampleDecoratorRestController(
 class ExampleServiceDecorator(
     private val config: Resilience4jConfig
 ) {
-    suspend fun retrySimple(): String {
+    suspend fun simple(): String {
         return config.decorateSuspend(
             name = "backendA",
             fallbackFunction = { fallbackFunction() },
@@ -46,7 +47,7 @@ class ExampleServiceDecorator(
         )
     }
 
-    suspend fun retryFlow() = runBlocking { // HAD TO ADD runblocking here to get it to work
+    suspend fun flow() = runBlocking { // HAD TO ADD runblocking here to get it to work
         config.decorateWithFlow(
             name = "backendA",
             fallbackFunction = { fallbackFunction() },
@@ -89,15 +90,14 @@ class Resilience4jConfig(
 
         val decorated = timeLimiter.decorateSuspendFunction {
             bulkhead.executeSuspendFunction {
-                retry.executeSuspendFunction {
-                    circuitBreaker.executeSuspendFunction {
+                circuitBreaker.executeSuspendFunction {
+                    retry.executeSuspendFunction {
                         block()
                     }
                 }
             }
         }
 
-        println("before: ${Thread.currentThread().name}")
 
         return try {
             runBlocking {
