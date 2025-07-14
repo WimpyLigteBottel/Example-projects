@@ -12,18 +12,15 @@ import io.github.resilience4j.kotlin.timelimiter.decorateSuspendFunction
 import io.github.resilience4j.kotlin.timelimiter.timeLimiter
 import io.github.resilience4j.retry.RetryRegistry
 import io.github.resilience4j.timelimiter.TimeLimiterRegistry
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
-import kotlin.coroutines.coroutineContext
 import kotlin.random.Random
 
 @RestController
@@ -33,7 +30,7 @@ class ExampleDecoratorRestController(
 
     @GetMapping("/decorator")
     suspend fun retry(): String {
-        return exampleService.retrySimple()
+        return exampleService.retryFlow()
     }
 }
 
@@ -49,8 +46,8 @@ class ExampleServiceDecorator(
         )
     }
 
-    suspend fun retryFlow(): String {
-        return config.decorateWithFlow(
+    suspend fun retryFlow() = runBlocking { // HAD TO ADD runblocking here to get it to work
+        config.decorateWithFlow(
             name = "backendA",
             fallbackFunction = { fallbackFunction() },
             block = { simulateService() }
@@ -105,7 +102,7 @@ class Resilience4jConfig(
         return try {
             runBlocking {
                 println("inside: ${Thread.currentThread().name}")
-                decorated()
+                decorated.invoke()
             }
         } catch (e: Exception) {
             println("Exception in suspend decorator: ${e.message}")

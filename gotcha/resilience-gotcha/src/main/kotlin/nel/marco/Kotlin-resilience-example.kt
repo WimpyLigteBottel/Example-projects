@@ -53,7 +53,7 @@ class StartupRequest : CommandLineRunner {
         }
     }
 
-    @Scheduled(fixedRate = 100, timeUnit = TimeUnit.MILLISECONDS)
+    @Scheduled(fixedRate = 1000, timeUnit = TimeUnit.MILLISECONDS)
     fun retryDecoratorExample() {
         runBlocking {
             kotlin.runCatching {
