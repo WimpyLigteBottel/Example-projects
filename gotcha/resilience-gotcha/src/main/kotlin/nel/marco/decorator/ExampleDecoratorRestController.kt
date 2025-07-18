@@ -10,16 +10,24 @@ import io.github.resilience4j.kotlin.retry.executeSuspendFunction
 import io.github.resilience4j.kotlin.retry.retry
 import io.github.resilience4j.kotlin.timelimiter.decorateSuspendFunction
 import io.github.resilience4j.kotlin.timelimiter.timeLimiter
+import io.github.resilience4j.reactor.bulkhead.operator.BulkheadOperator
+import io.github.resilience4j.reactor.circuitbreaker.operator.CircuitBreakerOperator
+import io.github.resilience4j.reactor.retry.RetryOperator
+import io.github.resilience4j.reactor.timelimiter.TimeLimiterOperator
 import io.github.resilience4j.retry.RetryRegistry
 import io.github.resilience4j.timelimiter.TimeLimiterRegistry
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.reactor.awaitSingle
+import kotlinx.coroutines.reactor.mono
 import kotlinx.coroutines.runBlocking
 import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import kotlin.random.Random
 
@@ -31,7 +39,23 @@ class ExampleDecoratorRestController(
     @GetMapping("/decorator")
     suspend fun retry(): String {
         println("before: ${Thread.currentThread().name}")
-        return exampleService.simple()
+        return exampleService.mono()
+    }
+
+    @GetMapping("/test")
+    suspend fun retry(
+        @RequestParam delayNumber: Long = 1000L,
+        @RequestParam(required = false, defaultValue = "0.5") failureChange: Double = 0.5
+    ): String {
+
+        if (Random.nextDouble() < failureChange) { // Increased failure rate for testing
+            throw RuntimeException("Service failed!")
+        }
+
+        runBlocking { delay(delayNumber) }
+
+
+        return "HELLO WORLD"
     }
 }
 
@@ -43,6 +67,13 @@ class ExampleServiceDecorator(
         return config.decorateSuspend(
             name = "backendA",
             fallbackFunction = { fallbackFunction() },
+            block = { simulateService() }
+        )
+    }
+
+    suspend fun mono(): String {
+        return config.decorateMono(
+            name = "backendA",
             block = { simulateService() }
         )
     }
@@ -108,6 +139,24 @@ class Resilience4jConfig(
             println("Exception in suspend decorator: ${e.message}")
             fallbackFunction()
         }
+    }
+
+    suspend fun <T : Any> decorateMono(
+        name: String,
+        block: suspend () -> T
+    ): T {
+        val circuitBreaker = circuitBreakerRegistry.circuitBreaker(name)
+        val retry = retryRegistry.retry(name)
+        val bulkhead = bulkheadRegistry.bulkhead(name)
+        val timeLimiter = timeLimiterRegistry.timeLimiter(name)
+
+
+        return mono { block.invoke() }
+            .transformDeferred(RetryOperator.of(retry))
+            .transformDeferred(BulkheadOperator.of(bulkhead))
+            .transformDeferred(CircuitBreakerOperator.of(circuitBreaker))
+            .transformDeferred(TimeLimiterOperator.of(timeLimiter))
+            .awaitSingle()
     }
 
     suspend fun <T : Any> decorateWithFlow(

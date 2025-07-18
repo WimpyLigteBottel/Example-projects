@@ -1,8 +1,15 @@
 package nel.marco
 
+import io.github.resilience4j.bulkhead.BulkheadRegistry
+import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry
+import io.github.resilience4j.reactor.bulkhead.operator.BulkheadOperator
+import io.github.resilience4j.reactor.circuitbreaker.operator.CircuitBreakerOperator
+import io.github.resilience4j.reactor.retry.RetryOperator
+import io.github.resilience4j.reactor.timelimiter.TimeLimiterOperator
+import io.github.resilience4j.retry.RetryRegistry
+import io.github.resilience4j.timelimiter.TimeLimiterRegistry
 import kotlinx.coroutines.reactor.awaitSingle
 import kotlinx.coroutines.runBlocking
-import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.http.HttpStatus
@@ -13,6 +20,7 @@ import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.reactive.function.client.WebClient
+import reactor.core.publisher.Mono
 import java.util.concurrent.TimeUnit
 import kotlin.system.measureTimeMillis
 
@@ -43,17 +51,15 @@ class ControllerAdvise() {
 
 @Service
 @EnableScheduling
-class StartupRequest : CommandLineRunner {
+class StartupRequest(
+    private val circuitBreakerRegistry: CircuitBreakerRegistry,
+    private val retryRegistry: RetryRegistry,
+    private val timeLimiterRegistry: TimeLimiterRegistry,
+    private val bulkheadRegistry: BulkheadRegistry
+) {
 
-    override fun run(vararg args: String?) {
-        runBlocking {
-            retryDecoratorExample()
-//            retryExample()
-//            timeoutExample()
-        }
-    }
 
-    @Scheduled(fixedRate = 1000, timeUnit = TimeUnit.MILLISECONDS)
+    //    @Scheduled(fixedRate = 1000, timeUnit = TimeUnit.MILLISECONDS)
     fun retryDecoratorExample() {
         runBlocking {
             kotlin.runCatching {
@@ -65,6 +71,36 @@ class StartupRequest : CommandLineRunner {
             }.onFailure {
                 println("retry webclient failed: " + it.message)
             }
+        }
+    }
+
+    var previousNumber = 1000L
+
+    @Scheduled(fixedRate = 1000, timeUnit = TimeUnit.MILLISECONDS)
+    fun retryDecoratorExample2() {
+        runCatching {
+            println(
+                WebClient.create("http://localhost:8080").get().uri {
+                    it.path("/test")
+                        .queryParam("delayNumber", previousNumber)
+                        .queryParam("failureChange", 0.1)
+                        .build()
+                }.retrieve()
+                    .bodyToMono(String::class.java)
+                    .transformDeferred(TimeLimiterOperator.of(timeLimiterRegistry.timeLimiter("backendA"))) // #1
+                    .transformDeferred(BulkheadOperator.of(bulkheadRegistry.bulkhead("backendA")))         // #2
+                    .transformDeferred(CircuitBreakerOperator.of(circuitBreakerRegistry.circuitBreaker("backendA"))) // #3
+                    .transformDeferred(RetryOperator.of(retryRegistry.retry("backendA")))
+                    .onErrorResume {
+                        println("Failed")
+                        Mono.error(it)
+                    }
+                    .toFuture().join()
+            )
+
+            previousNumber = previousNumber + 1000
+        }.onFailure {
+            println("decora: " + it.message)
         }
     }
 
