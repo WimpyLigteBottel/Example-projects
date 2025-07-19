@@ -1,0 +1,5 @@
+spring:
+  cache:
+    cache-names: "slowLogic"
+    caffeine:
+      spec: "maximumSize=500,expireAfterWrite=5s"
