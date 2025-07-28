@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>nel.marco</groupId>
-    <artifactId>multidollar</artifactId>
+    <artifactId>bunch-kotlin-stuff</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
