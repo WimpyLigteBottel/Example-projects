@@ -1,0 +1,16 @@
+services:
+  application:
+    container_name: application
+    build:
+      context: .
+      dockerfile: DockerFile
+    ports:
+      - "8888:8080"
+    networks:
+      - custom-network
+    environment:
+      encrypt.password: xxxxxxxx
+      encrypt.salt: deadbeefdeadbeef
+networks:
+  custom-network:
+    driver: bridge

@@ -1,4 +1,4 @@
-package nel.marco
+package nel.marco.service
 
 import org.springframework.security.crypto.encrypt.TextEncryptor
 import org.springframework.stereotype.Service
