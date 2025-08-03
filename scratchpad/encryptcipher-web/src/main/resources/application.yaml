@@ -1,0 +1,3 @@
+encrypt:
+  password: replaceme1
+  salt: deadbeefdeadbeef
