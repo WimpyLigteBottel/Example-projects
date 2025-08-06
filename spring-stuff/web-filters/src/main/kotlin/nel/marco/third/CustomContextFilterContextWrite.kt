@@ -1,6 +1,5 @@
 package nel.marco.third
 
-import java.util.UUID
 import nel.marco.second.CUSTOM_ID
 import org.springframework.core.Ordered.HIGHEST_PRECEDENCE
 import org.springframework.core.annotation.Order
@@ -18,8 +17,13 @@ class CustomContextFilterContextWrite : WebFilter {
         exchange: ServerWebExchange,
         chain: WebFilterChain,
     ): Mono<Void> =
-        chain.filter(exchange).contextWrite { ctx->
+        chain.filter(exchange).contextWrite { ctx ->
             println("CUSTOM_ID has been added")
-            ctx.put(CUSTOM_ID,  UUID.randomUUID().toString())
+            ctx.put(CUSTOM_ID, exchange.getHeader())
         }
+
+
+    fun ServerWebExchange.getHeader(): String {
+        return this.getRequest().headers.get("CUSTOM-HEADER")?.single() ?: "EMPTY"
+    }
 }

@@ -1,7 +1,7 @@
 package nel.marco.third
 
-import kotlin.coroutines.coroutineContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.reactor.ReactorContext
 import kotlinx.coroutines.reactor.asCoroutineContext
 import kotlinx.coroutines.runBlocking
@@ -12,6 +12,7 @@ import org.aspectj.lang.annotation.Aspect
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 import reactor.util.context.ContextView
+import kotlin.coroutines.coroutineContext
 
 @Aspect
 @Component
@@ -37,7 +38,7 @@ class HelloWorldAspect {
 
     fun runBlocking(ctx: ContextView) {
         //Remember gotcha in here
-        runBlocking(ctx.asCoroutineContext()+ Dispatchers.IO) {
+        runBlocking(ctx.asCoroutineContext() + Dispatchers.IO) {
             val ans = getId()
 
             println("2nd. Accessed CUSTOM_ID in HelloWorldAspect.deferContextual: ${ans}")
