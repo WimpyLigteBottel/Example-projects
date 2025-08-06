@@ -23,6 +23,8 @@ class CustomContextFilterContextWrite : WebFilter {
         }
 
 
+    //https://stackoverflow.com/questions/55614619/using-webclient-to-propagate-request-headers-received-in-a-spring-webflux-applic
+
     fun ServerWebExchange.getHeader(): String {
         return this.getRequest().headers.get("CUSTOM-HEADER")?.single() ?: "EMPTY"
     }
