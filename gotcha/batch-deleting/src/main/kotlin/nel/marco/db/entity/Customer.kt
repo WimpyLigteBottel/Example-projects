@@ -11,12 +11,14 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.stereotype.Repository
+import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.time.OffsetDateTime
 import java.util.*
+import java.util.concurrent.CompletableFuture
 import kotlin.system.measureTimeMillis
 
 
@@ -51,10 +53,30 @@ interface CustomerRepo : JpaRepository<Customer, Long> {
     @Query(
         """
             delete from Customer
-            where id in (SELECT id FROM Customer WHERE created < :createdDate)
-        """
+            where id in (
+                SELECT id FROM Customer
+                WHERE created < :createdDate
+                LIMIT 100000
+            )
+        """,
+        nativeQuery = true
     )
     fun deleteInBatch(createdDate: OffsetDateTime): Int
+
+    @Modifying
+    @Query(
+        """
+            delete from Customer
+            where id in (
+                SELECT id FROM Customer
+                WHERE created < :createdDate
+                order by created desc
+                LIMIT 100000
+            )
+        """,
+        nativeQuery = true
+    )
+    fun deleteInBatchOrderBy(createdDate: OffsetDateTime): Int
 
 
 }
@@ -63,7 +85,7 @@ interface CustomerRepo : JpaRepository<Customer, Long> {
 @EnableScheduling
 open class CustomController(
     private val customerRepo: CustomerRepo,
-    private val jdbcTemplate: JdbcTemplate
+    private val batchService: BatchService
 ) {
 
     @GetMapping
@@ -83,18 +105,22 @@ open class CustomController(
     }
 
     @GetMapping("/v1/delete")
-    @Transactional
-    open fun delete(): String {
+    open fun delete(@RequestParam order: String = "y"): String {
         val time = measureTimeMillis {
-            customerRepo.deleteInBatch(OffsetDateTime.now())
+            batchService.batchDelete(order == "y")
         }
+
+        println(
+            """
+            delete (ordered=${order == "y"}) took $time ms
+        """.trimIndent()
+        )
         return "$time ms"
     }
 
 
     @GetMapping("/v1/batch")
-    @Transactional
-    open fun createBatch(@RequestParam size: Int = 1000): Int {
+    open fun createBatch(@RequestParam size: Int = 100000): Int {
 
         val customers = (1..size).map {
             val result = minRandom<Customer>()
@@ -103,15 +129,33 @@ open class CustomController(
             result
         }
         val time = measureTimeMillis {
-            batchInsert(customers)
+            customers.chunked(10000).map {
+                CompletableFuture.supplyAsync({
+                    batchService.batchInsert(it)
+
+                })
+            }.forEach {
+                it.join()
+            }
+
         }
-        println( "$time ms")
+        println("create took $time ms")
 
         return customerRepo.findSizeOfCustomers()
     }
 
 
-    fun batchInsert(customers: List<Customer>) {
+}
+
+
+@Service
+open class BatchService(
+    private val jdbcTemplate: JdbcTemplate,
+    private val customerRepo: CustomerRepo,
+) {
+
+    @Transactional
+    open fun batchInsert(customers: List<Customer>) {
         val sql = "INSERT INTO customer (id,name, created, updated) VALUES (?,?, ?, ?)"
 
         val batchArgs = customers.map { customer ->
@@ -119,5 +163,14 @@ open class CustomController(
         }
 
         jdbcTemplate.batchUpdate(sql, batchArgs)
+    }
+
+    @Transactional
+    open fun batchDelete(deleteWithOrder: Boolean) {
+
+        if (deleteWithOrder)
+            customerRepo.deleteInBatch(OffsetDateTime.now())
+        else
+            customerRepo.deleteInBatchOrderBy(OffsetDateTime.now())
     }
 }
