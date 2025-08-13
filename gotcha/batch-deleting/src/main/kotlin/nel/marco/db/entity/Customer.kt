@@ -56,28 +56,12 @@ interface CustomerRepo : JpaRepository<Customer, Long> {
             where id in (
                 SELECT id FROM Customer
                 WHERE created < :createdDate
-                LIMIT 100000
+                LIMIT :limit
             )
         """,
         nativeQuery = true
     )
-    fun deleteInBatch(createdDate: OffsetDateTime): Int
-
-    @Modifying
-    @Query(
-        """
-            delete from Customer
-            where id in (
-                SELECT id FROM Customer
-                WHERE created < :createdDate
-                order by created desc
-                LIMIT 100000
-            )
-        """,
-        nativeQuery = true
-    )
-    fun deleteInBatchOrderBy(createdDate: OffsetDateTime): Int
-
+    fun deleteInBatch(createdDate: OffsetDateTime, limit: Long): Int
 
 }
 
@@ -88,31 +72,20 @@ open class CustomController(
     private val batchService: BatchService
 ) {
 
-    @GetMapping
-    fun helloWorld(): String {
-        return "hello world!"
-    }
-
-    @GetMapping("/v1/find")
-    open fun findCustomer(): MutableList<Customer> {
-
-        return customerRepo.findAll().toMutableList()
-    }
-
     @GetMapping("/v1/size")
     open fun size(): Int {
         return customerRepo.findSizeOfCustomers()
     }
 
     @GetMapping("/v1/delete")
-    open fun delete(@RequestParam order: String = "y"): String {
+    open fun delete(@RequestParam batches: Boolean = true): String {
         val time = measureTimeMillis {
-            batchService.batchDelete(order == "y")
+            batchService.batchDelete(batches)
         }
 
         println(
             """
-            delete (ordered=${order == "y"}) took $time ms
+            delete (batches=${batches}) took $time ms
         """.trimIndent()
         )
         return "$time ms"
@@ -121,7 +94,6 @@ open class CustomController(
 
     @GetMapping("/v1/batch")
     open fun createBatch(@RequestParam size: Int = 100000): Int {
-
         val customers = (1..size).map {
             val result = minRandom<Customer>()
             result.name = minRandom()
@@ -166,11 +138,14 @@ open class BatchService(
     }
 
     @Transactional
-    open fun batchDelete(deleteWithOrder: Boolean) {
+    open fun batchDelete(deleteSmallerBatches: Boolean) {
+        if (deleteSmallerBatches) {
+            (1..10).map {
+                customerRepo.deleteInBatch(OffsetDateTime.now(), 10000)
+            }
 
-        if (deleteWithOrder)
-            customerRepo.deleteInBatch(OffsetDateTime.now())
-        else
-            customerRepo.deleteInBatchOrderBy(OffsetDateTime.now())
+        } else {
+            customerRepo.deleteInBatch(OffsetDateTime.now(),100000)
+        }
     }
 }
