@@ -3,7 +3,8 @@ server:
 spring:
   jpa:
     hibernate:
-      ddl-auto: create-drop   # or 'update'
+      #      ddl-auto: create-drop   # or 'update'
+      ddl-auto: update
     show-sql: false
     properties:
       hibernate:
