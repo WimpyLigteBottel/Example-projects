@@ -1,5 +1,9 @@
 package nel.marco.db.entity
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import nl.wykorijnsburger.kminrandom.minRandom
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -16,32 +20,39 @@ open class SimulateDatabaseInteraction(
 
     @Scheduled(fixedRate = 1, timeUnit = TimeUnit.SECONDS)
     open fun insertRecord() {
-        repeat(insertTimes) {
-            val result = minRandom<Customer>()
-            result.name = minRandom()
-            customerRepo.save(result)
-            customerRepo.flush()
-
+        runBlocking(Dispatchers.IO) {
+            repeat(insertTimes) {
+                launch {
+                    customerRepo.saveAndFlush(minRandom<Customer>().copy(name = minRandom()))
+                }
+            }
         }
+
     }
 
     @Scheduled(fixedRate = 1, timeUnit = TimeUnit.SECONDS)
     open fun updateRecord() {
-        repeat(updateTimes) {
-            val customer = customerRepo.findRandomCustomer()
-            customer.name = minRandom()
-            customerRepo.save(customer)
-            customerRepo.flush()
 
+        runBlocking(Dispatchers.IO) {
+            repeat(updateTimes) {
+                launch {
+                    val customer = customerRepo.findRandomCustomer().copy(name = minRandom())
+                    customerRepo.saveAndFlush(customer)
+                }
+            }
         }
     }
 
     @Scheduled(fixedRate = 1, timeUnit = TimeUnit.SECONDS)
     open fun deleteRecord() {
-        repeat(deleteTimes) {
-            val customer = customerRepo.findRandomCustomer()
-            customerRepo.delete(customer)
-            customerRepo.flush()
+        runBlocking(Dispatchers.IO) {
+            repeat(deleteTimes) {
+                launch {
+                    val customer = customerRepo.findRandomCustomer()
+                    customerRepo.delete(customer)
+                    customerRepo.flush()
+                }
+            }
         }
     }
 }

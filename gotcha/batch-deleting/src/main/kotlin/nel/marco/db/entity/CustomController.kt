@@ -30,7 +30,7 @@ open class CustomController(
         println(
             """
             delete (batches=${batches}) took $time ms and deleted (deletedCount=$deletedCount)
-        """.trimIndent()
+            """.trimIndent()
         )
         return "$time ms"
     }
