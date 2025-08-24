@@ -30,12 +30,29 @@ interface CustomerRepo : JpaRepository<Customer, Long> {
                 LIMIT 10000
             );
 
-                        explain delete from Customer
+            explain delete from Customer
             where id in (
-                SELECT id FROM Customer
-                WHERE created < NOW()
-                LIMIT 100000
+            SELECT id FROM Customer
+            WHERE created < NOW()
+            LIMIT 100000
             );
+
+            explain DELETE FROM customer
+            WHERE ctid IN (
+            SELECT ctid
+            FROM customer
+            WHERE created < now()
+            LIMIT 100000
+            );
+
+            EXPLAIN DELETE FROM customer c
+            USING (
+              SELECT id
+              FROM customer
+              WHERE created < now()
+              LIMIT 100000
+            ) sub
+            WHERE c.id = sub.id;
      */
 
     @Modifying
