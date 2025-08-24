@@ -9,11 +9,34 @@ import java.time.OffsetDateTime
 @Repository
 interface CustomerRepo : JpaRepository<Customer, Long> {
 
-    @Query("select count(*) from Customer")
+    @Query("select count(*) from Customer", nativeQuery = true)
     fun findSizeOfCustomers(): Int
 
     @Query("select new Customer(c.id, c.name, c.created, c.updated) from Customer c order by RANDOM() LIMIT 1")
     fun findRandomCustomer(): Customer
+
+    /*
+            explain delete from Customer
+            where id in (
+                SELECT id FROM Customer
+                WHERE created < NOW()
+                LIMIT 1000
+            );
+
+            explain delete from Customer
+            where id in (
+                SELECT id FROM Customer
+                WHERE created < NOW()
+                LIMIT 10000
+            );
+
+                        explain delete from Customer
+            where id in (
+                SELECT id FROM Customer
+                WHERE created < NOW()
+                LIMIT 100000
+            );
+     */
 
     @Modifying
     @Query(
