@@ -21,7 +21,7 @@ open class SimulateDatabaseInteraction(
 
     }
 
-    @Scheduled(fixedRate = 100, timeUnit = TimeUnit.MILLISECONDS)
+    @Scheduled(fixedRate = 50, timeUnit = TimeUnit.MILLISECONDS)
     open fun updateRecord() = runCatching {
         val customer = customerRepo.findRandomCustomer().copy(name = minRandom())
         customerRepo.saveAndFlush(customer)

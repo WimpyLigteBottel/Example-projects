@@ -44,15 +44,6 @@ interface CustomerRepo : JpaRepository<Customer, Long> {
             WHERE created < now()
             LIMIT 100000
             );
-
-            EXPLAIN DELETE FROM customer c
-            USING (
-              SELECT id
-              FROM customer
-              WHERE created < now()
-              LIMIT 100000
-            ) sub
-            WHERE c.id = sub.id;
      */
 
     @Modifying
