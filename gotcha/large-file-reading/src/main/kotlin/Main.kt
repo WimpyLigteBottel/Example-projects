@@ -26,8 +26,8 @@ fun main() {
     val numLines = 400_000_000 // 10M UUIDs for testing
 
     largeFile(numLines, largeFile)
-    largeFile(numLines / 40, mediumFile)
-    largeFile(numLines / 400, smallFile)
+    largeFile(numLines / 10, mediumFile)
+    largeFile(numLines / 100, smallFile)
 }
 
 private fun largeFile(numLines: Int, file: File) {

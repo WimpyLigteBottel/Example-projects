@@ -7,16 +7,21 @@ import java.nio.file.StandardOpenOption
 import kotlin.io.path.Path
 import kotlin.system.measureTimeMillis
 
+/**
+ * Line count = 6000000, took 170 ms , bufferSize = 16777216
+ * Line count = 60000000, took 1412 ms , bufferSize = 16777216
+ * Line count = 1036789776, took 25219 ms , bufferSize = 16777216
+ */
 fun main() {
-    val file = Path("./target/largefile.txt")
 
     repeat(5) {
-        countLinesFileChannelOptimized(file, 1024 * 1024 * 16)
-        countLinesFileChannelOptimized(file, "030c566a-433f-4a34-91aa-d72e756ca5fe\n".toByteArray().size * 100000)
+        readFile(Path(smallFile.path), 1024 * 1024 * 16)
+        readFile(Path(mediumFile.path), 1024 * 1024 * 16)
+        readFile(Path(largeFile.path), 1024 * 1024 * 16)
     }
 }
 
-fun countLinesFileChannelOptimized(file: Path, bufferSize: Int = 16 * 1024 * 1024) {
+fun readFile(file: Path, bufferSize: Int = 16 * 1024 * 1024) {
     var lineCount = 0L
     val newlineByte = '\n'.code.toByte()
 
