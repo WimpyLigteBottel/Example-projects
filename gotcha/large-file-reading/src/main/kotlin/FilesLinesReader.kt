@@ -6,9 +6,9 @@ import kotlin.io.path.Path
 import kotlin.system.measureTimeMillis
 
 /**
- * Files.lines -> 6000000 lines in 357 ms
- * Files.lines -> 60000000 lines in 2196 ms
- * Files.lines -> 1036789776 lines in 37522 ms
+Files.lines -> 4000000 lines in 187 ms
+Files.lines -> 40000000 lines in 1429 ms
+Files.lines -> 400000000 lines in 15783 ms
  */
 fun main() {
     readFile(Path(smallFile.path))

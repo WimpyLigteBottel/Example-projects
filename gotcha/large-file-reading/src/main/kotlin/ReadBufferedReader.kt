@@ -4,9 +4,9 @@ import java.io.File
 import kotlin.system.measureTimeMillis
 
 /**
- * BufferedReader -> 6000000 lines in 408 ms
- * BufferedReader -> 60000000 lines in 2278 ms
- * BufferedReader -> 1036789776 lines in 42631 ms
+BufferedReader -> 4000000 lines in 210 ms
+BufferedReader -> 40000000 lines in 1387 ms
+BufferedReader -> 400000000 lines in 13689 ms
  */
 fun main() {
     readFile(smallFile)
