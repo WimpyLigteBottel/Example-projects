@@ -1,50 +1,55 @@
-import kotlinx.coroutines.*
+package nel.marco
+
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.supervisorScope
+
 
 private suspend fun supervisorExample() = supervisorScope {
-    val jobs = (1..10).map { i ->
-        async {
-            delay(200L * i)
-            if (i == 5) {
-                throw RuntimeException("Job $i failed")
-            }
-            println("Job $i finished")
-            i
-        }
-    }
-
-    try {
-        jobs.awaitAll() // will throw when job 5 fails
-    } catch (e: Exception) {
-        println("Caught exception: ${e.message}")
-    }
+    executeAsyncJobs()
 }
 
 private suspend fun coroutineExample() = coroutineScope {
-    val jobs = (1..10).map { i ->
-        async {
-            delay(200L * i)
-            if (i == 5) {
-                throw RuntimeException("Job $i failed")
-            }
-            println("Job $i finished")
-            i
-        }
+    executeAsyncJobs()
+}
+
+private suspend fun CoroutineScope.executeAsyncJobs(): Any {
+    val job1 = async {
+        delay(150)
+        println("Job 1 finished")
     }
 
-    try {
-        jobs.awaitAll()
+    val job2 = async {
+        delay(200L)
+        throw RuntimeException("Job 2 failed")
+    }
+
+    val job3 = async {
+        delay(300)
+        println("Job 3 finished")
+    }
+
+    return try {
+        awaitAll(job1, job2, job3)
     } catch (e: Exception) {
         println("Caught exception: ${e.message}")
     }
 }
-
-
 
 
 fun main(): Unit = runBlocking {
     println("=== SupervisorScope Example ===")
-    supervisorExample()
+    runCatching {
+        supervisorExample()
+    }
 
     println("\n=== CoroutineScope Example ===")
-    coroutineExample()
+    runCatching {
+        coroutineExample()
+    }
 }
+

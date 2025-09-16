@@ -5,6 +5,7 @@ import java.io.File
 import java.io.FileReader
 import kotlin.system.measureTimeMillis
 
+
 /**
 BufferedReader + FileReader -> 4000000 lines in 217 ms
 BufferedReader + FileReader -> 40000000 lines in 1541 ms

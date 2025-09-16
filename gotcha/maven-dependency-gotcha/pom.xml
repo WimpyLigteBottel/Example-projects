@@ -6,8 +6,8 @@
 
     <artifactId>maven-gotcha-parent</artifactId>
     <modules>
-        <module>custom-dependency</module>
-        <module>springbootapp</module>
+        <module>servlet-dependency</module>
+        <module>webflux-dependency</module>
     </modules>
 
     <groupId>me.marco</groupId>
