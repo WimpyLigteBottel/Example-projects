@@ -40,8 +40,8 @@ class CustomerController(
     }
 
     @GetMapping("/find")
-    fun findAll(): List<Customer> {
-        return customerRepo.findAll()
+    fun findAll(@RequestParam(defaultValue = "10") amount: Int = 10): List<Customer> {
+        return customerRepo.findAllForUpdate(amount)
     }
 
     @GetMapping("/example")
@@ -67,8 +67,8 @@ class CustomerController(
 
 
     @GetMapping("/update")
-    open fun longUpdate(): List<Customer> {
-        return customerService.lockAndUpdateAll("changed")
+    open fun longUpdate(@RequestParam(defaultValue = "10") amount: Int = 10): List<Customer> {
+        return customerService.lockAndUpdateAll(amount)
     }
 
     @GetMapping("/count")
@@ -84,14 +84,14 @@ open class CustomerService(
 ) {
 
     @Transactional
-    open fun lockAndUpdateAll(name: String): List<Customer> {
+    open fun lockAndUpdateAll(amount: Int): List<Customer> {
         // 1. Acquire locks
-        val locked = customerRepo.findAllForUpdate()
+        val locked = customerRepo.findAllForUpdate(amount)
 
         Thread.sleep(5000)
 
         // 2. Update them while locks are held
-        val updated = customerRepo.longUpdate(name)
+        val updated = customerRepo.longUpdate("changed")
 
         return updated
     }
