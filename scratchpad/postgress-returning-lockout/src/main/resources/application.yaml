@@ -1,0 +1,22 @@
+server:
+  port: 8090
+spring:
+  jpa:
+    hibernate:
+      #      ddl-auto: create-drop   # or 'update'
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        jdbc.batch_size: 10000
+        order_inserts: true
+        order_updates: true
+        batch_versioned_data: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    url: jdbc:postgresql://localhost:5432/localdb
+    username: Marco
+    password: password
+    driver-class-name: org.postgresql.Driver
+
+

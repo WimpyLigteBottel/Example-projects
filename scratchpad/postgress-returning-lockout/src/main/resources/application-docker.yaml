@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://host.docker.internal:5432/localdb
+  flyway:
+    url: jdbc:postgresql://host.docker.internal:5432/localdb
