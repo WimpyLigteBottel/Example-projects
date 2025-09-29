@@ -5,7 +5,10 @@ import nel.marco.db.CustomerRepo
 import nl.wykorijnsburger.kminrandom.minRandom
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.time.OffsetDateTime
 
@@ -19,13 +22,14 @@ fun main(args: Array<String>) {
 
 @RestController
 class CustomerController(
-    private val customerRepo: CustomerRepo
+    private val customerRepo: CustomerRepo,
+    private val customerService: CustomerService
 ) {
 
 
     @GetMapping("/generate")
-    fun generate() {
-        val customers = (0..100).map {
+    fun generate(@RequestParam(defaultValue = "100") amount: Int = 100) {
+        val customers = (0..amount).map {
             minRandom<Customer>().copy(
                 name = null
             )
@@ -33,6 +37,11 @@ class CustomerController(
         customers.forEach {
             customerRepo.save(it)
         }
+    }
+
+    @GetMapping("/find")
+    fun findAll(): List<Customer> {
+        return customerRepo.findAll()
     }
 
     @GetMapping("/example")
@@ -50,8 +59,40 @@ class CustomerController(
         return customerRepo.updateAndReturnCustomers(OffsetDateTime.now().toString())
     }
 
+
+    @GetMapping("/delete")
+    fun deletall() {
+        customerRepo.deleteAll()
+    }
+
+
+    @GetMapping("/update")
+    open fun longUpdate(): List<Customer> {
+        return customerService.lockAndUpdateAll("changed")
+    }
+
     @GetMapping("/count")
     fun getCount(): Long {
         return customerRepo.count()
+    }
+}
+
+
+@Service
+open class CustomerService(
+    private val customerRepo: CustomerRepo
+) {
+
+    @Transactional
+    open fun lockAndUpdateAll(name: String): List<Customer> {
+        // 1. Acquire locks
+        val locked = customerRepo.findAllForUpdate()
+
+        Thread.sleep(5000)
+
+        // 2. Update them while locks are held
+        val updated = customerRepo.longUpdate(name)
+
+        return updated
     }
 }
