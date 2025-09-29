@@ -7,10 +7,11 @@ import java.nio.file.StandardOpenOption
 import kotlin.io.path.Path
 import kotlin.system.measureTimeMillis
 
+
 /**
- * Line count = 6000000, took 170 ms , bufferSize = 16777216
- * Line count = 60000000, took 1412 ms , bufferSize = 16777216
- * Line count = 1036789776, took 25219 ms , bufferSize = 16777216
+Line count = 4000000, took 85 ms , bufferSize = 16777216
+Line count = 40000000, took 716 ms , bufferSize = 16777216
+Line count = 400000000, took 6449 ms , bufferSize = 16777216
  */
 fun main() {
 
