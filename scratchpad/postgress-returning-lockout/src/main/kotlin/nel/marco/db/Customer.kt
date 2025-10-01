@@ -13,7 +13,6 @@ import java.util.*
 data class Customer(
     @Id
     @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
     var id: UUID? = null,
 
     @Column
