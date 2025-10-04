@@ -12,6 +12,8 @@ import java.util.concurrent.TimeUnit
 Very basic example of how to code your cache.
  */
 
+const val BASIC_CACHE_NAME = "BASIC_CACHE_NAME"
+
 @EnableCaching
 @Configuration
 class CacheConfig {
@@ -24,7 +26,7 @@ class CacheConfig {
     @Bean
     fun cacheManager(caffeine: Caffeine<Any, Any>): CacheManager {
         val caffeineCacheManager = CaffeineCacheManager()
-        caffeineCacheManager.setCacheNames(listOf("randomResponse"))
+        caffeineCacheManager.setCacheNames(listOf("BASIC_CACHE_NAME"))
         caffeineCacheManager.setCaffeine(caffeine)
         return caffeineCacheManager
     }
