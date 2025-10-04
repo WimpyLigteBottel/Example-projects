@@ -47,8 +47,8 @@ class RandomResponseService {
     // B: will it throw runtime exception?
     // C: Something else?
 
-    // 3. How still cache this?
-    @Cacheable(value = [BASIC_CACHE_NAME])
+    // 3. How to still cache this?
+    @Cacheable(value = [BASIC_CACHE_NAME], key = "#input")
     suspend fun V3(input: String, randomTextThatDoesNotMatter: String = UUID.randomUUID().toString()): String {
         println("randomResponse -> V3 -> $randomTextThatDoesNotMatter")
         return "$input -> ${Random.Default.nextInt(0, 100)}"

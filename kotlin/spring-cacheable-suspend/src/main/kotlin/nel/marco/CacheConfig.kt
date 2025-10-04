@@ -21,12 +21,16 @@ class CacheConfig {
     @Bean
     fun caffeineConfig() = Caffeine.newBuilder()
         .expireAfterWrite(5, TimeUnit.SECONDS)
+        .maximumSize(10000)
         .recordStats() // note: how to save prometheus
+        .evictionListener<Any, Any> { key, value, cause ->
+            println("EvictedListener [key=$key, value=$value, reason=$cause]")
+        }
 
     @Bean
     fun cacheManager(caffeine: Caffeine<Any, Any>): CacheManager {
         val caffeineCacheManager = CaffeineCacheManager()
-        caffeineCacheManager.setCacheNames(listOf("BASIC_CACHE_NAME"))
+        caffeineCacheManager.setCacheNames(listOf(BASIC_CACHE_NAME))
         caffeineCacheManager.setCaffeine(caffeine)
         return caffeineCacheManager
     }
