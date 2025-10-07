@@ -19,7 +19,7 @@ class RandomResponseService {
     @Cacheable(value = [BASIC_CACHE_NAME])
     fun V1(input: String): String {
         println("randomResponse -> V1")
-        return "$input -> ${Random.Default.nextInt(0, 100)}"
+        return "$input -> ${Random.nextInt(0, 100)}"
     }
 
 
@@ -31,10 +31,10 @@ class RandomResponseService {
     // A: return result and print?
     // B: will it throw exception?
     // C: Something else?
-    @Cacheable(value = [BASIC_CACHE_NAME])
+    @Cacheable(value = [BASIC_CACHE_NAME], key = "#input")
     suspend fun V2(input: String): String {
         println("randomResponse -> V2")
-        return "$input -> ${Random.Default.nextInt(0, 100)}"
+        return "$input -> ${Random.nextInt(0, 100)}"
     }
 
 
@@ -48,10 +48,13 @@ class RandomResponseService {
     // C: Something else?
 
     // 3. How to still cache this?
-    @Cacheable(value = [BASIC_CACHE_NAME], key = "#input")
-    suspend fun V3(input: String, randomTextThatDoesNotMatter: String = UUID.randomUUID().toString()): String {
+    @Cacheable(value = [BASIC_CACHE_NAME])
+    suspend fun V3(
+        input: String,
+        randomTextThatDoesNotMatter: String
+    ): String {
         println("randomResponse -> V3 -> $randomTextThatDoesNotMatter")
-        return "$input -> ${Random.Default.nextInt(0, 100)}"
+        return "$input -> ${Random.nextInt(0, 100)}"
     }
 
 

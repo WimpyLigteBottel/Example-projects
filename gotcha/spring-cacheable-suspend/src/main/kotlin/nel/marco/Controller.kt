@@ -3,6 +3,7 @@ package nel.marco
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import java.util.UUID
 
 @RestController
 class Controller(
@@ -27,6 +28,6 @@ class Controller(
 
     @GetMapping("v3")
     suspend fun v3(@RequestParam(defaultValue = "0") number: String): String {
-        return randomResponseService.V3(number)
+        return randomResponseService.V3(number, UUID.randomUUID().toString())
     }
 }

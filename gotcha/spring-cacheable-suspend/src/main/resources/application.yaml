@@ -1,9 +1,17 @@
 # Another way of configuring the cache
-#spring:
-#  cache:
-#    cache-names: "randomResponse"
-#    caffeine:
-#      spec: "maximumSize=500,expireAfterWrite=5s"
+
+
+
+
+spring:
+  cache:
+    cache-names: "BASIC_CACHE_NAME"
+    caffeine:
+      spec: "maximumSize=10000,expireAfterWrite=5s"
+
+
+
+
 
 management:
   endpoint:
