@@ -1,8 +1,7 @@
-package nel.marco
+package nel.marco.intro
 
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
-import java.util.UUID
 import kotlin.random.Random
 
 @Service

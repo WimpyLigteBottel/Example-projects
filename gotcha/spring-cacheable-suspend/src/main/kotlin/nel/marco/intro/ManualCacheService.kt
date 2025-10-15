@@ -1,4 +1,4 @@
-package nel.marco
+package nel.marco.intro
 
 import org.springframework.cache.Cache
 import org.springframework.cache.CacheManager
