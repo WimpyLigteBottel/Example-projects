@@ -1,4 +1,4 @@
-package nel.marco.stampede
+package nel.marco.stampede_poison
 
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
@@ -13,6 +13,12 @@ import kotlin.system.measureTimeMillis
 class StampedeCacheController(
     val slowCacheService: SlowCacheService
 ) {
+
+    @GetMapping("update")
+    suspend fun updateCache(@RequestParam(defaultValue = "0") input: String): String {
+        slowCacheService.updateDataToUse(input)
+        return input
+    }
 
     @GetMapping("stampede")
     suspend fun stampede(@RequestParam(defaultValue = "0") number: String): String {
@@ -41,5 +47,31 @@ class StampedeCacheController(
         "${time}ms"
     }
 
+    @GetMapping("poison")
+    suspend fun poison(@RequestParam(defaultValue = "0") number: String): String {
+        return slowCacheService.slowCacheLongCache(number)
+    }
+
+    @GetMapping("poison-large")
+    suspend fun poisonLarge(@RequestParam(defaultValue = "0") number: String): String = coroutineScope {
+        val time = measureTimeMillis {
+            val jobs = mutableListOf<Deferred<String>>()
+
+            // create 'requests'
+            repeat(10000) {
+                val element = async {
+                    slowCacheService.slowCacheLongCache(it.toString())
+                }
+                jobs.add(element)
+            }
+
+            //wait for all requests to finnish
+            println("waiting for jobs now")
+            jobs.awaitAll()
+            println("jobs done!")
+        }
+
+        "${time}ms"
+    }
 
 }
