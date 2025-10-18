@@ -10,9 +10,15 @@ export function V2Example() {
   ]);
 
   function handleAddItem(value) {
+
+    // 1.  When i click add item. What will be displayed?
     items.push(value)
     setItems(items);
-    //1.  When i click add item. What will be displayed?
+
+
+     // 2. Below is the fix (items not allowed to be modified directly)
+     // setItems((items)=> items.concat(value));
+
   }
 
   return (

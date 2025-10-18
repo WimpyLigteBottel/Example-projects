@@ -16,9 +16,9 @@ export function V3Example() {
 
   useEffect(() => {
     // Warning this is a mean one :P 
-    // 1. How often will this print
-    // 2. When i click green button what will happen?
-    // 3. (@marco make the change)
+    // 1. How often will this print (react strict)
+
+    // 2. When i click green button what will happen? (not being watched)
     console.log(person)
   }, [firstName, lastName])
 

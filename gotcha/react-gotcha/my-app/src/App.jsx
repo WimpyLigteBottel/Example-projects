@@ -6,6 +6,7 @@ import { V3Example } from './tabs/V3Example'
 import V4Example from "./tabs/V4Example.jsx";
 import V5Example from "./tabs/V5Example.jsx";
 import V6Example from "./tabs/V6Example.jsx";
+import V6_Details from "./tabs/V6_Details.jsx";
 
 
 function getView(displayView) {
@@ -26,7 +27,7 @@ function getView(displayView) {
       return <V5Example />
     }
     case "V6": {
-      return <V6Example />
+      return (<div><V6Example /><V6_Details/></div>)
     }
   }
 }
