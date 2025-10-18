@@ -53,9 +53,7 @@ export function V6Example() {
 
   const handleUpdate = async () => {
     try {
-      const updated = await updatePerson(person);
-      alert("Person updated!");
-      console.log(updated);
+     await updatePerson(person);
     } catch (err) {
       alert("Update failed: " + err.message);
     }
@@ -64,36 +62,20 @@ export function V6Example() {
   return (
     <div className="p-4 space-y-4">
       <h1>V6 - Person Editor</h1>
-
       <div className="space-y-2">
         <label>
           Name:{" "}
-          <input
-            type="text"
-            name="name"
-            value={person.name}
-            onChange={handleChange}
-          />
+          <input type="text" name="name" value={person.name} onChange={handleChange} />
         </label>
         <br />
         <label>
           Surname:{" "}
-          <input
-            type="text"
-            name="surname"
-            value={person.surname}
-            onChange={handleChange}
-          />
+          <input type="text" name="surname" value={person.surname} onChange={handleChange} />
         </label>
         <br />
         <label>
           Age:{" "}
-          <input
-            type="number"
-            name="age"
-            value={person.age}
-            onChange={handleChange}
-          />
+          <input  type="number"  name="age"  value={person.age}  onChange={handleChange}/>
         </label>
       </div>
 
