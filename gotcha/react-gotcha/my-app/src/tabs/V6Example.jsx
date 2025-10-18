@@ -1,7 +1,6 @@
 import './Example.css';
 import { useEffect, useState } from "react";
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { usePerson,useUpdatePersonMutation  } from './PersonUtil'
+import { usePerson, useUpdatePersonMutation  } from './PersonUtil'
 
 export function V6Example() {
     const { isPending, isError, data, error } = usePerson();
@@ -40,7 +39,7 @@ export function V6Example() {
   return (
     <div className="p-4 space-y-4">
       <div>
-          <h1>V6 - Person Editor</h1>
+          <h1>V6 - Cache me baby one more time?</h1>
                 <div className="space-y-2">
                   <label>
                     Name:{" "}
