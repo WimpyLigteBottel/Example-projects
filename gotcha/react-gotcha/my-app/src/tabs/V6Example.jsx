@@ -12,8 +12,6 @@ export function V6Example() {
     age: ''
   });
 
-    if (isPending) return <div>Loading...</div>;
-    if (isError) return <div>Error: {error.message}</div>;
 
   // when data loads from API, populate local state
   useEffect(() => {
@@ -35,6 +33,10 @@ export function V6Example() {
       alert("Update failed: " + err.message);
     }
   };
+
+  if (isPending) return <div>Loading...</div>;
+  if (isError) return <div>Error: {error.message}</div>;
+
 
   return (
     <div className="p-4 space-y-4">
