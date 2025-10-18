@@ -2,10 +2,7 @@ package nel.marco
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import org.springframework.web.bind.annotation.CrossOrigin
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @SpringBootApplication
 class Launch {
@@ -17,7 +14,7 @@ fun main() {
 
 @RestController
 @CrossOrigin
-class RestController() {
+class CustomRestController() {
 
     @GetMapping("/helloWorld")
     fun helloWorld() = "HelloWorld!"
@@ -30,4 +27,22 @@ class RestController() {
         return "I have waited for $amount"
     }
 
+}
+
+
+@RestController
+@CrossOrigin
+class PersonRestController() {
+    var person: Person = Person("name", "surname", 0)
+
+    @PostMapping("/person")
+    fun updatePerson(@RequestParam name: String, @RequestParam surname: String, @RequestParam age: Int): Person {
+        person = Person(name, surname, age)
+        return person
+    }
+
+    @GetMapping("/person")
+    fun getPersonMemory(): Person {
+        return person
+    }
 }
