@@ -1,11 +1,10 @@
-version: "3.8"
-
 services:
   marcolocust:
     build:
       context: .
       dockerfile: Dockerfile
-    command: exit()
+    image: loadtestgenerator_marcolocust:latest
+    command: []
   backend:
     container_name: backendloadtest
     build:
@@ -36,7 +35,7 @@ services:
     depends_on:
       - master-locust
     deploy:
-      replicas: 1  # Set the desired number of replicas
+      replicas: 3  # Set the desired number of replicas
     volumes:
       - ./loadtesting:/locust
     command: -f ./shaped_locustfile.py --worker --master-host master-locust --config locust.conf
