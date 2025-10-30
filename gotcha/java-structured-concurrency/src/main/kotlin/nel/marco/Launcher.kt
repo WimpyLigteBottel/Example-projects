@@ -1,4 +1,4 @@
-package nel.marco.intro
+package nel.marco
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

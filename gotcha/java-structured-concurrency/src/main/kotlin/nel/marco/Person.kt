@@ -1,4 +1,4 @@
-package nel.marco.intro
+package nel.marco
 
 import java.time.LocalDate
 

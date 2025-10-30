@@ -1,32 +1,14 @@
-package nel.marco.intro
+package nel.marco.java
 
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 import java.util.concurrent.Callable
 import java.util.concurrent.StructuredTaskScope
 import java.util.concurrent.StructuredTaskScope.Joiner
-import java.time.LocalDate
 import kotlin.random.Random
 
 @RestController
-class JavaStructuredConcurrencyController {
-
-
-    @GetMapping("/java/person")
-    fun getPerson(): Person {
-        var result = StructuredTaskScope.open<Any>().use { scope ->
-            val name = scope.fork<String>(Callable { fetch("person") })
-            val age = scope.fork<Int>(Callable { fetch("1").toInt() })
-            val birthDate = scope.fork<LocalDate>(Callable { LocalDate.parse(fetch("1900-01-01")) })
-
-            // 1.
-            scope.join()
-
-            Person(age.get(), name.get(), birthDate.get())
-        }
-
-        return result
-    }
+class FirstSuccessController {
 
     @GetMapping("/java/partial")
     fun getFirstSuccessResponse(): String {
