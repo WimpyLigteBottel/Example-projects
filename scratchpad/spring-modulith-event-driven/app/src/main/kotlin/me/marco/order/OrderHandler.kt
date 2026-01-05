@@ -5,14 +5,14 @@ import me.marco.actions.models.*
 import org.springframework.stereotype.Service
 
 @Service
-class OrderHandler {
+object OrderHandler {
 
-    fun handle(command: Command, currentSnapshot: Order): Result<Event> {
+    fun Order.handle(command: Command): Result<Event> {
         return when (command) {
             is Command.CreateOrderCommand -> handleCreateOrder(command)
-            is Command.AddItemCommand -> handleAddItem(command, currentSnapshot)
-            is Command.MarkOrderAsPaidCommand -> handleMarkAsPaid(command, currentSnapshot)
-            is Command.ClearOrderCommand -> handleClearOrder(command, currentSnapshot)
+            is Command.AddItemCommand -> handleAddItem(command, this)
+            is Command.MarkOrderAsPaidCommand -> handleMarkAsPaid(command, this)
+            is Command.ClearOrderCommand -> handleClearOrder(command, this)
         }
     }
 

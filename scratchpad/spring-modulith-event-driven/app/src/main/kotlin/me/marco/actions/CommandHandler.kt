@@ -1,17 +1,17 @@
 package me.marco.actions
 
-import me.marco.actions.models.Command
-import me.marco.actions.models.Event
+import me.marco.actions.models.*
 import me.marco.order.Order
 import me.marco.order.OrderHandler
+import me.marco.order.OrderHandler.handle
+import me.marco.order.OrderItem
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
 class OrderCommandHandler(
     private val eventStore: EventStore,
-    private val snapshotStore: SnapshotStore,
-    private val orderHandler: OrderHandler
+    private val snapshotStore: SnapshotStore
 ) {
     private val logger = LoggerFactory.getLogger(OrderCommandHandler::class.java)
 
@@ -19,7 +19,8 @@ class OrderCommandHandler(
         // Rebuild order from snapshot + events
         val order = getOrder(command.aggregateId)
 
-        return orderHandler.handle(command,order).onSuccess { event ->
+        // Handle command
+        return order.handle(command).onSuccess { event ->
             eventStore.save(event)
             logger.info("✅ Event saved: ${event::class.simpleName} for order ${event.aggregateId}")
 
@@ -53,5 +54,21 @@ class OrderCommandHandler(
                 )
             ) { acc, event -> acc.apply(event) }
         }
+    }
+
+    fun Order.apply(event: Event): Order = when (event) {
+        is OrderCreatedEvent -> copy(version = version + 1)
+        is ItemAddedEvent -> copy(
+            items = items + OrderItem(event.itemId, event.name, event.price, event.quantity),
+            totalAmount = totalAmount + (event.price * event.quantity),
+            version = version + 1
+        )
+
+        is OrderMarkedAsPaidEvent -> copy(isPaid = true, version = version + 1)
+        is OrderClearedEvent -> copy(
+            items = emptyList(),
+            totalAmount = 0.0,
+            version = version + 1,
+        )
     }
 }
