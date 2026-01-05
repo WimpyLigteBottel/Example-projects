@@ -1,12 +1,12 @@
 package me.marco
 
-import me.marco.order.Order
+import me.marco.actions.OrderCommandHandler
+import me.marco.actions.models.Command
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.stereotype.Component
-import org.springframework.web.client.RestClient
-import org.springframework.web.client.toEntity
+import java.util.*
 
 @SpringBootApplication
 open class Launcher
@@ -18,25 +18,33 @@ fun main(args: Array<String>) {
 
 
 @Component
-class CommandLine : CommandLineRunner {
+class CommandLine(
+    private val commandHandler: OrderCommandHandler
+) : CommandLineRunner {
 
-    val client = RestClient.create("http://localhost:8080")
 
     override fun run(vararg args: String) {
+        val orderId = UUID.randomUUID().toString()
 
-        val id = client.get().uri("/orders/create").retrieve().toEntity<String>().body!!
+        val events: List<Command> = listOf(
+            Command.CreateOrderCommand(orderId),
+            Command.AddItemCommand(orderId, "item-1", "Laptop", 999.99, 1),
+            Command.AddItemCommand(orderId, "item-2", "Mouse", 29.99, 2),
+            Command.ClearOrderCommand(orderId),
+            Command.MarkOrderAsPaidCommand(orderId, "Credit Card"),
+            // These should fail
+            Command.ClearOrderCommand(orderId),
+            Command.AddItemCommand(orderId, "item-11", "Keyboard", 79.99, 1)
+        )
 
-        val addedItem = client.post().uri("/items") { uriBuilder ->
-            uriBuilder.queryParam("orderId", id)
-            uriBuilder.queryParam("orderItemId", "123")
+        events.forEach {
+            commandHandler.handle(it)
+        }
 
-            uriBuilder.build()
 
-        }.retrieve().toBodilessEntity()
+        println(commandHandler.getOrder(orderId))
 
-        val order = client.get().uri("/orders/$id").retrieve().toEntity<Order>()
-
-        val payOrder = client.post().uri("/pay/${order.body?.id}").retrieve().toBodilessEntity()
+        System.exit(0)
 
     }
 
