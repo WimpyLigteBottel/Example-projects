@@ -1,43 +1,12 @@
 package me.marco.order
 
-import me.marco.actions.OrderCommandHandler
-import me.marco.actions.models.Command.AddItemCommand
-import me.marco.actions.models.Command.CreateOrderCommand
-import me.marco.actions.models.Command.MarkOrderAsPaidCommand
+import me.marco.event.OrderCommandHandler
+import me.marco.event.models.Command.*
+import me.marco.order.api.*
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.util.*
-
-
-// ============= DTOs =============
-data class CreateOrderRequest(val orderId: String? = null)
-
-data class AddItemRequest(
-    val itemId: String,
-    val name: String,
-    val price: Double,
-    val quantity: Int
-)
-
-data class MarkAsPaidRequest(val paymentMethod: String)
-
-data class OrderResponse(
-    val orderId: String,
-    val items: List<OrderItem>,
-    val totalAmount: Double,
-    val isPaid: Boolean,
-    val version: Long,
-    val error: String? = null
-)
-
-fun Order.toResponse() = OrderResponse(
-    orderId = id,
-    items = items,
-    totalAmount = totalAmount,
-    isPaid = isPaid,
-    version = version
-)
 
 
 @RestController

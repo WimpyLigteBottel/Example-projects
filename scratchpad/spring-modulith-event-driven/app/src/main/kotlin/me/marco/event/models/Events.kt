@@ -1,4 +1,4 @@
-package me.marco.actions.models
+package me.marco.event.models
 
 import java.time.Instant
 import java.util.*
