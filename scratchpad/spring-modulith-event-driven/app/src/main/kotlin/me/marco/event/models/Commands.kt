@@ -19,6 +19,11 @@ sealed interface Command {
         val quantity: Int
     ) : Command
 
+    data class RemoveItemCommand(
+        override val aggregateId: String,
+        val itemId: String,
+    ) : Command
+
     data class MarkOrderAsPaidCommand(
         override val aggregateId: String,
         val paymentMethod: String

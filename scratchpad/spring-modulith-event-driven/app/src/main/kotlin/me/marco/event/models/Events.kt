@@ -25,10 +25,18 @@ data class ItemAddedEvent(
     override val aggregateId: String,
     override val eventId: String = UUID.randomUUID().toString(),
     override val timestamp: Instant = Instant.now(),
+    val orderId: String,
     val itemId: String,
     val name: String,
     val price: Double,
     val quantity: Int
+) : Event
+
+data class RemoveItemEvent(
+    override val aggregateId: String,
+    override val eventId: String = UUID.randomUUID().toString(),
+    override val timestamp: Instant = Instant.now(),
+    val itemId: String
 ) : Event
 
 data class OrderMarkedAsPaidEvent(

@@ -1,37 +1,59 @@
 package me.marco.event
 
-import me.marco.event.models.ItemAddedEvent
-import me.marco.event.models.OrderCreatedEvent
-import me.marco.event.models.OrderMarkedAsPaidEvent
+import me.marco.event.models.*
 import org.springframework.context.event.EventListener
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
+import java.util.concurrent.Executors
 
 
 @Component
-open class OrderEventListeners {
+open class OrderEventListeners() {
 
     @Async
     @EventListener
     open fun onOrderCreated(event: OrderCreatedEvent) {
         println("📧 Sending welcome email for order ${event.aggregateId}")
-        Thread.sleep(1000) // Simulate slow email service
-        println("✅ Email sent!")
     }
 
     @Async
     @EventListener
     open fun onItemAdded(event: ItemAddedEvent) {
-        println("📊 Updating analytics for ${event.name}")
-        Thread.sleep(1000) // Simulate slow email service
-        println("📊 Updated analytics for ${event.name}")
+        println("📊 Item added ${event.name}")
     }
 
     @Async
     @EventListener
     open fun onOrderPaid(event: OrderMarkedAsPaidEvent) {
         println("💳 Processing payment ${event.amount}")
-        println("📦 Creating shipment")
-        println("📧 Sending receipt")
+    }
+
+    @Async
+    @EventListener
+    open fun itemRemovedEvent(event: RemoveItemEvent) {
+        println("❌ Item has been removed ${event.itemId}")
+    }
+}
+
+@Component
+class OrderItemExpirationSaga(
+    private val orderRepository: OrderCommandHandler,
+) {
+
+    val tasks = Executors.newFixedThreadPool(10)
+
+    @EventListener
+    fun on(event: ItemAddedEvent) {
+
+        tasks.submit {
+            Thread.sleep(5000)
+
+            orderRepository.handle(
+                Command.RemoveItemCommand(
+                    aggregateId = event.aggregateId,
+                    itemId = event.itemId,
+                )
+            )
+        }
     }
 }

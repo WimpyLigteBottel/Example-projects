@@ -28,29 +28,37 @@ class CommandLine(
 ) {
 
 
-    @Scheduled(fixedRate = 1, timeUnit = TimeUnit.SECONDS)
+    @Scheduled(fixedRate = 30, timeUnit = TimeUnit.SECONDS)
     fun run() {
         val orderId = UUID.randomUUID().toString()
 
-        val events: List<Command> = listOf(
-            Command.CreateOrderCommand(orderId),
+        val successFlow: List<Command> = listOf(
             Command.CreateOrderCommand(orderId),
             Command.AddItemCommand(orderId, "item-1", "Laptop", 999.99, 1),
             Command.AddItemCommand(orderId, "item-2", "Mouse", 29.99, 2),
             Command.ClearOrderCommand(orderId),
             Command.MarkOrderAsPaidCommand(orderId, "Credit Card"),
-            // These should fail
-            Command.ClearOrderCommand(orderId),
-            Command.AddItemCommand(orderId, "item-11", "Keyboard", 79.99, 1),
-            Command.MarkOrderAsPaidCommand(orderId, "Credit Card"),
         )
 
-        events.forEach {
+        val orderId2 = UUID.randomUUID().toString()
+
+        val itemTooLongInOrder: List<Command> = listOf(
+            Command.CreateOrderCommand(orderId2),
+            Command.AddItemCommand(orderId2, "item-A", "Laptop", 999.99, 1),
+            Command.AddItemCommand(orderId2, "item-B", "Mouse", 29.99, 2),
+        )
+
+
+        successFlow.forEach {
             commandHandler.handle(it)
         }
 
+        itemTooLongInOrder.forEach {
+            commandHandler.handle(it)
+        }
 
-        println(commandHandler.getOrder(orderId))
+        Thread.sleep(6000)
+        println(commandHandler.getOrder(orderId2))
     }
 
 }

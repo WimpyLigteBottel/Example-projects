@@ -1,6 +1,6 @@
 package me.marco.order.api
 
-import me.marco.order.OrderItem
+import me.marco.common.OrderItem
 
 // ============= DTOs =============
 data class CreateOrderRequest(val orderId: String? = null)

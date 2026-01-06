@@ -1,6 +1,6 @@
 package me.marco.order.api
 
-import me.marco.order.Order
+import me.marco.common.Order
 
 fun Order.toResponse() = OrderResponse(
     orderId = id,
