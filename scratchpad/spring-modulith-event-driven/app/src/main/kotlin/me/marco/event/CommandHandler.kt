@@ -14,12 +14,12 @@ class OrderCommandHandler(
 ) {
     private val logger = LoggerFactory.getLogger(OrderCommandHandler::class.java)
 
-    fun handle(command: Command) {
+    fun handle(command: Command): Result<Event> {
         val order = getOrder(command.aggregateId)
 
         val event = order.applyRule(command)
 
-        event.onSuccess { evt ->
+        return event.onSuccess { evt ->
             eventStore.save(evt)
             applicationEventPublisher.publishEvent(evt)
         }
