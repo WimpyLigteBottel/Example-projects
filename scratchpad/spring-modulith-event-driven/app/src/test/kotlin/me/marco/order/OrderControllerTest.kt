@@ -30,6 +30,27 @@ class OrderControllerTest {
     }
 
     @Test
+    fun `order created gets closed after x period`() {
+        val response = orderClient.createOrder(CreateOrderRequest()).body!!
+
+        Thread.sleep(1000)
+
+        val order = orderClient.getOrder(response.orderId)
+
+        assertThat(order.statusCode.value()).isEqualTo(404)
+    }
+
+
+    @Test
+    fun `when deleting order that is already deleted should be okay`() {
+        val response = orderClient.createOrder(CreateOrderRequest()).body!!
+        val x = orderClient.deleteOrder(response.orderId)
+        assertThat(x.statusCode.is2xxSuccessful).isTrue()
+        val order = orderClient.getOrder(response.orderId)
+        assertThat(order.statusCode.value()).isEqualTo(404)
+    }
+
+    @Test
     fun `able to create and add item to an order`() {
         val orderId = UUID.randomUUID().toString()
         orderClient.createOrder(CreateOrderRequest(orderId)).body
@@ -75,8 +96,8 @@ class OrderControllerTest {
         orderClient.createOrder(CreateOrderRequest(orderId))
         orderClient.addItem(orderId, AddItemRequest(itemId = orderId, name = "test", price = 123.00, quantity = 1))
 
-        // / Hacky way to remove item
-        Thread.sleep(1000)
+        //  Hacky way to remove item
+        Thread.sleep(500)
 
         val order = orderClient.getOrder(orderId).body
 

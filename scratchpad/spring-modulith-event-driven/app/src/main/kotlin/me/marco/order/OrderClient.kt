@@ -7,6 +7,7 @@ import me.marco.order.api.OrderResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.service.annotation.DeleteExchange
 import org.springframework.web.service.annotation.GetExchange
 import org.springframework.web.service.annotation.HttpExchange
 import org.springframework.web.service.annotation.PostExchange
@@ -34,4 +35,8 @@ interface OrderClient {
     fun getOrder(
         @PathVariable orderId: String,
     ): ResponseEntity<OrderResponse>
+
+
+    @DeleteExchange("/{orderId}")
+    fun deleteOrder(@PathVariable orderId: String): ResponseEntity<*>
 }

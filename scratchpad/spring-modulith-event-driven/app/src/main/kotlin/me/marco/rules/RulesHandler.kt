@@ -16,6 +16,7 @@ object RulesHandler {
                 is Command.MarkOrderAsPaidCommand -> handleMarkAsPaid(command, this)
                 is Command.ClearOrderCommand -> handleClearOrder(command, this)
                 is Command.RemoveItemCommand -> handleRemoveItem(command, this)
+                is Command.DeleteOrderCommand -> handleOrderDeletion(command, this)
             }
         }
     }

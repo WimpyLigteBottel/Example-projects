@@ -23,6 +23,12 @@ data class OrderClearedEvent(
     override val timestamp: Instant = Instant.now(),
 ) : Event
 
+data class OrderDeletedEvent(
+    override val aggregateId: String,
+    override val eventId: String = UUID.randomUUID().toString(),
+    override val timestamp: Instant = Instant.now(),
+) : Event
+
 data class ItemAddedEvent(
     override val aggregateId: String,
     override val eventId: String = UUID.randomUUID().toString(),

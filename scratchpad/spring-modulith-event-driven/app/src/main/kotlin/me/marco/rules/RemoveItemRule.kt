@@ -10,6 +10,9 @@ fun handleRemoveItem(command: Command.RemoveItemCommand, order: Order): Event {
     if (!order.items.any { it.itemId == command.itemId }) {
         throw IllegalStateException("Item already removed")
     }
+    if (order.deleted) {
+        throw IllegalStateException("Order already deleted")
+    }
     if (order.isPaid) {
         throw IllegalStateException("Order already paid")
     }

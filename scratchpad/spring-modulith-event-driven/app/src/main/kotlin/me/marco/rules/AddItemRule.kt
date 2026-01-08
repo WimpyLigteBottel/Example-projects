@@ -9,9 +9,12 @@ fun handleAddItem(
     command: Command.AddItemCommand,
     order: Order,
 ): Event {
-    if (order.isPaid) {
-        throw Exception("Cannot add items to a paid order")
+
+    when {
+        order.deleted -> throw IllegalStateException("Order already deleted")
+        order.isPaid -> throw Exception("Cannot add items to a paid order")
     }
+
     return ItemAddedEvent(
         aggregateId = command.aggregateId,
         itemId = command.itemId,

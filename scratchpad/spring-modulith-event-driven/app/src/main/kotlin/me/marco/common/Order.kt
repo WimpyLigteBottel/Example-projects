@@ -18,6 +18,7 @@ data class Order(
     val version: Long = 0,
     val started: OffsetDateTime = OffsetDateTime.now(),
     val lastUpdated: OffsetDateTime = OffsetDateTime.now(),
+    val deleted: Boolean = false
 ) {
     fun incrementVersion(): Order =
         copy(

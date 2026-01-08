@@ -52,5 +52,6 @@ class OrderCommandHandler(
             is RemoveItemEvent -> {
                 copy(items = items.filter { it.itemId != event.itemId })
             }
+            is OrderDeletedEvent -> copy(deleted = true)
         }.incrementVersion()
 }

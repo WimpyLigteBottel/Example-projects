@@ -1,6 +1,7 @@
 package me.marco.event
 
 import me.marco.event.models.*
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.event.EventListener
 import org.springframework.scheduling.annotation.Async
@@ -9,34 +10,44 @@ import java.util.concurrent.Executors
 
 @Component
 open class OrderEventListeners {
+
+    private val logger = LoggerFactory.getLogger(this::class.java)
+
     @Async
     @EventListener
     open fun onOrderCreated(event: OrderCreatedEvent) {
-        println("📧 Sending welcome email for order ${event.aggregateId}")
+        logger.info("📧 Sending welcome email for order ${event.aggregateId}")
     }
 
     @Async
     @EventListener
     open fun onItemAdded(event: ItemAddedEvent) {
-        println("📊 Item added ${event.name}")
+        logger.info("📊 Item added ${event.name}")
     }
 
     @Async
     @EventListener
     open fun onOrderPaid(event: OrderMarkedAsPaidEvent) {
-        println("💳 Processing payment ${event.amount}")
+        logger.info("💳 Processing payment ${event.amount}")
     }
 
     @Async
     @EventListener
     open fun itemRemovedEvent(event: RemoveItemEvent) {
-        println("❌ Item has been removed ${event.itemId}")
+        logger.info("❌ Item has been removed ${event.itemId}")
+    }
+
+    @Async
+    @EventListener
+    open fun orderDeleted(event: OrderDeletedEvent) {
+        logger.info("❌ Order has been deleted ${event.aggregateId}")
     }
 }
 
 @Component
 class OrderItemExpirationSaga(
     private val orderRepository: OrderCommandHandler,
+    private val eventStore: EventStore,
     @Value("\${cleanup.time}") private val cleanupTime: Long,
 ) {
     val tasks = Executors.newFixedThreadPool(10)
@@ -52,6 +63,15 @@ class OrderItemExpirationSaga(
                     itemId = event.itemId,
                 ),
             )
+        }
+    }
+
+    @EventListener
+    fun on(event: OrderCreatedEvent) {
+        tasks.submit {
+            Thread.sleep(cleanupTime * 2)
+            orderRepository.handle(Command.DeleteOrderCommand(event.aggregateId))
+            eventStore.deleteEvents(event)
         }
     }
 }

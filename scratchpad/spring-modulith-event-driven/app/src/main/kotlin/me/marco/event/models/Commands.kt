@@ -28,4 +28,8 @@ sealed interface Command {
         override val aggregateId: String,
         val paymentMethod: String,
     ) : Command
+
+    data class DeleteOrderCommand(
+        override val aggregateId: String,
+    ) : Command
 }

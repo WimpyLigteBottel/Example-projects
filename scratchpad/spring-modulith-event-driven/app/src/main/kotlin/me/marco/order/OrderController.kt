@@ -84,6 +84,25 @@ class OrderController(
         @PathVariable orderId: String,
     ): ResponseEntity<OrderResponse> {
         val order = commandHandler.getOrder(orderId)
+
+        if (order.version == 0L || order.deleted)
+            return ResponseEntity.notFound().build()
+
         return ResponseEntity.ok(order.toResponse())
+    }
+
+    @DeleteMapping("/{orderId}")
+    override fun deleteOrder(orderId: String): ResponseEntity<Any> {
+        val command = DeleteOrderCommand(orderId)
+        return commandHandler.handle(command).fold(
+            onSuccess = {
+                ResponseEntity.accepted().build()
+            },
+            onFailure = { error ->
+                ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .build()
+            },
+        )
     }
 }

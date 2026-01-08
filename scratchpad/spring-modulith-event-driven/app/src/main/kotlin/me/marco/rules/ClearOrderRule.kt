@@ -8,6 +8,7 @@ import me.marco.event.models.OrderClearedEvent
 fun handleClearOrder(command: Command.ClearOrderCommand, order: Order): Event {
     return when {
         order.isPaid -> throw Exception("Can't clear an paid order")
+        order.deleted -> throw IllegalStateException("Order already deleted")
         order.items.isEmpty() -> throw Exception("There is no items to clear")
         else -> OrderClearedEvent(
             aggregateId = command.aggregateId,
