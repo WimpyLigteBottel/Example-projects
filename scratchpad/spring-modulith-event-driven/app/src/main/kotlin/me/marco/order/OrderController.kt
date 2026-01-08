@@ -77,10 +77,6 @@ class OrderController(
     @GetMapping("/{orderId}")
     override fun getOrder(@PathVariable orderId: String): ResponseEntity<OrderResponse> {
         val order = commandHandler.getOrder(orderId)
-        return if (order.items.isEmpty() && !order.isPaid) {
-            ResponseEntity.notFound().build()
-        } else {
-            ResponseEntity.ok(order.toResponse())
-        }
+        return ResponseEntity.ok(order.toResponse())
     }
 }

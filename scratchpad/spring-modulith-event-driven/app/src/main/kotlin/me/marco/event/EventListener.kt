@@ -1,6 +1,7 @@
 package me.marco.event
 
 import me.marco.event.models.*
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.event.EventListener
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
@@ -38,6 +39,7 @@ open class OrderEventListeners() {
 @Component
 class OrderItemExpirationSaga(
     private val orderRepository: OrderCommandHandler,
+    @Value("\${cleanup.time}") private val cleanupTime: Long
 ) {
 
     val tasks = Executors.newFixedThreadPool(10)
@@ -46,7 +48,7 @@ class OrderItemExpirationSaga(
     fun on(event: ItemAddedEvent) {
 
         tasks.submit {
-            Thread.sleep(5000)
+            Thread.sleep(cleanupTime)
 
             orderRepository.handle(
                 Command.RemoveItemCommand(
