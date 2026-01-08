@@ -1,8 +1,8 @@
-package me.marco.rules
+package me.marco.orderprocessing.rules
 
 import me.marco.common.Order
-import me.marco.event.models.Command
-import me.marco.event.models.OrderCreatedEvent
+import me.marco.orderprocessing.models.Command
+import me.marco.orderprocessing.models.OrderCreatedEvent
 
 fun handleCreateOrder(command: Command.CreateOrderCommand, order: Order): OrderCreatedEvent {
     return when {

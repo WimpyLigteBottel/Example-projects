@@ -1,9 +1,9 @@
-package me.marco.rules
+package me.marco.orderprocessing.rules
 
 import me.marco.common.Order
-import me.marco.event.models.Command
-import me.marco.event.models.Event
-import me.marco.event.models.ItemAddedEvent
+import me.marco.orderprocessing.models.Command
+import me.marco.orderprocessing.models.Event
+import me.marco.orderprocessing.models.ItemAddedEvent
 
 fun handleAddItem(
     command: Command.AddItemCommand,

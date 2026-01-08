@@ -1,11 +1,11 @@
 @file:Suppress("ktlint:standard:filename", "ktlint:standard:no-wildcard-imports")
 
-package me.marco.event
+package me.marco.orderprocessing
 
 import me.marco.common.Order
 import me.marco.common.OrderItem
-import me.marco.event.models.*
-import me.marco.rules.RulesHandler.applyRule
+import me.marco.orderprocessing.models.*
+import me.marco.orderprocessing.RulesHandler.applyRule
 import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service

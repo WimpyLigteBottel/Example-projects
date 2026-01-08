@@ -1,9 +1,9 @@
-package me.marco.rules
+package me.marco.orderprocessing.rules
 
 import me.marco.common.Order
-import me.marco.event.models.Command
-import me.marco.event.models.Event
-import me.marco.event.models.OrderClearedEvent
+import me.marco.orderprocessing.models.Command
+import me.marco.orderprocessing.models.Event
+import me.marco.orderprocessing.models.OrderClearedEvent
 
 fun handleClearOrder(command: Command.ClearOrderCommand, order: Order): Event {
     return when {

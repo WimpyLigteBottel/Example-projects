@@ -1,9 +1,9 @@
-package me.marco.rules
+package me.marco.orderprocessing.rules
 
 import me.marco.common.Order
-import me.marco.event.models.Command
-import me.marco.event.models.Event
-import me.marco.event.models.OrderMarkedAsPaidEvent
+import me.marco.orderprocessing.models.Command
+import me.marco.orderprocessing.models.Event
+import me.marco.orderprocessing.models.OrderMarkedAsPaidEvent
 
 fun handleMarkAsPaid(command: Command.MarkOrderAsPaidCommand, order: Order): Event {
     return when {

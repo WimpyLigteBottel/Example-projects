@@ -1,6 +1,10 @@
 @file:Suppress("ktlint:standard:no-wildcard-imports")
 
-package me.marco.event.models
+@file:org.springframework.modulith.ApplicationModule(
+    displayName = "EventModels",
+    allowedDependencies = []
+)
+package me.marco.orderprocessing.models
 
 import java.time.Instant
 import java.util.*

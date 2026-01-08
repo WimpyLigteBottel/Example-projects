@@ -1,31 +1,28 @@
 package me.marco.order
 
-import me.marco.event.OrderCommandHandler
-import me.marco.event.models.Command.*
+import me.marco.orderprocessing.service.OrderService
 import me.marco.order.api.*
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import java.util.*
 
 @RestController
 @RequestMapping("/api/orders")
 class OrderController(
-    private val commandHandler: OrderCommandHandler,
+    private val orderService: OrderService,
 ) : OrderClient {
     @PostMapping
     override fun createOrder(
         @RequestBody request: CreateOrderRequest,
     ): ResponseEntity<OrderResponse> {
-        val command = CreateOrderCommand(aggregateId = request.orderId ?: UUID.randomUUID().toString())
 
-        return commandHandler.handle(command).fold(
-            onSuccess = {
-                val order = commandHandler.getOrder(command.aggregateId)
-                ResponseEntity.ok(order.toResponse())
-            },
-            onFailure = { ResponseEntity.status(HttpStatus.BAD_REQUEST).build() },
-        )
+        try {
+            val orderId = orderService.createOrder(request.internalize())
+            val order = orderService.getOrder(orderId)
+            return ResponseEntity.ok(order.toResponse())
+        } catch (_: Exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
+        }
     }
 
     @PostMapping("/{orderId}/items")
@@ -33,26 +30,13 @@ class OrderController(
         @PathVariable orderId: String,
         @RequestBody request: AddItemRequest,
     ): ResponseEntity<OrderResponse> {
-        val command =
-            AddItemCommand(
-                aggregateId = orderId,
-                itemId = request.itemId,
-                name = request.name,
-                price = request.price,
-                quantity = request.quantity,
-            )
-
-        return commandHandler.handle(command).fold(
-            onSuccess = {
-                val order = commandHandler.getOrder(orderId)
-                ResponseEntity.ok(order.toResponse())
-            },
-            onFailure = { error ->
-                ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(OrderResponse(orderId, emptyList(), 0.0, false, -1, error.message))
-            },
-        )
+        try {
+            val orderId = orderService.addItem(orderId, request.internalize())
+            val order = orderService.getOrder(orderId)
+            return ResponseEntity.ok(order.toResponse())
+        } catch (_: Exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
+        }
     }
 
     @PostMapping("/{orderId}/pay")
@@ -60,30 +44,21 @@ class OrderController(
         @PathVariable orderId: String,
         @RequestBody request: MarkAsPaidRequest,
     ): ResponseEntity<OrderResponse> {
-        val command =
-            MarkOrderAsPaidCommand(
-                aggregateId = orderId,
-                paymentMethod = request.paymentMethod,
-            )
 
-        return commandHandler.handle(command).fold(
-            onSuccess = {
-                val order = commandHandler.getOrder(orderId)
-                ResponseEntity.ok(order.toResponse())
-            },
-            onFailure = { error ->
-                ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(OrderResponse(orderId, emptyList(), 0.0, false, -1, error.message))
-            },
-        )
+        try {
+            val orderId = orderService.markAsPaid(orderId, request.internalize())
+            val order = orderService.getOrder(orderId)
+            return ResponseEntity.ok(order.toResponse())
+        } catch (_: Exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
+        }
     }
 
     @GetMapping("/{orderId}")
     override fun getOrder(
         @PathVariable orderId: String,
     ): ResponseEntity<OrderResponse> {
-        val order = commandHandler.getOrder(orderId)
+        val order = orderService.getOrder(orderId)
 
         if (order.version == 0L || order.deleted)
             return ResponseEntity.notFound().build()
@@ -93,16 +68,12 @@ class OrderController(
 
     @DeleteMapping("/{orderId}")
     override fun deleteOrder(orderId: String): ResponseEntity<Any> {
-        val command = DeleteOrderCommand(orderId)
-        return commandHandler.handle(command).fold(
-            onSuccess = {
-                ResponseEntity.accepted().build()
-            },
-            onFailure = { error ->
-                ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .build()
-            },
-        )
+
+        try {
+            val orderId = orderService.deleteOrder(orderId)
+            return ResponseEntity.accepted().build()
+        } catch (_: Exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
+        }
     }
 }
