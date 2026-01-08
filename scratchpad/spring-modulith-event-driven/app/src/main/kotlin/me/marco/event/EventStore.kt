@@ -12,7 +12,5 @@ class EventStore {
         events.getOrPut(event.aggregateId) { mutableListOf() }.add(event)
     }
 
-    fun getEvents(aggregateId: String): List<Event> {
-        return events[aggregateId] ?: emptyList()
-    }
+    fun getEvents(aggregateId: String): List<Event> = events[aggregateId] ?: emptyList()
 }

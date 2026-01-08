@@ -10,12 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import java.util.*
 
-
 @SpringBootTest(
-    webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT
+    webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
 )
 class OrderControllerTest {
-
     @Autowired
     lateinit var orderClient: OrderClient
 
@@ -35,11 +33,16 @@ class OrderControllerTest {
     fun `able to create and add item to an order`() {
         val orderId = UUID.randomUUID().toString()
         orderClient.createOrder(CreateOrderRequest(orderId)).body
-        val response = orderClient.addItem(
-            orderId, AddItemRequest(
-                itemId = "123", name = "test", price = 123.00, quantity = 1
+        val response =
+            orderClient.addItem(
+                orderId,
+                AddItemRequest(
+                    itemId = "123",
+                    name = "test",
+                    price = 123.00,
+                    quantity = 1,
+                ),
             )
-        )
 
         assertThat(response.body?.orderId).isEqualTo(orderId)
         assertThat(response.body?.totalAmount).isEqualTo(123.0)
@@ -72,12 +75,11 @@ class OrderControllerTest {
         orderClient.createOrder(CreateOrderRequest(orderId))
         orderClient.addItem(orderId, AddItemRequest(itemId = orderId, name = "test", price = 123.00, quantity = 1))
 
-        /// Hacky way to remove item
+        // / Hacky way to remove item
         Thread.sleep(1000)
 
         val order = orderClient.getOrder(orderId).body
 
         assertThat(order?.items).isEmpty()
     }
-
 }

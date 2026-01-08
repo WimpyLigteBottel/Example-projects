@@ -11,24 +11,27 @@ import org.springframework.web.service.annotation.GetExchange
 import org.springframework.web.service.annotation.HttpExchange
 import org.springframework.web.service.annotation.PostExchange
 
-
 @HttpExchange("/api/orders", accept = ["application/json"])
 interface OrderClient {
     @PostExchange
-    fun createOrder(@RequestBody request: CreateOrderRequest): ResponseEntity<OrderResponse>
+    fun createOrder(
+        @RequestBody request: CreateOrderRequest,
+    ): ResponseEntity<OrderResponse>
 
     @PostExchange("/{orderId}/items")
     fun addItem(
         @PathVariable orderId: String,
-        @RequestBody request: AddItemRequest
+        @RequestBody request: AddItemRequest,
     ): ResponseEntity<OrderResponse>
 
     @PostExchange("/{orderId}/pay")
     fun markAsPaid(
         @PathVariable orderId: String,
-        @RequestBody request: MarkAsPaidRequest
+        @RequestBody request: MarkAsPaidRequest,
     ): ResponseEntity<OrderResponse>
 
     @GetExchange("/{orderId}")
-    fun getOrder(@PathVariable orderId: String): ResponseEntity<OrderResponse>
+    fun getOrder(
+        @PathVariable orderId: String,
+    ): ResponseEntity<OrderResponse>
 }

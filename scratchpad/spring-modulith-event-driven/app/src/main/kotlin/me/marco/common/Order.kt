@@ -7,7 +7,7 @@ data class OrderItem(
     val name: String,
     val price: Double,
     val quantity: Int,
-    val timeAdded: OffsetDateTime = OffsetDateTime.now()
+    val timeAdded: OffsetDateTime = OffsetDateTime.now(),
 )
 
 data class Order(
@@ -17,14 +17,12 @@ data class Order(
     val totalAmount: Double = items.sumOf { it.price * it.quantity },
     val version: Long = 0,
     val started: OffsetDateTime = OffsetDateTime.now(),
-    val lastUpdated: OffsetDateTime = OffsetDateTime.now()
+    val lastUpdated: OffsetDateTime = OffsetDateTime.now(),
 ) {
-
-    fun incrementVersion(): Order {
-        return copy(
+    fun incrementVersion(): Order =
+        copy(
             version = version + 1,
             totalAmount = items.sumOf { it.price * it.quantity },
-            lastUpdated = OffsetDateTime.now()
+            lastUpdated = OffsetDateTime.now(),
         )
-    }
 }

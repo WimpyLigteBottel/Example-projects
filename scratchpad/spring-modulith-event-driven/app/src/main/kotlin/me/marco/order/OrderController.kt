@@ -8,14 +8,15 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.util.*
 
-
 @RestController
 @RequestMapping("/api/orders")
 class OrderController(
-    private val commandHandler: OrderCommandHandler
+    private val commandHandler: OrderCommandHandler,
 ) : OrderClient {
     @PostMapping
-    override fun createOrder(@RequestBody request: CreateOrderRequest): ResponseEntity<OrderResponse> {
+    override fun createOrder(
+        @RequestBody request: CreateOrderRequest,
+    ): ResponseEntity<OrderResponse> {
         val command = CreateOrderCommand(aggregateId = request.orderId ?: UUID.randomUUID().toString())
 
         return commandHandler.handle(command).fold(
@@ -23,22 +24,23 @@ class OrderController(
                 val order = commandHandler.getOrder(command.aggregateId)
                 ResponseEntity.ok(order.toResponse())
             },
-            onFailure = { ResponseEntity.status(HttpStatus.BAD_REQUEST).build() }
+            onFailure = { ResponseEntity.status(HttpStatus.BAD_REQUEST).build() },
         )
     }
 
     @PostMapping("/{orderId}/items")
     override fun addItem(
         @PathVariable orderId: String,
-        @RequestBody request: AddItemRequest
+        @RequestBody request: AddItemRequest,
     ): ResponseEntity<OrderResponse> {
-        val command = AddItemCommand(
-            aggregateId = orderId,
-            itemId = request.itemId,
-            name = request.name,
-            price = request.price,
-            quantity = request.quantity
-        )
+        val command =
+            AddItemCommand(
+                aggregateId = orderId,
+                itemId = request.itemId,
+                name = request.name,
+                price = request.price,
+                quantity = request.quantity,
+            )
 
         return commandHandler.handle(command).fold(
             onSuccess = {
@@ -46,21 +48,23 @@ class OrderController(
                 ResponseEntity.ok(order.toResponse())
             },
             onFailure = { error ->
-                ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
                     .body(OrderResponse(orderId, emptyList(), 0.0, false, -1, error.message))
-            }
+            },
         )
     }
 
     @PostMapping("/{orderId}/pay")
     override fun markAsPaid(
         @PathVariable orderId: String,
-        @RequestBody request: MarkAsPaidRequest
+        @RequestBody request: MarkAsPaidRequest,
     ): ResponseEntity<OrderResponse> {
-        val command = MarkOrderAsPaidCommand(
-            aggregateId = orderId,
-            paymentMethod = request.paymentMethod
-        )
+        val command =
+            MarkOrderAsPaidCommand(
+                aggregateId = orderId,
+                paymentMethod = request.paymentMethod,
+            )
 
         return commandHandler.handle(command).fold(
             onSuccess = {
@@ -68,14 +72,17 @@ class OrderController(
                 ResponseEntity.ok(order.toResponse())
             },
             onFailure = { error ->
-                ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
                     .body(OrderResponse(orderId, emptyList(), 0.0, false, -1, error.message))
-            }
+            },
         )
     }
 
     @GetMapping("/{orderId}")
-    override fun getOrder(@PathVariable orderId: String): ResponseEntity<OrderResponse> {
+    override fun getOrder(
+        @PathVariable orderId: String,
+    ): ResponseEntity<OrderResponse> {
         val order = commandHandler.getOrder(orderId)
         return ResponseEntity.ok(order.toResponse())
     }

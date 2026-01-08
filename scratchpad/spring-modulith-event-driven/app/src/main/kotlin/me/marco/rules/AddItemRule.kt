@@ -5,7 +5,10 @@ import me.marco.event.models.Command
 import me.marco.event.models.Event
 import me.marco.event.models.ItemAddedEvent
 
-fun handleAddItem(command: Command.AddItemCommand, order: Order): Event {
+fun handleAddItem(
+    command: Command.AddItemCommand,
+    order: Order,
+): Event {
     if (order.isPaid) {
         throw Exception("Cannot add items to a paid order")
     }
@@ -15,6 +18,6 @@ fun handleAddItem(command: Command.AddItemCommand, order: Order): Event {
         name = command.name,
         price = command.price,
         quantity = command.quantity,
-        orderId = order.id
+        orderId = order.id,
     )
 }

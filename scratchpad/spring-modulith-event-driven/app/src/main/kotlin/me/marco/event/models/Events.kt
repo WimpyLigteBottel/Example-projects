@@ -1,3 +1,5 @@
+@file:Suppress("ktlint:standard:no-wildcard-imports")
+
 package me.marco.event.models
 
 import java.time.Instant
@@ -12,13 +14,13 @@ sealed interface Event {
 data class OrderCreatedEvent(
     override val eventId: String = UUID.randomUUID().toString(),
     override val aggregateId: String,
-    override val timestamp: Instant = Instant.now()
+    override val timestamp: Instant = Instant.now(),
 ) : Event
 
 data class OrderClearedEvent(
     override val aggregateId: String,
     override val eventId: String = UUID.randomUUID().toString(),
-    override val timestamp: Instant = Instant.now()
+    override val timestamp: Instant = Instant.now(),
 ) : Event
 
 data class ItemAddedEvent(
@@ -29,14 +31,14 @@ data class ItemAddedEvent(
     val itemId: String,
     val name: String,
     val price: Double,
-    val quantity: Int
+    val quantity: Int,
 ) : Event
 
 data class RemoveItemEvent(
     override val aggregateId: String,
     override val eventId: String = UUID.randomUUID().toString(),
     override val timestamp: Instant = Instant.now(),
-    val itemId: String
+    val itemId: String,
 ) : Event
 
 data class OrderMarkedAsPaidEvent(
@@ -44,5 +46,5 @@ data class OrderMarkedAsPaidEvent(
     override val aggregateId: String,
     override val timestamp: Instant = Instant.now(),
     val paymentMethod: String,
-    val amount: Double
+    val amount: Double,
 ) : Event

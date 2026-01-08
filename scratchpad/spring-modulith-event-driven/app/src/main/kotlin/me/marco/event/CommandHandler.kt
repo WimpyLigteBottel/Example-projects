@@ -1,3 +1,5 @@
+@file:Suppress("ktlint:standard:filename", "ktlint:standard:no-wildcard-imports")
+
 package me.marco.event
 
 import me.marco.common.Order
@@ -11,7 +13,7 @@ import org.springframework.stereotype.Service
 @Service
 class OrderCommandHandler(
     private val eventStore: EventStore,
-    private val applicationEventPublisher: ApplicationEventPublisher
+    private val applicationEventPublisher: ApplicationEventPublisher,
 ) {
     private val logger = LoggerFactory.getLogger(OrderCommandHandler::class.java)
 
@@ -20,7 +22,8 @@ class OrderCommandHandler(
 
         val event = order.applyRule(command)
 
-        return event.onSuccess { evt ->
+        return event
+            .onSuccess { evt ->
                 eventStore.save(evt)
                 applicationEventPublisher.publishEvent(evt)
             }.onFailure {
@@ -36,13 +39,18 @@ class OrderCommandHandler(
         return events.fold(Order(orderId)) { acc, event -> acc.apply(event) }
     }
 
-    fun Order.apply(event: Event): Order = when (event) {
-        is OrderCreatedEvent -> copy()
-        is ItemAddedEvent -> copy(
-            items = items + OrderItem(event.itemId, event.name, event.price, event.quantity)
-        )
-        is OrderMarkedAsPaidEvent -> copy(isPaid = true)
-        is OrderClearedEvent -> copy(items = emptyList())
-        is RemoveItemEvent -> { copy(items = items.filter { it.itemId != event.itemId }) }
-    }.incrementVersion()
+    fun Order.apply(event: Event): Order =
+        when (event) {
+            is OrderCreatedEvent -> copy()
+            is ItemAddedEvent ->
+                copy(
+                    items = items + OrderItem(event.itemId, event.name, event.price, event.quantity),
+                )
+
+            is OrderMarkedAsPaidEvent -> copy(isPaid = true)
+            is OrderClearedEvent -> copy(items = emptyList())
+            is RemoveItemEvent -> {
+                copy(items = items.filter { it.itemId != event.itemId })
+            }
+        }.incrementVersion()
 }

@@ -11,6 +11,5 @@ import org.springframework.scheduling.annotation.EnableScheduling
 open class Launcher
 
 fun main(args: Array<String>) {
-
     runApplication<Launcher>(*args)
 }

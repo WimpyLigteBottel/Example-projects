@@ -7,10 +7,8 @@ import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
 import java.util.concurrent.Executors
 
-
 @Component
-open class OrderEventListeners() {
-
+open class OrderEventListeners {
     @Async
     @EventListener
     open fun onOrderCreated(event: OrderCreatedEvent) {
@@ -39,14 +37,12 @@ open class OrderEventListeners() {
 @Component
 class OrderItemExpirationSaga(
     private val orderRepository: OrderCommandHandler,
-    @Value("\${cleanup.time}") private val cleanupTime: Long
+    @Value("\${cleanup.time}") private val cleanupTime: Long,
 ) {
-
     val tasks = Executors.newFixedThreadPool(10)
 
     @EventListener
     fun on(event: ItemAddedEvent) {
-
         tasks.submit {
             Thread.sleep(cleanupTime)
 
@@ -54,7 +50,7 @@ class OrderItemExpirationSaga(
                 Command.RemoveItemCommand(
                     aggregateId = event.aggregateId,
                     itemId = event.itemId,
-                )
+                ),
             )
         }
     }

@@ -11,18 +11,13 @@ import org.springframework.web.service.registry.ImportHttpServices
 
 @Configuration
 @ImportHttpServices
-open class ClientConfig(
-
-) {
+open class ClientConfig {
     @Bean
-    open fun httpServiceProxyFactory(@Value("\${custom.server.url}") url: String): HttpServiceProxyFactory {
+    open fun orderClient(
+        @Value($$"${custom.server.url}") url: String,
+    ): OrderClient {
         val adapter = RestClientAdapter.create(RestClient.create(url))
-        return HttpServiceProxyFactory.builderFor(adapter).build()
-    }
-
-    @Bean
-    open fun orderClient(factory: HttpServiceProxyFactory): OrderClient {
+        val factory = HttpServiceProxyFactory.builderFor(adapter).build()
         return factory.createClient(OrderClient::class.java)
     }
 }
-
