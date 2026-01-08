@@ -21,7 +21,10 @@ data class Order(
 ) {
 
     fun incrementVersion(): Order {
-
-        return copy(version = version + 1, lastUpdated = OffsetDateTime.now())
+        return copy(
+            version = version + 1,
+            totalAmount = items.sumOf { it.price * it.quantity },
+            lastUpdated = OffsetDateTime.now()
+        )
     }
 }

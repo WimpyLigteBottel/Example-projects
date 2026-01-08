@@ -13,9 +13,9 @@ import java.util.*
 @RequestMapping("/api/orders")
 class OrderController(
     private val commandHandler: OrderCommandHandler
-) {
+) : OrderClient {
     @PostMapping
-    fun createOrder(@RequestBody request: CreateOrderRequest): ResponseEntity<OrderResponse> {
+    override fun createOrder(@RequestBody request: CreateOrderRequest): ResponseEntity<OrderResponse> {
         val command = CreateOrderCommand(aggregateId = request.orderId ?: UUID.randomUUID().toString())
 
         return commandHandler.handle(command).fold(
@@ -28,7 +28,7 @@ class OrderController(
     }
 
     @PostMapping("/{orderId}/items")
-    fun addItem(
+    override fun addItem(
         @PathVariable orderId: String,
         @RequestBody request: AddItemRequest
     ): ResponseEntity<OrderResponse> {
@@ -53,7 +53,7 @@ class OrderController(
     }
 
     @PostMapping("/{orderId}/pay")
-    fun markAsPaid(
+    override fun markAsPaid(
         @PathVariable orderId: String,
         @RequestBody request: MarkAsPaidRequest
     ): ResponseEntity<OrderResponse> {
@@ -75,7 +75,7 @@ class OrderController(
     }
 
     @GetMapping("/{orderId}")
-    fun getOrder(@PathVariable orderId: String): ResponseEntity<OrderResponse> {
+    override fun getOrder(@PathVariable orderId: String): ResponseEntity<OrderResponse> {
         val order = commandHandler.getOrder(orderId)
         return if (order.items.isEmpty() && !order.isPaid) {
             ResponseEntity.notFound().build()
