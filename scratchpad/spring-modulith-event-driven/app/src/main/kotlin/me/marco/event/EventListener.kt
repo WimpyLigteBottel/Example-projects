@@ -9,7 +9,14 @@ import org.springframework.stereotype.Component
 import java.util.concurrent.Executors
 
 @Component
-open class OrderEventListeners {
+open class OrderEventListeners(
+    private val orderRepository: OrderCommandHandler,
+    private val eventStore: EventStore,
+    @Value("\${cleanup.time}") private val cleanupTime: Long,
+) {
+
+    val tasks = Executors.newFixedThreadPool(10)
+
 
     private val logger = LoggerFactory.getLogger(this::class.java)
 
@@ -17,12 +24,31 @@ open class OrderEventListeners {
     @EventListener
     open fun onOrderCreated(event: OrderCreatedEvent) {
         logger.info("📧 Sending welcome email for order ${event.aggregateId}")
+
+        // create task to clean up order
+        tasks.submit {
+            Thread.sleep(cleanupTime * 2)
+            orderRepository.handle(Command.DeleteOrderCommand(event.aggregateId))
+            eventStore.deleteEvents(event)
+        }
     }
 
     @Async
     @EventListener
     open fun onItemAdded(event: ItemAddedEvent) {
         logger.info("📊 Item added ${event.name}")
+
+        // creates a task to clean up item
+        tasks.submit {
+            Thread.sleep(cleanupTime)
+
+            orderRepository.handle(
+                Command.RemoveItemCommand(
+                    aggregateId = event.aggregateId,
+                    itemId = event.itemId,
+                ),
+            )
+        }
     }
 
     @Async
@@ -41,37 +67,5 @@ open class OrderEventListeners {
     @EventListener
     open fun orderDeleted(event: OrderDeletedEvent) {
         logger.info("❌ Order has been deleted ${event.aggregateId}")
-    }
-}
-
-@Component
-class OrderItemExpirationSaga(
-    private val orderRepository: OrderCommandHandler,
-    private val eventStore: EventStore,
-    @Value("\${cleanup.time}") private val cleanupTime: Long,
-) {
-    val tasks = Executors.newFixedThreadPool(10)
-
-    @EventListener
-    fun on(event: ItemAddedEvent) {
-        tasks.submit {
-            Thread.sleep(cleanupTime)
-
-            orderRepository.handle(
-                Command.RemoveItemCommand(
-                    aggregateId = event.aggregateId,
-                    itemId = event.itemId,
-                ),
-            )
-        }
-    }
-
-    @EventListener
-    fun on(event: OrderCreatedEvent) {
-        tasks.submit {
-            Thread.sleep(cleanupTime * 2)
-            orderRepository.handle(Command.DeleteOrderCommand(event.aggregateId))
-            eventStore.deleteEvents(event)
-        }
     }
 }
