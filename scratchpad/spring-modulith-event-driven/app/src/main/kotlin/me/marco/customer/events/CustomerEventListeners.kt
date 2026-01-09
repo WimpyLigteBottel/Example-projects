@@ -6,7 +6,9 @@ import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
 
 @Component
-open class CustomerEventListeners() {
+open class CustomerEventListeners(
+    val eventStore: CustomerEventStore,
+) {
 
 
     private val logger = LoggerFactory.getLogger(this::class.java)
@@ -21,5 +23,6 @@ open class CustomerEventListeners() {
     @EventListener
     open fun onDeleted(event: Event.CustomerDeletedEvent) {
         logger.info("❌\uD83D\uDC64 Customer has been deleted ${event.aggregateId}")
+        eventStore.deleteEvents(event)
     }
 }

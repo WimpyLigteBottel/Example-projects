@@ -11,7 +11,7 @@ import java.util.concurrent.Executors
 
 @Component
 open class OrderEventListeners(
-    private val orderRepository: OrderCommandHandler,
+    private val orderCommandHandler: OrderCommandHandler,
     private val eventStore: EventStore,
     @Value("\${cleanup.time}") private val cleanupTime: Long,
 ) {
@@ -29,7 +29,7 @@ open class OrderEventListeners(
         // create task to clean up order
         tasks.submit {
             Thread.sleep(cleanupTime * 2)
-            orderRepository.handle(Command.DeleteOrderCommand(event.aggregateId))
+            orderCommandHandler.handle(Command.DeleteOrderCommand(event.aggregateId))
             eventStore.deleteEvents(event)
         }
     }
@@ -43,7 +43,7 @@ open class OrderEventListeners(
         tasks.submit {
             Thread.sleep(cleanupTime)
 
-            orderRepository.handle(
+            orderCommandHandler.handle(
                 Command.RemoveItemCommand(
                     aggregateId = event.aggregateId,
                     itemId = event.itemId,
@@ -68,5 +68,16 @@ open class OrderEventListeners(
     @EventListener
     open fun orderDeleted(event: Event.OrderDeletedEvent) {
         logger.info("❌ Order has been deleted ${event.aggregateId}")
+    }
+
+    @Async
+    @EventListener
+    open fun onDeleted(event: me.marco.customer.events.Event.CustomerDeletedEvent) {
+        logger.info("❌!!! Customer has been deleted and now will be deleting all orders owned by customer ${event.aggregateId}")
+
+        val allOrders = orderCommandHandler.findAllOrdersByCustomerId(event.aggregateId)
+        allOrders.forEach { order ->
+            orderCommandHandler.handle(Command.DeleteOrderCommand(order.id))
+        }
     }
 }

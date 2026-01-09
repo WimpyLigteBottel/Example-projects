@@ -7,9 +7,11 @@ import me.marco.order.api.models.CreateOrderRequest
 import me.marco.order.api.models.MarkAsPaidRequest
 import me.marco.order.service.dto.OrderItem
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.http.HttpStatusCode
 
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
@@ -26,6 +28,42 @@ class OrderControllerTest {
 
         return customer.body!!.id
     }
+
+    @Test
+    fun `if invalid customer id is passed break`() {
+        val response = orderClient.createOrder(CreateOrderRequest("zxc"))
+
+        assertThat(response.statusCode).isEqualTo(HttpStatusCode.valueOf(400))
+    }
+
+
+    @Test
+    fun `when customer is gone , expect all customer orders to be deleted`() {
+        val customerId = createDefaultCustomer()
+        val responseA = orderClient.createOrder(CreateOrderRequest(customerId))
+        val responseB = orderClient.createOrder(CreateOrderRequest(customerId))
+        val responseC = orderClient.createOrder(CreateOrderRequest(customerId))
+
+        assertThat(responseA.body?.orderId).isNotEmpty()
+        assertThat(responseB.body?.orderId).isNotEmpty()
+        assertThat(responseC.body?.orderId).isNotEmpty()
+
+        customerClient.deleteCustomer(customerId)
+
+        // Due to how the delete works
+        Thread.sleep(2000)
+
+        orderClient.getOrder(responseA.body!!.orderId).also {
+            assertThat(it.statusCode.value()).isEqualTo(404)
+        }
+        orderClient.getOrder(responseB.body!!.orderId).also {
+            assertThat(it.statusCode.value()).isEqualTo(404)
+        }
+        orderClient.getOrder(responseC.body!!.orderId).also {
+            assertThat(it.statusCode.value()).isEqualTo(404)
+        }
+    }
+
 
     @Test
     fun `able to create an order`() {

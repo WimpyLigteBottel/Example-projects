@@ -3,6 +3,7 @@ package me.marco.customer.api
 import me.marco.customer.api.models.CreateCustomerRequest
 import me.marco.customer.api.models.CustomerResponse
 import org.springframework.http.ResponseEntity
+import org.springframework.modulith.NamedInterface
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.service.annotation.DeleteExchange
@@ -11,6 +12,7 @@ import org.springframework.web.service.annotation.HttpExchange
 import org.springframework.web.service.annotation.PostExchange
 
 @HttpExchange("/api/customers", accept = ["application/json"])
+@NamedInterface("api")
 interface CustomerClient {
     @PostExchange
     fun createCustomer(
@@ -22,6 +24,8 @@ interface CustomerClient {
         @PathVariable id: String,
     ): ResponseEntity<CustomerResponse>
 
+    @GetExchange("/{id}/exists")
+    fun exists(@PathVariable id: String): ResponseEntity<Boolean>
 
     @DeleteExchange("/{id}")
     fun deleteCustomer(@PathVariable id: String): ResponseEntity<Any>

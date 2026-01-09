@@ -15,7 +15,6 @@ class OrderController(
     override fun createOrder(
         @RequestBody request: CreateOrderRequest,
     ): ResponseEntity<OrderResponse> {
-
         try {
             val order = orderService.createOrder(request.internalize())
             return ResponseEntity.ok(order.toResponse())
@@ -61,6 +60,12 @@ class OrderController(
             return ResponseEntity.notFound().build()
 
         return ResponseEntity.ok(order.toResponse())
+    }
+
+    override fun findLinkedOrderIds(customerId: String): ResponseEntity<List<String>> {
+        val orders = orderService.findAllOrderForCustomers(customerId)
+
+        return ResponseEntity.ok(orders.map { it.id })
     }
 
     @DeleteMapping("/{orderId}")

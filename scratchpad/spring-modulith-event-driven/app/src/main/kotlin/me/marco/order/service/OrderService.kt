@@ -1,5 +1,6 @@
 package me.marco.order.service
 
+import me.marco.customer.api.CustomerClient
 import me.marco.order.command.Command
 import me.marco.order.command.OrderCommandHandler
 import me.marco.order.service.dto.AddItemRequestDTO
@@ -12,14 +13,26 @@ import java.util.*
 
 @Service
 class OrderService(
-    private val commandHandler: OrderCommandHandler
+    private val commandHandler: OrderCommandHandler,
+    private val customerClient: CustomerClient
 ) {
 
     fun getOrder(orderId: String): Order {
         return commandHandler.getOrder(orderId)
     }
 
+    fun findAllOrderForCustomers(customerId: String): List<Order> {
+        return commandHandler.findAllOrdersByCustomerId(customerId)
+    }
+
+
     fun createOrder(request: CreateOrderRequestDTO): Order {
+
+        val customerExistResponse = customerClient.exists(request.customerId)
+        if (customerExistResponse.body == false) {
+            throw RuntimeException("Customer does not exist")
+        }
+
         val command =
             Command.CreateOrderCommand(aggregateId = UUID.randomUUID().toString(), customerId = request.customerId)
 
@@ -57,5 +70,6 @@ class OrderService(
         commandHandler.handle(command)
         return commandHandler.getOrder(command.aggregateId)
     }
+
 
 }

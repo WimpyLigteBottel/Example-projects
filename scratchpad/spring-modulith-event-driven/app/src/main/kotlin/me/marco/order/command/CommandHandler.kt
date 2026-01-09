@@ -40,6 +40,17 @@ class OrderCommandHandler(
         return events.fold(Order(orderId)) { acc, event -> acc.apply(event) }
     }
 
+    /**
+     * Gets the final order state of orders after applying all successful events.
+     */
+    fun findAllOrdersByCustomerId(customerId: String): List<Order> {
+        val orders = eventStore.getEventsByCustomerId(customerId)
+            .map { (key, events) ->
+                events.fold(Order(key)) { acc, event -> acc.apply(event) }
+            }
+        return orders
+    }
+
     private fun Order.apply(event: Event): Order =
         when (event) {
             is Event.OrderCreatedEvent -> copy(customerId = event.customerId)

@@ -38,6 +38,15 @@ class CustomerController(
         return ResponseEntity.ok(customer.toResponse())
     }
 
+    override fun exists(id: String): ResponseEntity<Boolean> {
+        val customer = customerService.getCustomer(id)
+
+        if (customer.version == 0L || customer.deleted || id == "")
+            return ResponseEntity.ok(false)
+
+        return ResponseEntity.ok(true)
+    }
+
     override fun deleteCustomer(id: String): ResponseEntity<Any> {
         return try {
             customerService.deleteCustomer(id)
