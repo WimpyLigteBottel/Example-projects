@@ -8,14 +8,29 @@ class EventStore {
     private val events = ConcurrentHashMap<String, MutableList<Event>>()
 
     fun save(event: Event) {
-        events.getOrPut(event.aggregateId) { mutableListOf() }.add(event)
+        events.getOrPut(event.orderId) { mutableListOf() }.add(event)
     }
 
     fun deleteEvents(event: Event) {
-        events[event.aggregateId] = mutableListOf()
+        events[event.orderId] = mutableListOf()
     }
 
     fun getEvents(aggregateId: String): List<Event> = events[aggregateId] ?: emptyList()
+
+    fun getUnpaidOrders(): List<Pair<String, List<Event>>> = events.entries.map {
+        val events: List<Pair<String, List<Event>>> = events.entries.mapNotNull { (key, values) ->
+            val hasPaidOrder = values.filter { it -> it is Event.OrderMarkedAsPaidEvent }
+
+            if (hasPaidOrder.isNotEmpty())
+                return@mapNotNull null
+
+            if(values.isEmpty())
+                return@mapNotNull null
+
+            key to values.toList()
+        }
+        return events
+    }
 
     fun getEventsByCustomerId(customerId: String): List<Pair<String, List<Event>>> {
         val events: List<Pair<String, List<Event>>> = events.entries.map { (key, values) ->

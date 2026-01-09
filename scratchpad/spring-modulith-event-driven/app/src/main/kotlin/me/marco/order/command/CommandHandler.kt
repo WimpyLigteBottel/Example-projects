@@ -45,8 +45,8 @@ class OrderCommandHandler(
      */
     fun findAllOrdersByCustomerId(customerId: String): List<Order> {
         val orders = eventStore.getEventsByCustomerId(customerId)
-            .map { (key, events) ->
-                events.fold(Order(key)) { acc, event -> acc.apply(event) }
+            .map { (key, _) ->
+                getOrder(key)
             }
         return orders
     }
@@ -66,5 +66,6 @@ class OrderCommandHandler(
             }
 
             is Event.OrderDeletedEvent -> copy(deleted = true)
-        }.incrementVersion()
+            is Event.OrderCancelledDueToTimeoutEvent -> copy(deleted = true)
+        }.incrementVersion(event)
 }

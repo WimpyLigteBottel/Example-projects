@@ -16,7 +16,6 @@ fun handleAddItem(
     }
 
     return Event.ItemAddedEvent(
-        aggregateId = command.aggregateId,
         itemId = command.itemId,
         name = command.name,
         price = command.price,

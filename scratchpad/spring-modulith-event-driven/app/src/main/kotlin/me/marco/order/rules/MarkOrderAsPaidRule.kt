@@ -12,7 +12,7 @@ fun handleMarkAsPaid(command: Command.MarkOrderAsPaidCommand, order: Order): Eve
         order.items.isEmpty() -> throw Exception("Cannot mark empty order as paid")
         else ->
             Event.OrderMarkedAsPaidEvent(
-                aggregateId = command.aggregateId,
+                orderId = command.aggregateId,
                 paymentMethod = command.paymentMethod,
                 amount = order.totalAmount
             )

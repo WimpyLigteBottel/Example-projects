@@ -36,6 +36,25 @@ class OrderControllerTest {
         assertThat(response.statusCode).isEqualTo(HttpStatusCode.valueOf(400))
     }
 
+    @Test
+    fun `when order is old then expect that they get cancelled`() {
+        val customerId = createDefaultCustomer()
+        val responseA = orderClient.createOrder(CreateOrderRequest(customerId))
+        val responseB = orderClient.createOrder(CreateOrderRequest(customerId))
+        val responseC = orderClient.createOrder(CreateOrderRequest(customerId))
+        Thread.sleep(2000)
+
+        orderClient.getOrder(responseA.body!!.orderId).also {
+            assertThat(it.statusCode.value()).isEqualTo(404)
+        }
+        orderClient.getOrder(responseB.body!!.orderId).also {
+            assertThat(it.statusCode.value()).isEqualTo(404)
+        }
+        orderClient.getOrder(responseC.body!!.orderId).also {
+            assertThat(it.statusCode.value()).isEqualTo(404)
+        }
+    }
+
 
     @Test
     fun `when customer is gone , expect all customer orders to be deleted`() {
@@ -82,7 +101,7 @@ class OrderControllerTest {
     fun `order created gets closed after x period`() {
         val response = orderClient.createOrder(CreateOrderRequest(createDefaultCustomer())).body!!
 
-        Thread.sleep(1000)
+        Thread.sleep(2000)
 
         val order = orderClient.getOrder(response.orderId)
 
@@ -147,6 +166,6 @@ class OrderControllerTest {
 
         val order = orderClient.getOrder(orderId).body
 
-        Assertions.assertThat(order?.items).isEmpty()
+        assertThat(order?.items).isEmpty()
     }
 }

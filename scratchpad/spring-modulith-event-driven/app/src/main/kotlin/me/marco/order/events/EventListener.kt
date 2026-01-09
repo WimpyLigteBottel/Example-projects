@@ -24,14 +24,7 @@ open class OrderEventListeners(
     @Async
     @EventListener
     open fun onOrderCreated(event: Event.OrderCreatedEvent) {
-        logger.info("📧 Order created ${event.aggregateId}")
-
-        // create task to clean up order
-        tasks.submit {
-            Thread.sleep(cleanupTime * 2)
-            orderCommandHandler.handle(Command.DeleteOrderCommand(event.aggregateId))
-            eventStore.deleteEvents(event)
-        }
+        logger.info("📧 Order created ${event.orderId}")
     }
 
     @Async
@@ -45,7 +38,7 @@ open class OrderEventListeners(
 
             orderCommandHandler.handle(
                 Command.RemoveItemCommand(
-                    aggregateId = event.aggregateId,
+                    aggregateId = event.orderId,
                     itemId = event.itemId,
                 ),
             )
@@ -67,7 +60,14 @@ open class OrderEventListeners(
     @Async
     @EventListener
     open fun orderDeleted(event: Event.OrderDeletedEvent) {
-        logger.info("❌ Order has been deleted ${event.aggregateId}")
+        logger.info("❌ Order has been deleted ${event.orderId}")
+        eventStore.deleteEvents(event)
+    }
+
+    @Async
+    @EventListener
+    open fun onCancelled(event: Event.OrderCancelledDueToTimeoutEvent) {
+        logger.info("⚠\uFE0F Order has been cancelled ${event.orderId}")
     }
 
     @Async

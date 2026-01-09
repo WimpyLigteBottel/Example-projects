@@ -1,6 +1,8 @@
 package me.marco.order.service.dto
 
+import me.marco.order.events.Event
 import java.time.OffsetDateTime
+import java.time.ZoneOffset
 
 // ============= DTOs =============
 data class CreateOrderRequestDTO(val customerId: String)
@@ -33,10 +35,10 @@ data class Order(
     val lastUpdated: OffsetDateTime = OffsetDateTime.now(),
     val deleted: Boolean = false
 ) {
-    fun incrementVersion(): Order =
+    fun incrementVersion(event: Event): Order =
         copy(
             version = version + 1,
             totalAmount = items.sumOf { it.price * it.quantity },
-            lastUpdated = OffsetDateTime.now(),
+            lastUpdated = event.timestamp.atOffset(ZoneOffset.ofHours(1))
         )
 }

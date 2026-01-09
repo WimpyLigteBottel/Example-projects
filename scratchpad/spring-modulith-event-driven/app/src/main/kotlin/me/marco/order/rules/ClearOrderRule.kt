@@ -11,7 +11,7 @@ fun handleClearOrder(command: Command.ClearOrderCommand, order: Order): Event {
         order.deleted -> throw IllegalStateException("Order already deleted")
         order.items.isEmpty() -> throw Exception("There is no items to clear")
         else -> Event.OrderClearedEvent(
-            aggregateId = command.aggregateId,
+            orderId = command.aggregateId,
         )
     }
 }

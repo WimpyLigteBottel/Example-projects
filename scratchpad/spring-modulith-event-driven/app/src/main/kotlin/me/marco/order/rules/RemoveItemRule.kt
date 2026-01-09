@@ -14,6 +14,6 @@ fun handleRemoveItem(command: Command.RemoveItemCommand, order: Order): Event {
     }
 
     return Event.RemoveItemEvent(
-        aggregateId = command.aggregateId, itemId = command.itemId
+        orderId = command.aggregateId, itemId = command.itemId
     )
 }

@@ -11,6 +11,6 @@ fun handleOrderDeletion(command: Command.DeleteOrderCommand, order: Order): Even
         order.deleted -> throw IllegalStateException("Order already deleted")
     }
     return Event.OrderDeletedEvent(
-        aggregateId = command.aggregateId
+        orderId = command.aggregateId
     )
 }

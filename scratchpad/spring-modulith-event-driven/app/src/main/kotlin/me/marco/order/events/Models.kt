@@ -7,33 +7,32 @@ import java.util.*
 
 sealed interface Event {
     val eventId: String
-    val aggregateId: String
+    val orderId: String
     val timestamp: Instant
 
     data class OrderCreatedEvent(
         override val eventId: String = UUID.randomUUID().toString(),
-        override val aggregateId: String,
         override val timestamp: Instant = Instant.now(),
+        override val orderId: String,
         val customerId: String
     ) : Event
 
     data class OrderClearedEvent(
-        override val aggregateId: String,
+        override val orderId: String,
         override val eventId: String = UUID.randomUUID().toString(),
         override val timestamp: Instant = Instant.now(),
     ) : Event
 
     data class OrderDeletedEvent(
-        override val aggregateId: String,
+        override val orderId: String,
         override val eventId: String = UUID.randomUUID().toString(),
         override val timestamp: Instant = Instant.now(),
     ) : Event
 
     data class ItemAddedEvent(
-        override val aggregateId: String,
         override val eventId: String = UUID.randomUUID().toString(),
         override val timestamp: Instant = Instant.now(),
-        val orderId: String,
+        override val orderId: String,
         val itemId: String,
         val name: String,
         val price: Double,
@@ -41,17 +40,24 @@ sealed interface Event {
     ) : Event
 
     data class RemoveItemEvent(
-        override val aggregateId: String,
         override val eventId: String = UUID.randomUUID().toString(),
         override val timestamp: Instant = Instant.now(),
+        override val orderId: String,
         val itemId: String,
     ) : Event
 
     data class OrderMarkedAsPaidEvent(
         override val eventId: String = UUID.randomUUID().toString(),
-        override val aggregateId: String,
         override val timestamp: Instant = Instant.now(),
+        override val orderId: String,
         val paymentMethod: String,
         val amount: Double,
     ) : Event
+
+    data class OrderCancelledDueToTimeoutEvent(
+        override val eventId: String = UUID.randomUUID().toString(),
+        override val timestamp: Instant = Instant.now(),
+        override val orderId: String,
+    ) : Event
+
 }
