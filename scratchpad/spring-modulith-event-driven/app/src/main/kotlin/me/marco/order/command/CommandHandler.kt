@@ -2,11 +2,11 @@
 
 package me.marco.order.command
 
-import me.marco.order.events.EventStore
 import me.marco.order.events.Event
+import me.marco.order.events.EventStore
+import me.marco.order.rules.RulesHandler.applyRule
 import me.marco.order.service.dto.Order
 import me.marco.order.service.dto.OrderItem
-import me.marco.order.rules.RulesHandler.applyRule
 import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
@@ -42,7 +42,7 @@ class OrderCommandHandler(
 
     private fun Order.apply(event: Event): Order =
         when (event) {
-            is Event.OrderCreatedEvent -> copy()
+            is Event.OrderCreatedEvent -> copy(customerId = event.customerId)
             is Event.ItemAddedEvent ->
                 copy(
                     items = items + OrderItem(event.itemId, event.name, event.price, event.quantity),

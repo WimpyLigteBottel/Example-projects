@@ -7,10 +7,10 @@ import me.marco.order.service.dto.CreateOrderRequestDTO
 import me.marco.order.service.dto.MarkAsPaidRequestDTO
 
 // ============= DTOs =============
-data class CreateOrderRequest(val orderId: String? = null) {
+data class CreateOrderRequest(val customerId: String) {
     fun internalize(): CreateOrderRequestDTO {
         return CreateOrderRequestDTO(
-            orderId
+            customerId
         )
     }
 }

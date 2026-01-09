@@ -8,6 +8,6 @@ fun handleCreateOrder(command: Command.CreateOrderCommand, order: Order): Event.
     return when {
         order.deleted -> throw IllegalStateException("Order already deleted")
         order.version > 0 -> throw IllegalStateException("Order already been created")
-        else -> Event.OrderCreatedEvent(aggregateId = command.aggregateId)
+        else -> Event.OrderCreatedEvent(aggregateId = command.aggregateId, customerId = command.customerId)
     }
 }

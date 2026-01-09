@@ -20,7 +20,8 @@ class OrderService(
     }
 
     fun createOrder(request: CreateOrderRequestDTO): Order {
-        val command = Command.CreateOrderCommand(aggregateId = request.orderId ?: UUID.randomUUID().toString())
+        val command =
+            Command.CreateOrderCommand(aggregateId = UUID.randomUUID().toString(), customerId = request.customerId)
 
         commandHandler.handle(command)
 

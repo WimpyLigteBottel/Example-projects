@@ -5,6 +5,7 @@ sealed interface Command {
 
     data class CreateOrderCommand(
         override val aggregateId: String,
+        val customerId: String
     ) : Command
 
     data class ClearOrderCommand(

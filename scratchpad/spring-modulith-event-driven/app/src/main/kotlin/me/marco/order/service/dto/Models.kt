@@ -3,7 +3,7 @@ package me.marco.order.service.dto
 import java.time.OffsetDateTime
 
 // ============= DTOs =============
-data class CreateOrderRequestDTO(val orderId: String? = null)
+data class CreateOrderRequestDTO(val customerId: String)
 
 data class AddItemRequestDTO(
     val itemId: String,
@@ -24,6 +24,7 @@ data class OrderItem(
 
 data class Order(
     val id: String,
+    val customerId: String = "",
     val items: List<OrderItem> = emptyList(),
     val isPaid: Boolean = false,
     val totalAmount: Double = items.sumOf { it.price * it.quantity },

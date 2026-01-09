@@ -14,12 +14,12 @@ open class CustomerEventListeners() {
     @Async
     @EventListener
     open fun onCreated(event: Event.CustomerCreatedEvent) {
-        logger.info("📧 Sending welcome email ${event.aggregateId}")
+        logger.info("\uD83D\uDC64 Sending welcome email ${event.name}")
     }
 
     @Async
     @EventListener
     open fun onDeleted(event: Event.CustomerDeletedEvent) {
-        logger.info("❌ Customer has been deleted ${event.aggregateId}")
+        logger.info("❌\uD83D\uDC64 Customer has been deleted ${event.aggregateId}")
     }
 }

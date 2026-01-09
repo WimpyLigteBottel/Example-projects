@@ -24,7 +24,7 @@ open class OrderEventListeners(
     @Async
     @EventListener
     open fun onOrderCreated(event: Event.OrderCreatedEvent) {
-        logger.info("📧 Sending welcome email for order ${event.aggregateId}")
+        logger.info("📧 Order created ${event.aggregateId}")
 
         // create task to clean up order
         tasks.submit {

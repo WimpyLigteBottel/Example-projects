@@ -14,6 +14,7 @@ sealed interface Event {
         override val eventId: String = UUID.randomUUID().toString(),
         override val aggregateId: String,
         override val timestamp: Instant = Instant.now(),
+        val customerId: String
     ) : Event
 
     data class OrderClearedEvent(
