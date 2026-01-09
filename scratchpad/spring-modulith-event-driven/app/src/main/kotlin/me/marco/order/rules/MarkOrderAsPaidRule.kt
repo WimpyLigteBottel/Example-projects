@@ -1,9 +1,8 @@
-package me.marco.orderprocessing.rules
+package me.marco.order.rules
 
-import me.marco.common.Order
-import me.marco.orderprocessing.models.Command
-import me.marco.orderprocessing.models.Event
-import me.marco.orderprocessing.models.OrderMarkedAsPaidEvent
+import me.marco.order.service.dto.Order
+import me.marco.order.command.Command
+import me.marco.order.events.Event
 
 fun handleMarkAsPaid(command: Command.MarkOrderAsPaidCommand, order: Order): Event {
     return when {
@@ -11,7 +10,7 @@ fun handleMarkAsPaid(command: Command.MarkOrderAsPaidCommand, order: Order): Eve
         order.isPaid -> throw Exception("Order is already paid")
         order.items.isEmpty() -> throw Exception("Cannot mark empty order as paid")
         else ->
-            OrderMarkedAsPaidEvent(
+            Event.OrderMarkedAsPaidEvent(
                 aggregateId = command.aggregateId,
                 paymentMethod = command.paymentMethod,
                 amount = order.totalAmount

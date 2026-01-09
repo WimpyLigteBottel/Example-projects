@@ -1,6 +1,6 @@
-package me.marco.config
+package me.marco.order.config
 
-import me.marco.order.OrderClient
+import me.marco.order.api.OrderClient
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

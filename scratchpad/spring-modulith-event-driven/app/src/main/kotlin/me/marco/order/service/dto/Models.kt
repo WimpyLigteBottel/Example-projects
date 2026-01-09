@@ -1,6 +1,18 @@
-package me.marco.common
+package me.marco.order.service.dto
 
 import java.time.OffsetDateTime
+
+// ============= DTOs =============
+data class CreateOrderRequestDTO(val orderId: String? = null)
+
+data class AddItemRequestDTO(
+    val itemId: String,
+    val name: String,
+    val price: Double,
+    val quantity: Int
+)
+
+data class MarkAsPaidRequestDTO(val paymentMethod: String)
 
 data class OrderItem(
     val itemId: String,

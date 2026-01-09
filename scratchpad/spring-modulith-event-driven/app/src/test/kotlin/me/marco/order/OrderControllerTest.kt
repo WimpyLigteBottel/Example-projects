@@ -1,9 +1,10 @@
 package me.marco.order
 
-import me.marco.common.OrderItem
-import me.marco.order.api.AddItemRequest
-import me.marco.order.api.CreateOrderRequest
-import me.marco.order.api.MarkAsPaidRequest
+import me.marco.order.api.OrderClient
+import me.marco.order.service.dto.OrderItem
+import me.marco.order.api.models.AddItemRequest
+import me.marco.order.api.models.CreateOrderRequest
+import me.marco.order.api.models.MarkAsPaidRequest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

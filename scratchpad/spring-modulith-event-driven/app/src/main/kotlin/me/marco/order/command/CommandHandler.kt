@@ -1,11 +1,12 @@
 @file:Suppress("ktlint:standard:filename", "ktlint:standard:no-wildcard-imports")
 
-package me.marco.orderprocessing
+package me.marco.order.command
 
-import me.marco.common.Order
-import me.marco.common.OrderItem
-import me.marco.orderprocessing.models.*
-import me.marco.orderprocessing.RulesHandler.applyRule
+import me.marco.order.events.EventStore
+import me.marco.order.events.Event
+import me.marco.order.service.dto.Order
+import me.marco.order.service.dto.OrderItem
+import me.marco.order.rules.RulesHandler.applyRule
 import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
@@ -39,19 +40,20 @@ class OrderCommandHandler(
         return events.fold(Order(orderId)) { acc, event -> acc.apply(event) }
     }
 
-    fun Order.apply(event: Event): Order =
+    private fun Order.apply(event: Event): Order =
         when (event) {
-            is OrderCreatedEvent -> copy()
-            is ItemAddedEvent ->
+            is Event.OrderCreatedEvent -> copy()
+            is Event.ItemAddedEvent ->
                 copy(
                     items = items + OrderItem(event.itemId, event.name, event.price, event.quantity),
                 )
 
-            is OrderMarkedAsPaidEvent -> copy(isPaid = true)
-            is OrderClearedEvent -> copy(items = emptyList())
-            is RemoveItemEvent -> {
+            is Event.OrderMarkedAsPaidEvent -> copy(isPaid = true)
+            is Event.OrderClearedEvent -> copy(items = emptyList())
+            is Event.RemoveItemEvent -> {
                 copy(items = items.filter { it.itemId != event.itemId })
             }
-            is OrderDeletedEvent -> copy(deleted = true)
+
+            is Event.OrderDeletedEvent -> copy(deleted = true)
         }.incrementVersion()
 }

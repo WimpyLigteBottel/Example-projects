@@ -1,7 +1,7 @@
-package me.marco.order
+package me.marco.order.api
 
-import me.marco.orderprocessing.service.OrderService
-import me.marco.order.api.*
+import me.marco.order.api.models.*
+import me.marco.order.service.OrderService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -17,8 +17,7 @@ class OrderController(
     ): ResponseEntity<OrderResponse> {
 
         try {
-            val orderId = orderService.createOrder(request.internalize())
-            val order = orderService.getOrder(orderId)
+            val order = orderService.createOrder(request.internalize())
             return ResponseEntity.ok(order.toResponse())
         } catch (_: Exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
@@ -31,8 +30,7 @@ class OrderController(
         @RequestBody request: AddItemRequest,
     ): ResponseEntity<OrderResponse> {
         try {
-            val orderId = orderService.addItem(orderId, request.internalize())
-            val order = orderService.getOrder(orderId)
+            val order = orderService.addItem(orderId, request.internalize())
             return ResponseEntity.ok(order.toResponse())
         } catch (_: Exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
@@ -46,8 +44,7 @@ class OrderController(
     ): ResponseEntity<OrderResponse> {
 
         try {
-            val orderId = orderService.markAsPaid(orderId, request.internalize())
-            val order = orderService.getOrder(orderId)
+            val order = orderService.markAsPaid(orderId, request.internalize())
             return ResponseEntity.ok(order.toResponse())
         } catch (_: Exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build()

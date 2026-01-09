@@ -1,6 +1,5 @@
-package me.marco.orderprocessing
+package me.marco.order.events
 
-import me.marco.orderprocessing.models.Event
 import org.springframework.stereotype.Component
 import java.util.concurrent.ConcurrentHashMap
 

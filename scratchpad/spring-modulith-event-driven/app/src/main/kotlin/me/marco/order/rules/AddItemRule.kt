@@ -1,9 +1,8 @@
-package me.marco.orderprocessing.rules
+package me.marco.order.rules
 
-import me.marco.common.Order
-import me.marco.orderprocessing.models.Command
-import me.marco.orderprocessing.models.Event
-import me.marco.orderprocessing.models.ItemAddedEvent
+import me.marco.order.command.Command
+import me.marco.order.events.Event
+import me.marco.order.service.dto.Order
 
 fun handleAddItem(
     command: Command.AddItemCommand,
@@ -15,7 +14,7 @@ fun handleAddItem(
         order.isPaid -> throw Exception("Cannot add items to a paid order")
     }
 
-    return ItemAddedEvent(
+    return Event.ItemAddedEvent(
         aggregateId = command.aggregateId,
         itemId = command.itemId,
         name = command.name,

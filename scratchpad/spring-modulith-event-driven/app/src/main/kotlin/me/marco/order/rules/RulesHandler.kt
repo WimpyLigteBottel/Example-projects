@@ -1,19 +1,12 @@
-package me.marco.orderprocessing
+package me.marco.order.rules
 
-import me.marco.common.Order
-import me.marco.orderprocessing.models.Command
-import me.marco.orderprocessing.models.Event
-import me.marco.orderprocessing.rules.handleAddItem
-import me.marco.orderprocessing.rules.handleClearOrder
-import me.marco.orderprocessing.rules.handleCreateOrder
-import me.marco.orderprocessing.rules.handleMarkAsPaid
-import me.marco.orderprocessing.rules.handleOrderDeletion
-import me.marco.orderprocessing.rules.handleRemoveItem
+import me.marco.order.service.dto.Order
+import me.marco.order.command.Command
+import me.marco.order.events.Event
 import org.springframework.stereotype.Service
 
 @Service
 object RulesHandler {
-
     fun Order.applyRule(command: Command): Result<Event> {
         return runCatching {
             when (command) {

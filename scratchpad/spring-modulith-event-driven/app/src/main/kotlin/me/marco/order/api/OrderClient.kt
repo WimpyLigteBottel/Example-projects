@@ -1,9 +1,9 @@
-package me.marco.order
+package me.marco.order.api
 
-import me.marco.order.api.AddItemRequest
-import me.marco.order.api.CreateOrderRequest
-import me.marco.order.api.MarkAsPaidRequest
-import me.marco.order.api.OrderResponse
+import me.marco.order.api.models.AddItemRequest
+import me.marco.order.api.models.CreateOrderRequest
+import me.marco.order.api.models.MarkAsPaidRequest
+import me.marco.order.api.models.OrderResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody

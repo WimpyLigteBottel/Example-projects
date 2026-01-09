@@ -1,6 +1,7 @@
-package me.marco.orderprocessing
+package me.marco.order.events
 
-import me.marco.orderprocessing.models.*
+import me.marco.order.command.Command
+import me.marco.order.command.OrderCommandHandler
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.event.EventListener
@@ -22,7 +23,7 @@ open class OrderEventListeners(
 
     @Async
     @EventListener
-    open fun onOrderCreated(event: OrderCreatedEvent) {
+    open fun onOrderCreated(event: Event.OrderCreatedEvent) {
         logger.info("📧 Sending welcome email for order ${event.aggregateId}")
 
         // create task to clean up order
@@ -35,7 +36,7 @@ open class OrderEventListeners(
 
     @Async
     @EventListener
-    open fun onItemAdded(event: ItemAddedEvent) {
+    open fun onItemAdded(event: Event.ItemAddedEvent) {
         logger.info("📊 Item added ${event.name}")
 
         // creates a task to clean up item
@@ -53,19 +54,19 @@ open class OrderEventListeners(
 
     @Async
     @EventListener
-    open fun onOrderPaid(event: OrderMarkedAsPaidEvent) {
+    open fun onOrderPaid(event: Event.OrderMarkedAsPaidEvent) {
         logger.info("💳 Processing payment ${event.amount}")
     }
 
     @Async
     @EventListener
-    open fun itemRemovedEvent(event: RemoveItemEvent) {
+    open fun itemRemovedEvent(event: Event.RemoveItemEvent) {
         logger.info("❌ Item has been removed ${event.itemId}")
     }
 
     @Async
     @EventListener
-    open fun orderDeleted(event: OrderDeletedEvent) {
+    open fun orderDeleted(event: Event.OrderDeletedEvent) {
         logger.info("❌ Order has been deleted ${event.aggregateId}")
     }
 }

@@ -1,4 +1,4 @@
-package me.marco.orderprocessing.models
+package me.marco.order.command
 
 sealed interface Command {
     val aggregateId: String
