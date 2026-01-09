@@ -7,6 +7,7 @@ import me.marco.order.service.dto.Order
 
 fun handleOrderDeletion(command: Command.DeleteOrderCommand, order: Order): Event {
     when {
+        order.customerId.isBlank() -> throw IllegalStateException("Customer id is null or blank")
         order.deleted -> throw IllegalStateException("Order already deleted")
     }
     return Event.OrderDeletedEvent(

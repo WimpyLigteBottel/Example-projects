@@ -6,6 +6,7 @@ import me.marco.order.events.Event
 
 fun handleMarkAsPaid(command: Command.MarkOrderAsPaidCommand, order: Order): Event {
     return when {
+        order.customerId.isBlank() -> throw IllegalStateException("Customer id is null or blank")
         order.deleted -> throw IllegalStateException("Order already deleted")
         order.isPaid -> throw Exception("Order is already paid")
         order.items.isEmpty() -> throw Exception("Cannot mark empty order as paid")

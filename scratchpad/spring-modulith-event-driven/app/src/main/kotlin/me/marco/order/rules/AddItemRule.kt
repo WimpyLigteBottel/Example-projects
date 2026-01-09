@@ -10,6 +10,7 @@ fun handleAddItem(
 ): Event {
 
     when {
+        order.customerId.isBlank() -> throw IllegalStateException("Customer id is null or blank")
         order.deleted -> throw IllegalStateException("Order already deleted")
         order.isPaid -> throw Exception("Cannot add items to a paid order")
     }
