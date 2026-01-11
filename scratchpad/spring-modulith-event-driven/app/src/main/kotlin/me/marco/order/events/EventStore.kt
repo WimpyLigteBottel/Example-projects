@@ -24,7 +24,7 @@ class EventStore {
             if (hasPaidOrder.isNotEmpty())
                 return@mapNotNull null
 
-            if(values.isEmpty())
+            if (values.isEmpty())
                 return@mapNotNull null
 
             key to values.toList()

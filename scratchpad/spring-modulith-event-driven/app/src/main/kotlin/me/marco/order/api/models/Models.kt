@@ -1,10 +1,10 @@
 package me.marco.order.api.models
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import me.marco.order.service.dto.OrderItem
 import me.marco.order.service.dto.AddItemRequestDTO
 import me.marco.order.service.dto.CreateOrderRequestDTO
 import me.marco.order.service.dto.MarkAsPaidRequestDTO
+import me.marco.order.service.dto.OrderItem
 
 // ============= DTOs =============
 data class CreateOrderRequest(val customerId: String) {

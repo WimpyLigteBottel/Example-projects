@@ -1,8 +1,8 @@
 package me.marco.order.rules
 
-import me.marco.order.service.dto.Order
 import me.marco.order.command.Command
 import me.marco.order.events.Event
+import me.marco.order.service.dto.Order
 
 fun handleMarkAsPaid(command: Command.MarkOrderAsPaidCommand, order: Order): Event {
     return when {
