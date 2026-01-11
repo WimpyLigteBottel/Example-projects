@@ -2,7 +2,7 @@ package me.marco.order.api.models
 
 import me.marco.order.service.dto.Order
 
-fun Order.toResponse() = OrderResponse(
+fun Order.toResponse() = OrderResponse.OK(
     orderId = id,
     items = items,
     totalAmount = totalAmount,

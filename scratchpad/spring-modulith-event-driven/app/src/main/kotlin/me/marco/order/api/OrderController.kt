@@ -19,7 +19,7 @@ class OrderController(
             val order = orderService.createOrder(request.internalize())
             return ResponseEntity.ok(order.toResponse())
         } catch (_: Exception) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(OrderResponse.Problem("Failed to create order"))
         }
     }
 
@@ -32,7 +32,7 @@ class OrderController(
             val order = orderService.addItem(orderId, request.internalize())
             return ResponseEntity.ok(order.toResponse())
         } catch (_: Exception) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(OrderResponse.Problem("Failed to add item"))
         }
     }
 
@@ -46,7 +46,7 @@ class OrderController(
             val order = orderService.markAsPaid(orderId, request.internalize())
             return ResponseEntity.ok(order.toResponse())
         } catch (_: Exception) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(OrderResponse.Problem("Failed to pay for orer"))
         }
     }
 
@@ -57,7 +57,7 @@ class OrderController(
         val order = orderService.getOrder(orderId)
 
         if (order.version == 0L || order.deleted)
-            return ResponseEntity.notFound().build()
+            return ResponseEntity.badRequest().body(OrderResponse.Problem("Failed to find order"))
 
         return ResponseEntity.ok(order.toResponse())
     }
@@ -75,7 +75,7 @@ class OrderController(
             val orderId = orderService.deleteOrder(orderId)
             return ResponseEntity.accepted().build()
         } catch (_: Exception) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(OrderResponse.Problem("Failed to delete order"))
         }
     }
 }

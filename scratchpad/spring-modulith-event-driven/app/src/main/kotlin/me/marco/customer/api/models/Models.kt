@@ -1,7 +1,10 @@
 package me.marco.customer.api.models
 
+import com.fasterxml.jackson.annotation.JsonSubTypes
+import com.fasterxml.jackson.annotation.JsonTypeInfo
 import me.marco.customer.service.dto.CreateCustomerDto
 import me.marco.customer.service.dto.Customer
+import org.springframework.modulith.NamedInterface
 
 
 data class CreateCustomerRequest(val name: String, val age: Int, val email: String) {
@@ -15,16 +18,35 @@ data class CreateCustomerRequest(val name: String, val age: Int, val email: Stri
 }
 
 
-fun Customer.toResponse() = CustomerResponse(
+fun Customer.toResponse() = CustomerResponse.OK(
     id = id,
     name = name,
     age = age,
     email = email,
 )
 
-data class CustomerResponse(
-    val id: String,
-    val name: String,
-    val age: Int,
-    val email: String,
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.PROPERTY,
+    property = "type"
 )
+@JsonSubTypes(
+    JsonSubTypes.Type(value = CustomerResponse.OK::class, name = "OK"),
+    JsonSubTypes.Type(value = CustomerResponse.Problem::class, name = "PROBLEM")
+)
+@NamedInterface("api")
+sealed class CustomerResponse(
+    type: String
+) {
+
+    data class OK(
+        val id: String,
+        val name: String,
+        val age: Int,
+        val email: String,
+    ) : CustomerResponse("OK")
+
+    data class Problem(
+        val message: String
+    ) : CustomerResponse("PROBLEM")
+}

@@ -25,7 +25,7 @@ class CustomerController(
             val customer = customerService.createCustomer(request.internalize())
             return ResponseEntity.ok(customer.toResponse())
         } catch (_: Exception) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(CustomerResponse.Problem("FAiled"))
         }
     }
 
