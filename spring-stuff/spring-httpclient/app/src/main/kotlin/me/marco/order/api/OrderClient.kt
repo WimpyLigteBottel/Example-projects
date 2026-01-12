@@ -7,7 +7,6 @@ import org.springframework.web.service.annotation.GetExchange
 import org.springframework.web.service.annotation.HttpExchange
 import org.springframework.web.service.annotation.PostExchange
 
-data class CreateOrderRequest(val customerId: String)
 
 @HttpExchange("/api/orders", accept = ["application/json"])
 interface OrderClient {

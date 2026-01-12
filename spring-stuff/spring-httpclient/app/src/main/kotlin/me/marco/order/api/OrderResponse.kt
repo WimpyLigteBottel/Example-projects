@@ -31,3 +31,5 @@ sealed class OrderResponse(type: Int) {
         val message: String
     ) : OrderResponse(400)
 }
+
+data class CreateOrderRequest(val customerId: String)
