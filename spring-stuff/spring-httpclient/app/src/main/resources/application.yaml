@@ -1,0 +1,11 @@
+spring:
+  threads:
+    virtual:
+      enabled: true
+
+# in milliseconds
+cleanup:
+  time: 5000
+custom:
+  server:
+    url: http://localhost:8080/
