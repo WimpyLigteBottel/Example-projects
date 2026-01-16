@@ -1,0 +1,28 @@
+spring:
+  threads:
+    virtual:
+      enabled: true
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        ddl-auto: none
+
+  hibernate:
+    show-sql: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/localdb
+    username: Marco
+    password:
+  flyway:
+    url: jdbc:postgresql://localhost:5432/localdb
+    locations: classpath:db/migration
+    driver-class-name: org.postgresql.Driver
+    enabled: true
+
+# in milliseconds
+cleanup:
+  time: 5000
+custom:
+  server:
+    url: http://localhost:8080/
