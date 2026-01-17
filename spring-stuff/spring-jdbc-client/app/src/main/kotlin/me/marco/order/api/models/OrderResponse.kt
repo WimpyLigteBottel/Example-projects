@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 )
 @JsonSubTypes(
     JsonSubTypes.Type(value = OrderResponse.OK::class, name = "200"),
+    JsonSubTypes.Type(value = OrderResponse.OKLIST::class, name = "201"),
     JsonSubTypes.Type(value = OrderResponse.Accepted::class, name = "202"),
     JsonSubTypes.Type(value = OrderResponse.Problem::class, name = "400")
 )
@@ -19,6 +20,11 @@ sealed class OrderResponse(type: Int) {
     data class OK(
         val order: Order,
     ) : OrderResponse(200)
+
+
+    data class OKLIST(
+        val orders: List<Order>,
+    ) : OrderResponse(201)
 
     class Accepted() : OrderResponse(202)
 

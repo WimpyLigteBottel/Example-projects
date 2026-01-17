@@ -62,7 +62,7 @@ class OrderControllerTest {
 
         var orders = orderClient.getOrders(ids).body!!
 
-        println(orders.size)
+        println(orders)
     }
 
     @Test

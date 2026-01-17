@@ -48,13 +48,15 @@ class OrderController(
         )
     }
 
-    override fun getOrders(orderId: List<String>): ResponseEntity<List<OrderResponse>> {
+    override fun getOrders(orderId: List<String>): ResponseEntity<OrderResponse> {
         val allOrders = orderDao.getAllOrders(orderId.map { it.toLong() })
 
-        val ordersMapped = allOrders.map {
-            OrderResponse.OK(it.transform())
+        val orders = allOrders.map {
+           it.transform()
         }
-        return ResponseEntity.ok(ordersMapped)
+
+
+        return ResponseEntity.ok(OrderResponse.OKLIST(orders))
     }
 
     override fun deleteOrder(orderId: String): ResponseEntity<Any> {
