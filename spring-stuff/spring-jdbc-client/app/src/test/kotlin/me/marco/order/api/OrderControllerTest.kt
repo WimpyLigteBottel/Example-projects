@@ -1,5 +1,8 @@
 package me.marco.order.api
 
+import me.marco.order.api.models.CreateOrderRequest
+import me.marco.order.api.models.OrderResponse
+import me.marco.order.client.OrderClient
 import me.marco.order.dao.OrderItemJdbcClient
 import me.marco.order.dao.OrderJdbcClient
 import org.junit.jupiter.api.Assertions.fail
@@ -50,7 +53,7 @@ class OrderControllerTest {
             val response = orderClient.createOrder(CreateOrderRequest("zxc"))
             when (val body = response.body) {
                 is OrderResponse.OK -> {
-                    ids.add(body.orderId)
+                    ids.add(body.order.orderId)
                 }
 
                 else -> fail("Is problem")
@@ -61,21 +64,6 @@ class OrderControllerTest {
 
         println(orders.size)
     }
-
-    @Test
-    fun `get an order`() {
-        val response = orderClient.getOrder("123")
-
-        when (response.body) {
-            is OrderResponse.OK -> {
-                println(response.body)
-            }
-            else -> fail("Is problem")
-        }
-
-        println(response)
-    }
-
 
     @Test
     fun `if invalid customer id is passed break`() {

@@ -1,33 +1,35 @@
-package me.marco.order.api
+package me.marco.order.client
 
+import me.marco.order.api.models.CreateOrderRequest
+import me.marco.order.api.models.OrderResponse
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.service.annotation.DeleteExchange
 import org.springframework.web.service.annotation.GetExchange
+import org.springframework.web.service.annotation.HttpExchange
+import org.springframework.web.service.annotation.PostExchange
 
-@RequestMapping("/api/orders")
-interface OrderInterface {
-    @PostMapping
+@HttpExchange("/api/orders", accept = ["application/json"])
+interface OrderClient {
+
+    @PostExchange
     fun createOrder(
         @RequestBody request: CreateOrderRequest,
     ): ResponseEntity<OrderResponse>
 
-    @GetMapping("/{orderId}")
+    @GetExchange("/{orderId}")
     fun getOrder(
         @PathVariable orderId: String,
     ): ResponseEntity<OrderResponse>
 
 
-    @GetMapping
+    @GetExchange
     fun getOrders(
         @RequestParam orderId: List<String>,
     ): ResponseEntity<List<OrderResponse>>
 
-    @DeleteMapping("/{orderId}")
+    @DeleteExchange("/{orderId}")
     fun deleteOrder(@PathVariable orderId: String): ResponseEntity<*>
 }

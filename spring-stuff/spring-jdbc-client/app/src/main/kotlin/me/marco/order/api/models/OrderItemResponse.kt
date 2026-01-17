@@ -1,4 +1,4 @@
-package me.marco.order.api
+package me.marco.order.api.models
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo

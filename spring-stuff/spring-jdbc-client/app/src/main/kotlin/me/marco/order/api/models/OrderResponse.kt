@@ -1,4 +1,4 @@
-package me.marco.order.api
+package me.marco.order.api.models
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonSubTypes
@@ -17,12 +17,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 sealed class OrderResponse(type: Int) {
 
     data class OK(
-        val orderId: String,
-        val items: List<Item>,
-        val totalAmount: Double,
-        @get:JsonProperty("isPaid") // What happens if this not here?
-        val isPaid: Boolean,
-        val version: Long,
+        val order: Order,
     ) : OrderResponse(200)
 
     class Accepted() : OrderResponse(202)
@@ -35,5 +30,14 @@ sealed class OrderResponse(type: Int) {
         val message: String
     ) : OrderResponse(404)
 }
+
+data class Order(
+    val orderId: String,
+    val items: List<Item>,
+    val totalAmount: Double,
+    @get:JsonProperty("isPaid") // What happens if this not here?
+    val isPaid: Boolean,
+    val version: Long,
+)
 
 data class CreateOrderRequest(val name: String)

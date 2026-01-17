@@ -1,5 +1,9 @@
 package me.marco.order.api
 
+import me.marco.order.api.models.CreateOrderRequest
+import me.marco.order.api.models.OrderResponse
+import me.marco.order.client.OrderClient
+import me.marco.order.client.OrderItemClient
 import me.marco.order.dao.OrderItemJdbcClient
 import me.marco.order.dao.OrderJdbcClient
 import org.assertj.core.api.Assertions.assertThat
@@ -34,20 +38,21 @@ class ItemControllerTest {
     @Test
     fun `find order with items`() {
         var order = orderClient.createOrder(CreateOrderRequest("name")).body as OrderResponse.OK
-        val item1 = orderItemClient.addItemToOrder(order.orderId.toLong(), "item-name-1")
-        val item2 = orderItemClient.addItemToOrder(order.orderId.toLong(), "item-name-2")
-        order = orderClient.getOrder(order.orderId).body as OrderResponse.OK
+        val item1 = orderItemClient.addItemToOrder(order.order.orderId.toLong(), "item-name-1")
+        val item2 = orderItemClient.addItemToOrder(order.order.orderId.toLong(), "item-name-2")
+        order = orderClient.getOrder(order.order.orderId).body as OrderResponse.OK
 
-        assertThat(order.items).hasSize(2)
+        assertThat(order.order.items).hasSize(2)
     }
 
     @Test
     fun addItemToOrder() {
         val order = orderClient.createOrder(CreateOrderRequest("name")).body as OrderResponse.OK
 
-        val item = orderItemClient.addItemToOrder(order.orderId.toLong(), "item-name")
+        val item = orderItemClient.addItemToOrder(order.order.orderId.toLong(), "item-name")
 
-        val actual = item.body as OrderResponse.OK
+        val actual = (orderClient.getOrder(order.order.orderId).body as OrderResponse.OK).order
+
         assertThat(actual.items).hasSize(1)
     }
 
@@ -55,18 +60,18 @@ class ItemControllerTest {
     fun deleteItem() {
 
         var order = orderClient.createOrder(CreateOrderRequest("name")).body as OrderResponse.OK
-        val item1 = orderItemClient.addItemToOrder(order.orderId.toLong(), "item-name-1")
-        val item2 = orderItemClient.addItemToOrder(order.orderId.toLong(), "item-name-2")
-        order = orderClient.getOrder(order.orderId).body as OrderResponse.OK
+        val item1 = orderItemClient.addItemToOrder(order.order.orderId.toLong(), "item-name-1")
+        val item2 = orderItemClient.addItemToOrder(order.order.orderId.toLong(), "item-name-2")
+        order = orderClient.getOrder(order.order.orderId).body as OrderResponse.OK
 
-        assertThat(order.items).hasSize(2)
+        assertThat(order.order.items).hasSize(2)
 
 
-        orderItemClient.deleteItem(order.orderId.toLong(),item1.body!!.toLong())
+        orderItemClient.deleteItem(order.order.orderId.toLong(),item1.body!!.toLong())
 
-        order = orderClient.getOrder(order.orderId).body as OrderResponse.OK
+        order = orderClient.getOrder(order.order.orderId).body as OrderResponse.OK
 
-        assertThat(order.items).hasSize(1)
+        assertThat(order.order.items).hasSize(1)
     }
 
 }
