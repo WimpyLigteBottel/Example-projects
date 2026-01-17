@@ -11,11 +11,11 @@ import org.springframework.web.service.annotation.PostExchange
 @HttpExchange("/api/orders/{orderId}/items", accept = ["application/json"])
 interface OrderItemClient {
 
-    @PostExchange()
+    @PostExchange
     fun addItemToOrder(
         @PathVariable orderId: Long,
         @RequestParam item: String
-    ): ResponseEntity<OrderResponse>
+    ): ResponseEntity<Long>
 
     @DeleteExchange("/{itemId}")
     fun deleteItem(

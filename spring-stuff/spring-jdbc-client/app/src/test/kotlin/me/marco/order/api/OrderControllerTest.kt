@@ -1,6 +1,9 @@
 package me.marco.order.api
 
+import me.marco.order.dao.OrderItemJdbcClient
+import me.marco.order.dao.OrderJdbcClient
 import org.junit.jupiter.api.Assertions.fail
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -11,6 +14,17 @@ import org.springframework.boot.test.context.SpringBootTest
 class OrderControllerTest {
     @Autowired
     lateinit var orderClient: OrderClient
+
+    @Autowired
+    lateinit var orderJdbcClient: OrderJdbcClient
+    @Autowired
+    lateinit var orderItemClient: OrderItemJdbcClient
+
+    @BeforeEach
+    fun setUp() {
+        orderItemClient.deleteItems()
+        orderJdbcClient.deleteOrders()
+    }
 
     @Test
     fun `creating an order`() {
@@ -56,7 +70,6 @@ class OrderControllerTest {
             is OrderResponse.OK -> {
                 println(response.body)
             }
-
             else -> fail("Is problem")
         }
 

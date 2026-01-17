@@ -18,7 +18,7 @@ sealed class OrderResponse(type: Int) {
 
     data class OK(
         val orderId: String,
-        val items: List<String>,
+        val items: List<Item>,
         val totalAmount: Double,
         @get:JsonProperty("isPaid") // What happens if this not here?
         val isPaid: Boolean,

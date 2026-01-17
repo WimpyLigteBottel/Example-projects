@@ -9,7 +9,6 @@ open class OrderItemJdbcClient(
     private val jdbc: JdbcClient
 ) {
 
-
     private fun getItems(orderId: String): List<OrderItemEntity> =
         jdbc.sql(
             """
@@ -73,6 +72,13 @@ open class OrderItemJdbcClient(
             "DELETE FROM order_items WHERE order_id = :orderId"
         )
             .param("orderId", orderId)
+            .update()
+    }
+
+    fun deleteItems() {
+        jdbc.sql(
+            "DELETE FROM order_items"
+        )
             .update()
     }
 

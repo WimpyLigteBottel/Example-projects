@@ -44,6 +44,58 @@ open class OrderJdbcClient(
         return order
     }
 
+
+    fun getOrderWithItems(orderId: Long): Optional<OrderEntity> {
+        val sql = """
+            SELECT
+                o.order_id,
+                o.total_amount,
+                o.is_paid,
+                o.version,
+                i.id AS item_id,
+                i.item AS item
+            FROM orders o
+            LEFT JOIN order_items i ON i.order_id = o.order_id
+            ORDER BY o.order_id
+        """.trimIndent()
+
+        val orders = linkedMapOf<Long, OrderEntity>()
+        val items = linkedMapOf<Long, OrderItemEntity>()
+
+        jdbc.sql(sql)
+            .query { rs ->
+                val orderId = rs.getLong("order_id")
+
+                orders.getOrPut(orderId) {
+                    OrderEntity(
+                        orderId = orderId,
+                        totalAmount = rs.getDouble("total_amount"),
+                        isPaid = rs.getBoolean("is_paid"),
+                        version = rs.getLong("version"),
+                        items = emptyList()
+                    )
+                }
+
+                val itemId = rs.getLong("item_id")
+                val item = rs.getString("item") ?: "(empty)"
+
+                items.getOrPut(itemId) {
+                    OrderItemEntity(
+                        id = itemId,
+                        orderId = orderId,
+                        item = item
+                    )
+                }
+            }
+
+        if (orders.isEmpty()) {
+            return Optional.empty()
+        }
+
+        return Optional.ofNullable(orders.getValue(orderId).copy(items = items.values.toList()))
+
+    }
+
     fun getAllOrders(orderIds: List<Long>): List<OrderEntity> {
         val orders = jdbc.sql(
             """
@@ -90,6 +142,13 @@ open class OrderJdbcClient(
             "DELETE FROM orders WHERE order_id = :orderId"
         )
             .param("orderId", orderId.toLong())
+            .update()
+    }
+
+    fun deleteOrders() {
+        jdbc.sql(
+            "DELETE FROM orders"
+        )
             .update()
     }
 
