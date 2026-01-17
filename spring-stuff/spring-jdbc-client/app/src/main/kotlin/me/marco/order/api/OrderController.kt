@@ -3,8 +3,7 @@ package me.marco.order.api
 import me.marco.order.api.models.CreateOrderRequest
 import me.marco.order.api.models.OrderResponse
 import me.marco.order.client.OrderClient
-import me.marco.order.dao.OrderJdbcClient
-import me.marco.order.dao.OrderRepository
+import me.marco.order.dao.OrderDao
 import me.marco.order.dao.transform
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -15,16 +14,15 @@ import kotlin.jvm.optionals.getOrNull
 @RestController
 @RequestMapping("/api/orders")
 class OrderController(
-    private val orderJdbcClient: OrderJdbcClient,
-    private val orderRepository: OrderRepository
+    private val orderDao: OrderDao
 ) : OrderClient {
 
     override fun createOrder(
         request: CreateOrderRequest,
     ): ResponseEntity<OrderResponse> {
-        val id = orderJdbcClient.createOrder()
+        val id = orderDao.createOrder()
 
-        val order = orderJdbcClient.getOrder(id).getOrNull() ?: return ResponseEntity
+        val order = orderDao.getOrder(id).getOrNull() ?: return ResponseEntity
             .status(HttpStatus.NOT_FOUND)
             .body(OrderResponse.Problem("Failed to create order"))
 
@@ -39,7 +37,7 @@ class OrderController(
         orderId: String,
     ): ResponseEntity<OrderResponse> {
 
-        val order = orderJdbcClient.getOrderWithItems(orderId.toLong()).getOrNull() ?: return ResponseEntity
+        val order = orderDao.getOrderWithItems(orderId.toLong()).getOrNull() ?: return ResponseEntity
             .status(HttpStatus.NOT_FOUND)
             .body(OrderResponse.Problem("Failed to create order"))
 
@@ -51,7 +49,7 @@ class OrderController(
     }
 
     override fun getOrders(orderId: List<String>): ResponseEntity<List<OrderResponse>> {
-        val allOrders = orderJdbcClient.getAllOrders(orderId.map { it.toLong() })
+        val allOrders = orderDao.getAllOrders(orderId.map { it.toLong() })
 
         val ordersMapped = allOrders.map {
             OrderResponse.OK(it.transform())
@@ -62,7 +60,7 @@ class OrderController(
     override fun deleteOrder(orderId: String): ResponseEntity<Any> {
 
         return try {
-            orderJdbcClient.deleteOrder(orderId)
+            orderDao.deleteOrder(orderId)
             ResponseEntity.accepted().body(OrderResponse.Accepted())
         } catch (_: Exception) {
             ResponseEntity.status(HttpStatus.BAD_REQUEST)

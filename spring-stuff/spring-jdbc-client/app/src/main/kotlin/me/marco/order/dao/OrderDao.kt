@@ -1,13 +1,15 @@
 package me.marco.order.dao
 
+import me.marco.order.dao.crud.OrderRepository
 import org.springframework.jdbc.core.simple.JdbcClient
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 @Service
-open class OrderJdbcClient(
-    private val jdbc: JdbcClient
+open class OrderDao(
+    private val jdbc: JdbcClient,
+    private val repository: OrderRepository
 ) {
 
     fun createOrder(): Long {
@@ -24,8 +26,6 @@ open class OrderJdbcClient(
             .query(Long::class.java)
             .single()
     }
-
-    /* -------------------- READ -------------------- */
 
     fun getOrder(orderId: Long): Optional<OrderEntity> {
         val order = jdbc.sql(
@@ -80,7 +80,7 @@ open class OrderJdbcClient(
 
                 val itemId = rs.getLong("item_id")
 
-                if(!rs.wasNull()){
+                if (!rs.wasNull()) {
                     val item = rs.getString("item")
                     items.getOrPut(itemId) {
                         OrderItemEntity(
@@ -114,30 +114,6 @@ open class OrderJdbcClient(
 
         return orders
     }
-
-    /* -------------------- UPDATE -------------------- */
-
-    @Transactional
-    fun updateOrder(order: OrderEntity) {
-        val updated = jdbc.sql(
-            """
-            UPDATE orders
-            SET total_amount = :totalAmount,
-                is_paid = :isPaid,
-                version = version + 1
-            WHERE order_id = :orderId
-              AND version = :version
-            """
-        )
-            .paramSource(order)
-            .update()
-
-        if (updated == 0) {
-            throw IllegalStateException("Order version conflict")
-        }
-
-    }
-
 
     @Transactional
     fun deleteOrder(orderId: String) {

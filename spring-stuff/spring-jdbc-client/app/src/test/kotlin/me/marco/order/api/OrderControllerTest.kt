@@ -3,8 +3,8 @@ package me.marco.order.api
 import me.marco.order.api.models.CreateOrderRequest
 import me.marco.order.api.models.OrderResponse
 import me.marco.order.client.OrderClient
-import me.marco.order.dao.OrderItemJdbcClient
-import me.marco.order.dao.OrderJdbcClient
+import me.marco.order.dao.OrderItemDao
+import me.marco.order.dao.OrderDao
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -19,14 +19,14 @@ class OrderControllerTest {
     lateinit var orderClient: OrderClient
 
     @Autowired
-    lateinit var orderJdbcClient: OrderJdbcClient
+    lateinit var orderDao: OrderDao
     @Autowired
-    lateinit var orderItemClient: OrderItemJdbcClient
+    lateinit var orderItemClient: OrderItemDao
 
     @BeforeEach
     fun setUp() {
         orderItemClient.deleteItems()
-        orderJdbcClient.deleteOrders()
+        orderDao.deleteOrders()
     }
 
     @Test
