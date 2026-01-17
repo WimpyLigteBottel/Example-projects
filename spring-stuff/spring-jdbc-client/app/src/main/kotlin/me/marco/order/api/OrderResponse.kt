@@ -30,6 +30,10 @@ sealed class OrderResponse(type: Int) {
     data class Problem(
         val message: String
     ) : OrderResponse(400)
+
+    data class ProblemNotFound(
+        val message: String
+    ) : OrderResponse(404)
 }
 
-data class CreateOrderRequest(val customerId: String)
+data class CreateOrderRequest(val name: String)

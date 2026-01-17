@@ -14,40 +14,45 @@ open class OrderJdbcClient(
         return jdbc.sql(
             """
         INSERT INTO orders (total_amount, is_paid, version)
-        VALUES (:totalAmount, :isPaid, 0)
+        VALUES (:totalAmount, :isPaid, :version)
         RETURNING order_id
         """
         )
             .param("totalAmount", 0)
             .param("isPaid", false)
+            .param("version", 0)
             .query(Long::class.java)
             .single()
     }
 
     /* -------------------- READ -------------------- */
 
-    fun getOrder(orderId: String): Optional<OrderEntity> {
+    fun getOrder(orderId: Long): Optional<OrderEntity> {
         val order = jdbc.sql(
             """
-            SELECT order_id, total_amount, is_paid, version
+            SELECT *
             FROM orders
             WHERE order_id = :orderId
             """
         )
             .param("orderId", orderId)
-            .query(OrderEntity::class.java)
+            .query { rs, rowNum ->
+                mapOrder(rs, rowNum)
+            }
             .optional()
 
         return order
     }
 
-    fun getAllOrders(): List<OrderEntity> {
+    fun getAllOrders(orderIds: List<Long>): List<OrderEntity> {
         val orders = jdbc.sql(
             """
-            SELECT order_id, total_amount, is_paid, version
+            SELECT *
             FROM orders
+            WHERE order_id in (:orderIds)
             """
         )
+            .param("orderIds", orderIds)
             .query(::mapOrder)
             .list()
 
@@ -84,17 +89,18 @@ open class OrderJdbcClient(
         jdbc.sql(
             "DELETE FROM orders WHERE order_id = :orderId"
         )
-            .param("orderId", orderId)
+            .param("orderId", orderId.toLong())
             .update()
     }
 
     /* -------------------- MAPPERS -------------------- */
 
     private fun mapOrder(rs: java.sql.ResultSet, _result: Int) = OrderEntity(
-        orderId = rs.getString("order_id"),
+        orderId = rs.getLong("order_id"),
         totalAmount = rs.getDouble("total_amount"),
         isPaid = rs.getBoolean("is_paid"),
-        version = rs.getLong("version")
+        version = rs.getLong("version"),
+        items = emptyList()
     )
 
 }

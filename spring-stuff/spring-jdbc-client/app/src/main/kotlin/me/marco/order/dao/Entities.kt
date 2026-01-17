@@ -3,17 +3,17 @@ package me.marco.order.dao
 import com.fasterxml.jackson.annotation.JsonProperty
 
 data class OrderEntity(
-    val orderId: String? = null,
-    val totalAmount: Double = 0.0,
+    val orderId: Long,
+    val totalAmount: Double,
     @get:JsonProperty("isPaid")
-    val isPaid: Boolean = false,
-    val version: Long = 0,
-    val items: List<OrderItemEntity> = emptyList()
+    val isPaid: Boolean,
+    val version: Long,
+    val items: List<OrderItemEntity>
 )
 
 
 data class OrderItemEntity(
-    val id: Long? = null,
-    val orderId: String,
+    val id: Long,
+    val orderId: Long,
     val item: String
 )

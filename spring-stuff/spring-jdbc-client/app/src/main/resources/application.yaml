@@ -6,8 +6,6 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-        ddl-auto: none
-
   hibernate:
     show-sql: true
   datasource:
@@ -15,10 +13,12 @@ spring:
     username: Marco
     password:
   flyway:
+    enabled: true
     url: jdbc:postgresql://localhost:5432/localdb
+    user: Marco
+    password:
     locations: classpath:db/migration
     driver-class-name: org.postgresql.Driver
-    enabled: true
 
 # in milliseconds
 cleanup:

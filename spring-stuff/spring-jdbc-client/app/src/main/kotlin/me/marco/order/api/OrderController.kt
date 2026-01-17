@@ -2,8 +2,6 @@ package me.marco.order.api
 
 import me.marco.order.dao.OrderItemJdbcClient
 import me.marco.order.dao.OrderJdbcClient
-import nl.wykorijnsburger.kminrandom.minRandom
-import nl.wykorijnsburger.kminrandom.minRandomCached
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
@@ -13,14 +11,14 @@ import kotlin.jvm.optionals.getOrNull
 class OrderController(
     private val orderJdbcClient: OrderJdbcClient,
     private val orderItemJdbcClient: OrderItemJdbcClient
-) : OrderInterface {
+) : OrderInterface, OrderClient, OrderItemClient {
 
     override fun createOrder(
         request: CreateOrderRequest,
     ): ResponseEntity<OrderResponse> {
         val id = orderJdbcClient.createOrder()
 
-        val order = orderJdbcClient.getOrder(id.toString())
+        val order = orderJdbcClient.getOrder(id)
 
         order.getOrNull()?.let {
             return try {
@@ -47,23 +45,88 @@ class OrderController(
     override fun getOrder(
         orderId: String,
     ): ResponseEntity<OrderResponse> {
-        return OrderResponse.OK(
-            orderId = minRandomCached(),
-            items = listOf(minRandom(), minRandom(), minRandom()),
-            totalAmount = minRandomCached(),
-            isPaid = minRandomCached(),
-            version = minRandomCached()
-        ).let {
-            ResponseEntity.ok(it)
+
+        val order = orderJdbcClient.getOrder(orderId.toLong())
+
+        order.getOrNull()?.let {
+            return try {
+                ResponseEntity.ok(
+                    OrderResponse.OK(
+                        orderId = it.orderId.toString(),
+                        items = emptyList(),
+                        totalAmount = it.totalAmount,
+                        isPaid = it.isPaid,
+                        version = it.version
+                    )
+                )
+            } catch (_: Exception) {
+                ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(OrderResponse.Problem("Failed to create order"))
+            }
         }
+
+        return ResponseEntity
+            .status(HttpStatus.NOT_FOUND)
+            .body(OrderResponse.Problem("Failed to create order"))
+    }
+
+    override fun getOrders(orderId: List<String>): ResponseEntity<List<OrderResponse>> {
+        val allOrders = orderJdbcClient.getAllOrders(orderId.map { it.toLong() })
+
+        val ordersMapped = allOrders.map {
+            OrderResponse.OK(
+                orderId = it.orderId.toString(),
+                items = emptyList(),
+                totalAmount = it.totalAmount,
+                isPaid = it.isPaid,
+                version = it.version
+            )
+        }
+        return ResponseEntity.ok(ordersMapped)
     }
 
     override fun deleteOrder(orderId: String): ResponseEntity<Any> {
+
         return try {
+            orderJdbcClient.deleteOrder(orderId)
             ResponseEntity.accepted().body(OrderResponse.Accepted())
         } catch (_: Exception) {
             ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(OrderResponse.Problem("Failed to delete order"))
         }
+    }
+
+    override fun addItemToOrder(
+        orderId: Long,
+        item: String
+    ): ResponseEntity<OrderResponse> {
+        orderItemJdbcClient.addItem(orderId, item)
+
+        val order = orderJdbcClient.getOrder(orderId)
+
+        order.getOrNull()?.let {
+            return try {
+                ResponseEntity.ok(
+                    OrderResponse.OK(
+                        orderId = it.orderId.toString(),
+                        items = emptyList(),
+                        totalAmount = it.totalAmount,
+                        isPaid = it.isPaid,
+                        version = it.version
+                    )
+                )
+            } catch (_: Exception) {
+                ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(OrderResponse.Problem("Failed to create order"))
+            }
+        }
+
+        return ResponseEntity
+            .status(HttpStatus.NOT_FOUND)
+            .body(OrderResponse.Problem("Failed to create order"))
+    }
+
+    override fun deleteItem(orderId: Long, itemId: Long): ResponseEntity<*> {
+        TODO("Not yet implemented")
     }
 }

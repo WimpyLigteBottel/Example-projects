@@ -22,14 +22,18 @@ open class OrderItemJdbcClient(
             .query(::mapItem)
             .list()
 
-    fun addItem(item: OrderItemEntity) {
-        jdbc.sql(
+    fun addItem(orderId: Long, item: String): Long {
+        return jdbc.sql(
             """
             INSERT INTO order_items (order_id, item)
             VALUES (:orderId, :item)
+            RETURNING id
             """
-        ).paramSource(item)
-            .update()
+        )
+            .param("orderId", orderId)
+            .param("item", item)
+            .query(Long::class.java)
+            .single()
     }
 
     private fun getAllItems(): List<OrderItemEntity> =
@@ -74,7 +78,7 @@ open class OrderItemJdbcClient(
 
     private fun mapItem(rs: ResultSet, _result: Int) = OrderItemEntity(
         id = rs.getLong("id"),
-        orderId = rs.getString("order_id"),
+        orderId = rs.getLong("order_id"),
         item = rs.getString("item")
     )
 }

@@ -1,6 +1,7 @@
 package me.marco.order.config
 
 import me.marco.order.api.OrderClient
+import me.marco.order.api.OrderItemClient
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -27,5 +28,22 @@ open class ClientConfig {
         )
         val factory = HttpServiceProxyFactory.builderFor(adapter).build()
         return factory.createClient(OrderClient::class.java)
+    }
+
+
+    @Bean
+    open fun orderItemClient(
+        @Value($$"${custom.server.url}") url: String,
+    ): OrderItemClient {
+        val adapter = RestClientAdapter.create(
+            RestClient
+                .builder()
+                .baseUrl(url)
+                .defaultStatusHandler(HttpStatusCode::isError, { _, response ->
+                    // ddont break on different statuses... Its up to the consumer to handle it
+                }).build()
+        )
+        val factory = HttpServiceProxyFactory.builderFor(adapter).build()
+        return factory.createClient(OrderItemClient::class.java)
     }
 }

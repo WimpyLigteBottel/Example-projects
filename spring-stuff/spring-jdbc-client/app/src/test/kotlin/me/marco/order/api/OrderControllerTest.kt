@@ -21,12 +21,31 @@ class OrderControllerTest {
                 println(response.body)
             }
 
-            is OrderResponse.Problem -> fail("Is problem")
-            null -> fail("is null response")
-            is OrderResponse.Accepted -> TODO()
+            else -> fail("Is problem")
         }
 
         println(response)
+    }
+
+
+    @Test
+    fun `creating an 100's orders`() {
+
+        var ids = mutableListOf<String>()
+        repeat(100) {
+            val response = orderClient.createOrder(CreateOrderRequest("zxc"))
+            when (val body = response.body) {
+                is OrderResponse.OK -> {
+                    ids.add(body.orderId)
+                }
+
+                else -> fail("Is problem")
+            }
+        }
+
+        var orders = orderClient.getOrders(ids).body!!
+
+        println(orders.size)
     }
 
     @Test
@@ -37,9 +56,8 @@ class OrderControllerTest {
             is OrderResponse.OK -> {
                 println(response.body)
             }
-            is OrderResponse.Problem -> fail("Is problem")
-            null -> fail("is null response")
-            is OrderResponse.Accepted -> TODO()
+
+            else -> fail("Is problem")
         }
 
         println(response)

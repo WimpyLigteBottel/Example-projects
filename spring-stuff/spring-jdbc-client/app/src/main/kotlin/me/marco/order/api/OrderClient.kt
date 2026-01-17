@@ -21,6 +21,12 @@ interface OrderClient {
         @PathVariable orderId: String,
     ): ResponseEntity<OrderResponse>
 
+
+    @GetExchange
+    fun getOrders(
+        @RequestParam orderId: List<String>,
+    ): ResponseEntity<List<OrderResponse>>
+
     @DeleteExchange("/{orderId}")
     fun deleteOrder(@PathVariable orderId: String): ResponseEntity<*>
 }
