@@ -77,7 +77,7 @@ open class OrderDao(
                         totalAmount = rs.getDouble("total_amount"),
                         isPaid = rs.getBoolean("is_paid"),
                         version = rs.getLong("version"),
-                        items = emptyList()
+                        items = mutableListOf()
                     )
                 }
 
@@ -95,7 +95,7 @@ open class OrderDao(
             }
 
         if (orders.isEmpty()) return Optional.empty()
-        return Optional.ofNullable(orders.getValue(orderId).copy(items = items.values.toList()))
+        return Optional.ofNullable(orders.getValue(orderId).copy(items = items.values.toMutableList()))
     }
 
     fun getAllOrders(orderIds: List<Long>): List<OrderEntity> {
