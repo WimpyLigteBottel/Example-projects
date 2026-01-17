@@ -22,24 +22,15 @@ class OrderController(
     ): ResponseEntity<OrderResponse> {
         val id = orderJdbcClient.createOrder()
 
-        val order = orderJdbcClient.getOrder(id)
-
-        order.getOrNull()?.let {
-            return try {
-                ResponseEntity.ok(
-                    OrderResponse.OK(
-                        order = it.transform()
-                    )
-                )
-            } catch (_: Exception) {
-                ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(OrderResponse.Problem("Failed to create order"))
-            }
-        }
-
-        return ResponseEntity
+        val order = orderJdbcClient.getOrder(id).getOrNull() ?: return ResponseEntity
             .status(HttpStatus.NOT_FOUND)
             .body(OrderResponse.Problem("Failed to create order"))
+
+        return ResponseEntity.ok(
+            OrderResponse.OK(
+                order = order.transform()
+            )
+        )
     }
 
     override fun getOrder(

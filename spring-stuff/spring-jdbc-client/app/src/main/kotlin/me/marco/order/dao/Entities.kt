@@ -22,13 +22,17 @@ fun OrderEntity.transform(): Order {
     return Order(
         orderId = orderId.toString(),
         items = items.map {
-            Item(
-                id = it.id,
-                name = it.item
-            )
+            it.transform()
         },
         totalAmount = totalAmount,
         isPaid = isPaid,
         version = version
+    )
+}
+
+fun OrderItemEntity.transform(): Item {
+    return Item(
+        id = id,
+        name = item
     )
 }
