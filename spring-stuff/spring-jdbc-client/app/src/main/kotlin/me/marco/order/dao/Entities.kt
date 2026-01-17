@@ -8,7 +8,7 @@ data class OrderEntity(
     val totalAmount: Double,
     val isPaid: Boolean,
     val version: Long,
-    val items: List<OrderItemEntity>
+    val items: MutableList<OrderItemEntity>
 )
 
 data class OrderItemEntity(
