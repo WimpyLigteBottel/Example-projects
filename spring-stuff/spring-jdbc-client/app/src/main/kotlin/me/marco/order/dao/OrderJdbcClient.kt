@@ -56,6 +56,7 @@ open class OrderJdbcClient(
                 i.item AS item
             FROM orders o
             LEFT JOIN order_items i ON i.order_id = o.order_id
+            WHERE o.order_id = :orderId
             ORDER BY o.order_id
         """.trimIndent()
 
@@ -63,6 +64,7 @@ open class OrderJdbcClient(
         val items = linkedMapOf<Long, OrderItemEntity>()
 
         jdbc.sql(sql)
+            .param("orderId", orderId)
             .query { rs ->
                 val orderId = rs.getLong("order_id")
 
@@ -77,14 +79,16 @@ open class OrderJdbcClient(
                 }
 
                 val itemId = rs.getLong("item_id")
-                val item = rs.getString("item") ?: "(empty)"
 
-                items.getOrPut(itemId) {
-                    OrderItemEntity(
-                        id = itemId,
-                        orderId = orderId,
-                        item = item
-                    )
+                if(!rs.wasNull()){
+                    val item = rs.getString("item")
+                    items.getOrPut(itemId) {
+                        OrderItemEntity(
+                            id = itemId,
+                            orderId = orderId,
+                            item = item
+                        )
+                    }
                 }
             }
 
@@ -93,7 +97,6 @@ open class OrderJdbcClient(
         }
 
         return Optional.ofNullable(orders.getValue(orderId).copy(items = items.values.toList()))
-
     }
 
     fun getAllOrders(orderIds: List<Long>): List<OrderEntity> {

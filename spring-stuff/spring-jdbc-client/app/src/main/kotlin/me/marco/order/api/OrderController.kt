@@ -4,6 +4,7 @@ import me.marco.order.api.models.CreateOrderRequest
 import me.marco.order.api.models.OrderResponse
 import me.marco.order.client.OrderClient
 import me.marco.order.dao.OrderJdbcClient
+import me.marco.order.dao.OrderRepository
 import me.marco.order.dao.transform
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -14,7 +15,8 @@ import kotlin.jvm.optionals.getOrNull
 @RestController
 @RequestMapping("/api/orders")
 class OrderController(
-    private val orderJdbcClient: OrderJdbcClient
+    private val orderJdbcClient: OrderJdbcClient,
+    private val orderRepository: OrderRepository
 ) : OrderClient {
 
     override fun createOrder(

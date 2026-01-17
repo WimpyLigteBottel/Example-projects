@@ -2,7 +2,6 @@ package me.marco.order.api
 
 import me.marco.order.client.OrderItemClient
 import me.marco.order.dao.OrderItemJdbcClient
-import me.marco.order.dao.OrderJdbcClient
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -12,7 +11,6 @@ import org.springframework.web.service.annotation.DeleteExchange
 @RestController
 @RequestMapping("/api/orders/{orderId}/items")
 class ItemController(
-    private val orderJdbcClient: OrderJdbcClient,
     private val orderItemJdbcClient: OrderItemJdbcClient
 ) : OrderItemClient {
 
