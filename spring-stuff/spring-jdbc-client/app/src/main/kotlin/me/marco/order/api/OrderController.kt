@@ -4,6 +4,7 @@ import me.marco.order.api.models.CreateOrderRequest
 import me.marco.order.api.models.OrderResponse
 import me.marco.order.client.OrderClient
 import me.marco.order.dao.OrderDao
+import me.marco.order.dao.OrderNotificationListener
 import me.marco.order.dao.transform
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -14,7 +15,8 @@ import kotlin.jvm.optionals.getOrNull
 @RestController
 @RequestMapping("/api/orders")
 class OrderController(
-    private val orderDao: OrderDao
+    private val orderDao: OrderDao,
+    private val orderNotificationListener: OrderNotificationListener
 ) : OrderClient {
 
     override fun createOrder(
@@ -25,6 +27,8 @@ class OrderController(
         val order = orderDao.getOrder(id).getOrNull() ?: return ResponseEntity
             .status(HttpStatus.NOT_FOUND)
             .body(OrderResponse.Problem("Failed to create order"))
+
+        orderNotificationListener.notify(order)
 
         return ResponseEntity.ok(
             OrderResponse.OK(
@@ -52,7 +56,7 @@ class OrderController(
         val allOrders = orderDao.getAllOrders(orderId.map { it.toLong() })
 
         val orders = allOrders.map {
-           it.transform()
+            it.transform()
         }
 
 
