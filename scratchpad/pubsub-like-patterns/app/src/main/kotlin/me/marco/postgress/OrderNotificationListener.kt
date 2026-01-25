@@ -30,11 +30,9 @@ class OrderNotificationListener(
 
                 while (running) {
                     pgConn.getNotifications(100)?.forEach { notification ->
-                        println("📦 New order created!")
+                        println("📦 New message arrived!")
                         println("Channel: ${notification.name}")
                         println("Payload: ${notification.parameter}")
-
-                        handleOrderCreated(notification.parameter)
                     }
                 }
             }
@@ -42,15 +40,11 @@ class OrderNotificationListener(
     }
 
     fun notify(orderid: String) {
-        val payload = """{"id": ${orderid}}"""
+        val payload = """{"message": ${orderid}}"""
         jdbcClient.sql("SELECT pg_notify('order_created', :payload)")
             .param("payload", payload)
             .query()
             .singleValue()
-    }
-
-    private fun handleOrderCreated(payload: String) {
-        println("Processing order: $payload")
     }
 
     @PreDestroy

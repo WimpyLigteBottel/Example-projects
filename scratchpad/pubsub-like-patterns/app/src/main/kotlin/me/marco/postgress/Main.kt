@@ -3,12 +3,11 @@ package me.marco.postgress
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
-import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.context.annotation.Profile
 import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.stereotype.Component
-import org.springframework.stereotype.Service
 
 @SpringBootApplication
 @EnableScheduling
@@ -20,6 +19,7 @@ fun main(args: Array<String>) {
 
 
 @Component
+@Profile("!docker")
 open class StartupRunner : ApplicationRunner {
 
     @Autowired
