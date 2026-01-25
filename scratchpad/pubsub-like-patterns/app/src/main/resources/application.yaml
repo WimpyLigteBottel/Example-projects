@@ -1,0 +1,14 @@
+spring:
+  threads:
+    virtual:
+      enabled: true
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  hibernate:
+    show-sql: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/localdb
+    username: Marco
+    password:

@@ -1,4 +1,4 @@
-package me.marco.order.dao
+package me.marco.postgress
 
 import jakarta.annotation.PostConstruct
 import jakarta.annotation.PreDestroy
@@ -41,9 +41,8 @@ class OrderNotificationListener(
         }
     }
 
-
-    fun notify(order: OrderEntity) {
-        val payload = """{"id": ${order.orderId}}"""
+    fun notify(orderid: String) {
+        val payload = """{"id": ${orderid}}"""
         jdbcClient.sql("SELECT pg_notify('order_created', :payload)")
             .param("payload", payload)
             .query()

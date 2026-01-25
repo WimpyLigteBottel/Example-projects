@@ -1,0 +1,28 @@
+services:
+  database:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    networks:
+      - custom-network
+    environment:
+      POSTGRES_USER: Marco
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: localdb
+      PGDATA: /data/pgdata
+      POSTGRES_HOST_AUTH_METHOD: trust
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - custom-network
+    depends_on:
+      - database
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    restart: unless-stopped
+    scale: 5
+networks:
+  custom-network:
+    driver: bridge
