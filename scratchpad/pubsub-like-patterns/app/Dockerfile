@@ -1,7 +1,7 @@
-FROM eclipse-temurin:17-jre-alpine
+FROM azul/zulu-openjdk:21-jre-latest
 WORKDIR /app
 
-COPY  /target/*jar app.jar
+COPY target/*.jar app.jar
 
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]

@@ -1,4 +1,12 @@
 services:
+  build-init:
+    image: maven:3.9-amazoncorretto-21
+    working_dir: /app
+    volumes:
+      - .:/app
+      - ~/.m2:/root/.m2
+    command: mvn clean package -DskipTests -T 1C
+
   database:
     image: postgres:16-alpine
     ports:
@@ -11,6 +19,7 @@ services:
       POSTGRES_DB: localdb
       PGDATA: /data/pgdata
       POSTGRES_HOST_AUTH_METHOD: trust
+
   app:
     build:
       context: .
@@ -18,7 +27,10 @@ services:
     networks:
       - custom-network
     depends_on:
-      - database
+      build-init:
+        condition: service_completed_successfully
+      database:
+        condition: service_started
     environment:
       SPRING_PROFILES_ACTIVE: docker
     restart: unless-stopped

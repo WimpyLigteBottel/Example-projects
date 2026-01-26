@@ -26,6 +26,6 @@ open class StartupRunner : ApplicationRunner {
     lateinit var orderNotificationListener: OrderNotificationListener
 
     override fun run(args: ApplicationArguments) {
-        orderNotificationListener.notify("All other 'listeners' will see this message :)")
+        orderNotificationListener.notify("Information has updated you should clear your caches")
     }
 }

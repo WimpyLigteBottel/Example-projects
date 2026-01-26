@@ -25,8 +25,8 @@ class OrderNotificationListener(
                 val pgConn = conn.unwrap(PGConnection::class.java)
 
                 // Subscribe to the channel
-                conn.createStatement().execute("LISTEN order_created")
-                println("Listening for order_created notifications...")
+                conn.createStatement().execute("LISTEN clear_cache")
+                println("Listening for clear_cache notifications...")
 
                 while (running) {
                     pgConn.getNotifications(100)?.forEach { notification ->
@@ -41,7 +41,7 @@ class OrderNotificationListener(
 
     fun notify(orderid: String) {
         val payload = """{"message": ${orderid}}"""
-        jdbcClient.sql("SELECT pg_notify('order_created', :payload)")
+        jdbcClient.sql("SELECT pg_notify('clear_cache', :payload)")
             .param("payload", payload)
             .query()
             .singleValue()
