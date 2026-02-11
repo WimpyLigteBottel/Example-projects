@@ -27,6 +27,15 @@ open class CustomerService(
         return commandHandler.getCustomer(id)
     }
 
+    fun customerExist(id: String): Boolean {
+        val customer = getCustomer(id)
+
+        if (customer.version == 0L || customer.deleted || id == "")
+            return false
+
+        return true
+    }
+
     fun deleteCustomer(id: String) {
         val command = Command.DeleteCustomerCommand(id)
         commandHandler.handle(command)
