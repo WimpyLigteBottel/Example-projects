@@ -1,0 +1,17 @@
+package me.marco.function3
+
+private typealias `📜` = String
+private typealias `📦` = List<*>
+
+fun main() {
+    fun `🔈🌍`(`✉️`: `📜`) {
+        println(`✉️`)
+    }
+
+
+    val `📦` = listOf("a", "b", "c")
+
+
+    `📦`.forEach { `🔈🌍`(it) }
+}
+
