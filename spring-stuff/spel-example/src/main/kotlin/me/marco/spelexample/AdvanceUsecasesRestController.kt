@@ -23,7 +23,7 @@ class AdvanceUseCasesRestController(
 
     @PostConstruct
     fun onStartup() {
-        // NOtice the math on on context loa
+        // Notice the math on context load
         println("number = $number")
         println("numberWithMath = $numberWithMath")
     }

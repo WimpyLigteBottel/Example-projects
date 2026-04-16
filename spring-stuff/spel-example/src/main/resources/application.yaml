@@ -4,3 +4,6 @@ spring:
 
 spel:
   number: 777
+  expression:
+    fizzbuzz: "@fb.nums.![#this % 15 == 0 ? 'FizzBuzz' : #this % 3 == 0 ? 'Fizz' : #this % 5 == 0 ? 'Buzz' : #this.toString()]"
+    fizzbuzzcalling: "@fb.label(#number)"
