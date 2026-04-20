@@ -46,6 +46,9 @@ open class ProcessController(
     open fun getRandomState(): State {
         Random().nextInt(0, 100)
             .let {
+                if (it > 95) {
+                    return State.FAILED
+                }
                 return State.SUCCESS
             }
     }
