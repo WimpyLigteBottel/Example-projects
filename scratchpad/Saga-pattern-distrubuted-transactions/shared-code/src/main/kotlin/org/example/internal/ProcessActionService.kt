@@ -1,19 +1,17 @@
-package org.example
+package org.example.internal
 
+import org.example.api.Action
+import org.example.api.PendingActionName
 import org.slf4j.LoggerFactory
-import org.springframework.http.client.reactive.ReactorClientHttpConnector
-import org.springframework.web.reactive.function.client.WebClient
-import reactor.util.retry.Retry
-import java.time.Duration
+import org.springframework.web.client.RestClient
 
 open class ProcessActionService(
     private val baseUrl: String,
     private val name: PendingActionName = PendingActionName.UNKNOWN
 ) {
 
-    private val webClient: WebClient = WebClient.builder()
+    private val webClient: RestClient = RestClient.builder()
         .baseUrl(baseUrl)
-        .clientConnector(ReactorClientHttpConnector())
         .build()
     private val log = LoggerFactory.getLogger(this::class.java)
 
@@ -26,13 +24,11 @@ open class ProcessActionService(
         val action = Action(id, name)
 
         try {
-            webClient.post()
+            val response = webClient.post()
                 .uri("/create")
-                .bodyValue(action)
+                .body(action)
                 .retrieve()
-                .bodyToMono(Void::class.java)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(10)))
-                .subscribe()
+                .body(Action::class.java)
 
             return action.pending()
         } catch (e: Exception) {
@@ -49,11 +45,9 @@ open class ProcessActionService(
         val isSuccess = runCatching {
             webClient.post()
                 .uri("$baseUrl/rollback")
-                .bodyValue(action)
+                .body(action)
                 .retrieve()
-                .bodyToMono(Void::class.java)
-                .retry(3)
-                .block()
+                .body(Action::class.java)
 
         }
         return isSuccess.isSuccess

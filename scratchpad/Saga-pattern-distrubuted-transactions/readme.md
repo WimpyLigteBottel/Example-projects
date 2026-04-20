@@ -3,6 +3,7 @@
 1. server-main project
 2. start server-payment
 3. start server-order
+4. start server-item
 
 ## how to launch?
 
@@ -17,7 +18,8 @@ resources
 1. `This will kick of the process to create request order`
 2. `It will fire off 1 request to create an order to orderService` == SUCCESS
 3. `It will fire off 1 request to create an order to paymentService` == SUCCESS
-4. `It will then save the "pending" states in memory`
+4. `It will fire off 1 request to create an order to itemService` == SUCCESS
+5. `It will then save the "pending" states in memory`
 
 There is fixed scheduled processor that will go through all tasks and check if all pendingActions are successful
 if it is it will then remove it from the list of task and print success statement
@@ -26,10 +28,11 @@ if it is it will then remove it from the list of task and print success statemen
 
 1. `This will kick of the process to create request order`
 2. `It will fire off 1 request to create an order to orderService`  == SUCCESS
-3. `It will fire off 1 request to create an order to paymentService` == FAILED
-4. `It will then save the states in memory`
+3. `It will fire off 1 request to create an order to itemService`  == SUCCESS
+4. `It will fire off 1 request to create an order to paymentService` == FAILED
+5. `It will then save the states in memory`
 
 There is fixed scheduled processor that will go through all tasks and check if there is an "FAILED" task.
-It will then go through the other pendingActions that were succesfull and rollback those.
+It will then go through the other pendingActions that were successful and rollback those.
 
 Once everything has been "processed" it will then remove if all the tasks were "FAILED" | "SUCCESS"

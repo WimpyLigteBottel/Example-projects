@@ -1,9 +1,10 @@
 package org.example.cron
 
-import org.example.PendingActionName
 import org.example.api.MainServerController
+import org.example.api.PendingActionName
 import org.example.repo.ActionRepo
 import org.example.repo.RequestingOrder
+import org.example.service.ItemService
 import org.example.service.OrderService
 import org.example.service.PaymentService
 import org.example.service.ProcessingService
@@ -20,6 +21,7 @@ import java.util.concurrent.TimeUnit
 class CronProcessingJob(
     val orderService: OrderService,
     val paymentService: PaymentService,
+    val itemService: ItemService,
     val actionRepo: ActionRepo,
     val processingService: ProcessingService,
     val mainServerController: MainServerController,
@@ -40,17 +42,22 @@ class CronProcessingJob(
     @Scheduled(fixedRate = 5000, timeUnit = TimeUnit.MILLISECONDS)
     fun successfullTransactions() {
         val actions = actionRepo.findAll()
-            .map { it.value }
             .filter { it.isSuccess() }
 
-        log.info("success transactions [count=${actions.size}]")
+        if (!actions.isEmpty()) {
+            log.info("success transactions [count=${actions.size}]")
+        }
+
+        actions.forEach { request ->
+            actionRepo.remove(request)
+        }
+
     }
 
 
     @Scheduled(fixedRate = 5000, timeUnit = TimeUnit.MILLISECONDS)
     fun cleanupAllFullyRolledBackTransactions() {
         val actions = actionRepo.findAll()
-            .map { it.value }
             .filter { it.isRolledBacked() }
 
 
@@ -58,7 +65,10 @@ class CronProcessingJob(
             actionRepo.remove(request)
         }
 
-        log.info("removed rollback transactions [rollbackCount=${actions.size}]")
+        if (!actions.isEmpty()) {
+            log.info("removed rollback transactions [rollbackCount=${actions.size}]")
+        }
+
     }
 
 
@@ -68,17 +78,17 @@ class CronProcessingJob(
         var counter = 0
 
         val actions = actionRepo.findAll()
-            .map { it.value }
             .filter { isOlderThanTransactionJourney(it) }
             .filter { !it.isSuccess() }
 
 
         actions.forEach { request ->
             log.info(
-                "Needs to rollback! [globalId={};payment={};order={}]",
+                "Needs to rollback! [globalId={};payment={};order={};item={}]",
                 request.id,
                 request.pendingActions[PendingActionName.PROCESS_PAYMENT]?.state,
                 request.pendingActions[PendingActionName.CREATE_ORDER]?.state,
+                request.pendingActions[PendingActionName.RESERVE_ITEM]?.state
             )
 
 
@@ -91,7 +101,7 @@ class CronProcessingJob(
                 }
 
 
-            // cleaning up payemnts
+            // cleaning up payments
             request.pendingActions[PendingActionName.PROCESS_PAYMENT]
                 ?.let {
                     paymentService.stopProcessingBlocking(it)
@@ -99,9 +109,18 @@ class CronProcessingJob(
                     counter++
                 }
 
+            // cleaning up RESERVE_ITEM
+            request.pendingActions[PendingActionName.RESERVE_ITEM]
+                ?.let {
+                    itemService.stopProcessingBlocking(it)
+                    processingService.handleResponse(it.rollback())
+                    counter++
+                }
+
         }
 
-        log.info("cleaning up old actions [rollbackCountInitiated=$counter]")
+        if (counter > 0)
+            log.info("cleaning up old actions [rollbackCountInitiated=$counter]")
     }
 
     private fun isOlderThanTransactionJourney(it: RequestingOrder) =

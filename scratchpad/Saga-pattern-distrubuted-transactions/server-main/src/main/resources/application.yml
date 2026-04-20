@@ -4,7 +4,8 @@ server:
 
 order-server-url: "http://localhost:8081"
 payment-server-url: "http://localhost:8082"
+item-server-url: "http://localhost:8083"
 
 
-#The total time the tranaction journey can take in seconds
-total-transaction-time: 30
+#The total time the transaction journey can take in seconds
+total-transaction-time: 60

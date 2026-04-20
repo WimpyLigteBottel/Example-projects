@@ -4,3 +4,4 @@ server:
 
 order-server-url: "http://host.docker.internal:8091"
 payment-server-url: "http://host.docker.internal:8092"
+item-server-url: "http://host.docker.internal:8093"

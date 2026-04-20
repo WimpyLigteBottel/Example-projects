@@ -1,0 +1,4 @@
+server:
+  port: 8083
+  name: "item"
+main-server-url: "http://localhost:8080"

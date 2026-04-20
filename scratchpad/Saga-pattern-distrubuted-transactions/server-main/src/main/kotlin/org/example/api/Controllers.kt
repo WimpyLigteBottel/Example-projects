@@ -1,10 +1,8 @@
 package org.example.api
 
-import org.example.Action
 import org.example.repo.RequestingOrder
 import org.example.service.ProcessingService
 import org.springframework.web.bind.annotation.*
-import java.util.*
 
 @RestController
 class MainServerController(
@@ -16,7 +14,6 @@ class MainServerController(
     fun startProcess(@RequestParam(required = false, defaultValue = "1") repeat: Int) {
         for (x in 0..repeat)
                 processingService.startProcess(RequestingOrder())
-
     }
 
 }

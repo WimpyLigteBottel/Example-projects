@@ -6,26 +6,29 @@ import java.time.ZoneOffset
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.locks.StampedLock
 
+
+typealias GlobalId = String
+
 @Repository
 class ActionRepo {
 
-    private var internalMap = ConcurrentHashMap<String, RequestingOrder>()
+    private var internalMap = ConcurrentHashMap<GlobalId, RequestingOrder>()
     private val stampedLock = StampedLock()
 
 
-    fun find(id: String): RequestingOrder? = withReadLock {
-        internalMap[id]?.copy()
+    fun find(id: GlobalId): RequestingOrder? = withReadLock {
+        internalMap[id]
     }
 
-    fun findAll(): MutableMap<String, RequestingOrder> = withReadLock {
-        internalMap.toMutableMap()
+    fun findAll(): List<RequestingOrder> = withReadLock {
+        internalMap.map { it.value }
     }
 
     fun save(requestingOrder: RequestingOrder) = withWriteLock {
         val newOrder = requestingOrder.copy(
             updated = OffsetDateTime.now(ZoneOffset.UTC)
         )
-        internalMap[newOrder.id] = newOrder
+        internalMap[requestingOrder.id] = newOrder
     }
 
     fun remove(requestingOrder: RequestingOrder) = withWriteLock {

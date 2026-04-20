@@ -1,4 +1,17 @@
 services:
+  main-application:
+    depends_on:
+      - order-system
+      - payment-system
+      - order-item
+    container_name: mainServer
+    build: /server-main/.
+    ports:
+      - "8080:8080"
+    networks:
+      - custom-network
+    environment:
+      SPRING_PROFILE: docker
   order-system:
     container_name: order-server
     build: /server-order/.
@@ -17,18 +30,15 @@ services:
       SPRING_PROFILE: docker
     networks:
       - custom-network
-  main-application:
-    depends_on:
-      - order-system
-      - payment-system
-    container_name: mainServer
-    build: /server-main/.
+  order-item:
+    container_name: order-item
+    build: /server-item/.
     ports:
-      - "8080:8080"
-    networks:
-      - custom-network
+      - "8093:8080"
     environment:
       SPRING_PROFILE: docker
+    networks:
+      - custom-network
 networks:
   custom-network:
     driver: bridge

@@ -1,5 +1,6 @@
-package org.example
+package org.example.api
 
+import org.example.internal.NotifyService
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -22,13 +23,13 @@ open class ProcessController(
             internalId = UUID.randomUUID().toString(),
             state = getRandomState()
         )
-        internalMemory.put(action.globalId, temp)
+        internalMemory[action.globalId] = temp
         notifyMainService.notifyMainServer(temp)
 
         val message = "$processName! [mainOrderId=${action.globalId};state=${temp.state}]"
-        when(temp.state){
+        when (temp.state) {
             State.PENDING -> log.debug(message)
-            State.SUCCESS -> log.debug(message)
+            State.SUCCESS -> log.info(message)
             State.ROLLBACK -> log.debug(message)
             State.FAILED -> log.warn(message)
         }
@@ -45,10 +46,6 @@ open class ProcessController(
     open fun getRandomState(): State {
         Random().nextInt(0, 100)
             .let {
-                if (it > 80) {
-                    return State.FAILED
-                }
-
                 return State.SUCCESS
             }
     }

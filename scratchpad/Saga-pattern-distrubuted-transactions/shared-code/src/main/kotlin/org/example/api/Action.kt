@@ -1,4 +1,4 @@
-package org.example
+package org.example.api
 
 data class Action(
     var globalId: String,
@@ -36,5 +36,6 @@ enum class State {
 enum class PendingActionName {
     CREATE_ORDER,
     PROCESS_PAYMENT,
+    RESERVE_ITEM,
     UNKNOWN
 }
