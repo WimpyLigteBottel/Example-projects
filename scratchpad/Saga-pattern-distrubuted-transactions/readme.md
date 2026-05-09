@@ -7,8 +7,19 @@
 
 ## how to launch?
 
-1. build the parent and do `mvn clean install`
-2. then in the `docker-compose up -d --build`
+build the parent and do
+
+```bash
+mvn clean install
+```
+
+```bash
+docker-compose build --no-cache
+```
+
+```bash
+docker-compose up -d
+```
 
 ## Happy scenario:
 

@@ -12,17 +12,17 @@ import java.util.concurrent.Executors
 
 @Service
 class OrderService(
-    @Value($$"${order-server-url}") private val baseUrl: String
+    @param:Value($$"${order-server-url}") private val baseUrl: String
 ) : ProcessActionService(baseUrl = baseUrl, name = PendingActionName.CREATE_ORDER)
 
 @Service
 class PaymentService(
-    @Value($$"${payment-server-url}") private val baseUrl: String
+    @param:Value($$"${payment-server-url}") private val baseUrl: String
 ) : ProcessActionService(baseUrl = baseUrl, name = PendingActionName.PROCESS_PAYMENT)
 
 @Service
 class ItemService(
-    @Value($$"${item-server-url}") private val baseUrl: String
+    @param:Value($$"${item-server-url}") private val baseUrl: String
 ) : ProcessActionService(baseUrl = baseUrl, name = PendingActionName.RESERVE_ITEM)
 
 @Service
@@ -33,17 +33,12 @@ class ProcessingService(
     private val actionRepo: ActionRepo
 ) {
 
-
     fun startProcess(requestingOrder: RequestingOrder) {
         actionRepo.save(requestingOrder)
-
-        val executor = Executors.newVirtualThreadPerTaskExecutor()
-
-        executor.submit { orderService.createFireAndForget(requestingOrder.id) }
-        executor.submit { itemService.createFireAndForget(requestingOrder.id) }
-        executor.submit { paymentService.createFireAndForget(requestingOrder.id) }
+        orderService.createFireAndForget(requestingOrder.id)
+        itemService.createFireAndForget(requestingOrder.id)
+        paymentService.createFireAndForget(requestingOrder.id)
     }
-
 
     fun handleResponse(action: Action) {
         val requestingOrder = actionRepo.find(action.globalId)

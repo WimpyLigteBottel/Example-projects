@@ -3,6 +3,7 @@ package org.example.internal
 import org.example.api.Action
 import org.example.api.PendingActionName
 import org.slf4j.LoggerFactory
+import org.springframework.scheduling.annotation.Async
 import org.springframework.web.client.RestClient
 
 open class ProcessActionService(
@@ -20,22 +21,20 @@ open class ProcessActionService(
      * Starts the process of orderCreation, this is fire and forget operation
 
      */
-    fun createFireAndForget(id: String): Action {
+    @Async
+    fun createFireAndForget(id: String) {
         val action = Action(id, name)
 
         try {
-            val response = webClient.post()
+            webClient.post()
                 .uri("/create")
                 .body(action)
                 .retrieve()
                 .body(Action::class.java)
 
-            return action.pending()
         } catch (e: Exception) {
             log.error("failed to create [id=$id]", e)
         }
-
-        return action.failed()
     }
 
     /**
