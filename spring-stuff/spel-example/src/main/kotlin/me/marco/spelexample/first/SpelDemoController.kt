@@ -1,4 +1,4 @@
-package me.marco.spelexample
+package me.marco.spelexample.first
 
 import org.springframework.expression.Expression
 import org.springframework.expression.ExpressionParser
@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-
 
 @RestController
 @RequestMapping("/spel")
@@ -61,6 +60,7 @@ class SpelDemoController {
     fun methodExample(): String {
         val input = "hello world"
 
+        // http://localhost:8080/spel/method
         val exp = parser.parseExpression("toUpperCase()")
         val result = exp.getValue(input, String::class.java)
 
@@ -71,6 +71,7 @@ class SpelDemoController {
     fun filterExample(): MutableList<Int> {
         val numbers = mutableListOf<Int?>(1, 5, 10, 15, 20)
 
+        // http://localhost:8080/spel/filter
         val exp = parser.parseExpression("#nums.?[#this > 10]")
 
         val context = StandardEvaluationContext()

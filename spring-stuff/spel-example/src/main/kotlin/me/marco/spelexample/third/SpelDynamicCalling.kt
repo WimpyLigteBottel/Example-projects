@@ -1,4 +1,4 @@
-package me.marco.spelexample
+package me.marco.spelexample.third
 
 import jakarta.annotation.PostConstruct
 import org.springframework.beans.factory.annotation.Value
@@ -12,9 +12,7 @@ import org.springframework.expression.spel.support.StandardEvaluationContext
 import org.springframework.stereotype.Component
 
 @Configuration
-class SpelBeanConfig(
-    private val parser: ExpressionParser = SpelExpressionParser(),
-) {
+class SpelBeanConfig {
     @Bean
     fun standardEvaluationContext(applicationContext: ApplicationContext): StandardEvaluationContext {
         val context = StandardEvaluationContext()
@@ -41,10 +39,10 @@ class FizzBuzzRunner(
     private val parser: ExpressionParser = SpelExpressionParser(),
     private val standardEvaluationContext: StandardEvaluationContext
 ) {
-    @Value("\${spel.expression.fizzbuzz}")
+    @Value($$"${spel.expression.fizzbuzz}")
     private lateinit var fizzbuzzExpression: String
 
-    @Value("\${spel.expression.fizzbuzzcalling}")
+    @Value($$"${spel.expression.fizzbuzzcalling}")
     private lateinit var fizzbuzzCalling: String
 
     @PostConstruct

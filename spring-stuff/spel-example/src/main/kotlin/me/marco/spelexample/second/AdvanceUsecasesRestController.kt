@@ -1,4 +1,4 @@
-package me.marco.spelexample
+package me.marco.spelexample.second
 
 import jakarta.annotation.PostConstruct
 import org.springframework.beans.factory.annotation.Value
@@ -24,8 +24,8 @@ class AdvanceUseCasesRestController(
     @PostConstruct
     fun onStartup() {
         // Notice the math on context load
-        println("number = $number")
-        println("numberWithMath = $numberWithMath")
+//        println("number = $number")
+//        println("numberWithMath = $numberWithMath")
     }
 
     @GetMapping("/generate-number")

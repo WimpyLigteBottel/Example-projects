@@ -2,8 +2,14 @@ spring:
   application:
     name: spel-example
 
+
+fizzbuzz: "#this % 15 == 0 ? 'FizzBuzz'"
+fizz: "#this % 3 == 0 ? 'Fizz'"
+buzz: "#this % 5 == 0 ? 'Buzz'"
+
 spel:
   number: 777
   expression:
+#    fizzBuzzCombined: "@fb.nums.![${fizzbuzz} : ${fizz} : ${buzz} : #this.toString()]"
     fizzbuzz: "@fb.nums.![#this % 15 == 0 ? 'FizzBuzz' : #this % 3 == 0 ? 'Fizz' : #this % 5 == 0 ? 'Buzz' : #this.toString()]"
     fizzbuzzcalling: "@fb.label(#number)"
