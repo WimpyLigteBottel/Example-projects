@@ -1,4 +1,4 @@
-FROM openjdk:21-jdk
+FROM amazoncorretto:25
 
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} app.jar

@@ -1,7 +1,7 @@
 # How to run this?
 
 1. Then build the docker-compose file
-   1. `docker-compose build`
+   1. `docker-compose build --no-cache`
    2. `docker-compose up`
 
 you should see something like this once you gone to 8090
@@ -25,4 +25,12 @@ Response time percentiles (approximated)
 
 I build ontop of the base locust image with pandas installed to speed up locust rebuild times
 
-`docker build -t marcolocust:1.0.0 .`
+```bash
+docker build -t marcolocust:1.0.0 .
+```
+
+
+# How do i access locaust?
+
+1. Check that the locust.conf file is not headless
+2. Then you should be able to access it on localhost:8089 (double check the docker compose file)
