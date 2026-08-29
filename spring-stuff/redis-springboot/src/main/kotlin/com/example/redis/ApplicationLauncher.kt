@@ -6,14 +6,18 @@ import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.CachePut
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.cache.annotation.EnableCaching
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.redis.cache.RedisCacheManager
 import org.springframework.data.redis.connection.RedisConnectionFactory
+import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Component
 import org.springframework.stereotype.Repository
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.toJavaDuration
 
 
 @SpringBootApplication
@@ -27,53 +31,69 @@ fun main(args: Array<String>) {
 @Component
 class StartupExecutor : CommandLineRunner {
 
+    val log = LoggerFactory.getLogger(UserRepository::class.java)
+
     @Autowired
     lateinit var userRepository: UserRepository
+
+    @Autowired
+    lateinit var userRepositoryRedisCacheable: UserRepositoryRedisCacheable
 
 
     override fun run(vararg args: String) {
         println("starting up...")
-        userRepository.addUser("marco")
-        userRepository.addUser("polo")
-        userRepository.findByUsername("marco")
-        userRepository.findByUsername("marco")
-        userRepository.findByUsername("polo")
-        userRepository.findByUsername("polo")
+        userRepository.removeUsers()
+
+        userRepositoryRedisCacheable.addUserRedis("marco1")
+        userRepository.findUsernameViaRedis("marco1")?.let { log.info(it) }
+        userRepositoryRedisCacheable.findUsernameViaRedis("marco1")?.let { log.info(it) }
+
         println("done")
+        System.exit(0)
     }
 
 }
 
 
 @Repository
-class UserRepository {
+class UserRepository(
+    private val redisTemplate: RedisTemplate<String, String>
+) {
 
-    val log = LoggerFactory.getLogger(UserRepository::class.java)
-    val users = arrayListOf<String>()
-
-
-    @Cacheable("users", key = "#username")
-    fun findByUsername(username: String): String? {
-        Thread.sleep(1000)
-        log.info("findByUsername $username")
-        return users.find { it == username }
+    //@Cacheable("users", key = "#username")
+    fun findUsernameViaRedis(username: String): String? {
+        return redisTemplate.opsForValue().get(username)
     }
 
-    fun addUser(username: String): String {
-        Thread.sleep(1000)
-        log.info("addUser $username")
-        val userExist = users.find { it == username }
+    fun addUserRedis(username: String) {
+        redisTemplate.opsForValue().set("$username", username, 10.seconds.toJavaDuration())
+    }
 
-        userExist ?: users.add(username)
+    // @CacheEvict("users", allEntries = true)
+    fun removeUsers() {
+        redisTemplate.connectionFactory?.connection?.serverCommands()?.flushAll()
+    }
+}
 
-        return users.find { it == username }!!
+@Repository
+class UserRepositoryRedisCacheable(
+    private val userRepository: UserRepository
+) {
+
+    @Cacheable("users", key = "#username")
+    fun findUsernameViaRedis(username: String): String? {
+        return userRepository.findUsernameViaRedis(username)
+    }
+
+    @CachePut("users", key = "#username")
+    fun addUserRedis(username: String) {
+        userRepository.addUserRedis(username)
     }
 
     @CacheEvict("users", allEntries = true)
     fun removeUsers() {
-        users.clear()
+        userRepository.removeUsers()
     }
-
 }
 
 
