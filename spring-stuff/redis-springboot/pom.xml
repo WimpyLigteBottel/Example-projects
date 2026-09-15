@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.example</groupId>
-    <artifactId>rabbitmq-springboot</artifactId>
+    <artifactId>redis-springboot</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>rabbitmq-springboot</name>
-    <description>rabbitmq-springboot</description>
+
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>

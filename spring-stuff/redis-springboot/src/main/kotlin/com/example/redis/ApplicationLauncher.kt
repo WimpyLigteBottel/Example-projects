@@ -1,4 +1,4 @@
-package com.example.rabbitmqspringboot
+package com.example.redis
 
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired

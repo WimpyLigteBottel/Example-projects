@@ -1,4 +1,4 @@
-package com.example.rabbitmqspringboot
+package com.example.redis
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
