@@ -1,6 +1,7 @@
 package com.example.kotlin_ecs_horde_base_moment
 
 import com.example.kotlin_ecs_horde_base_moment.collision.ZombieCollisionSystem
+import com.example.kotlin_ecs_horde_base_moment.display.DisplaySystem
 import com.example.kotlin_ecs_horde_base_moment.movement.MovementSystem
 import com.example.kotlin_ecs_horde_base_moment.movement.PlayerMovementSystem
 import com.example.kotlin_ecs_horde_base_moment.movement.ZombieMovementSystem
@@ -41,8 +42,8 @@ class World {
 
     private var nextEntityId = 0
 
-    var width = 50
-    var height = 50
+    var width = 20
+    var height = 20
 
     val positions = mutableMapOf<Entity, Position>()
     val velocities = mutableMapOf<Entity, Velocity>()
@@ -65,54 +66,13 @@ class World {
         MovementSystem.update(this, deltaTime)
         ZombieCollisionSystem.update(this)
 
-
+        DisplaySystem.displayWorld(this)
         //Game over check
         if (StateChecker.zombieTouchesPlayer(this)) {
             throw RuntimeException("GAME OVER")
         }
-    }
 
-    fun displayWorld() {
-        for (y in 0 until height) {
 
-            for (x in 0 until width) {
-
-                var character = '.'
-
-                // Check if the player is here
-                val player = players.firstOrNull()
-
-                if (player != null) {
-                    val playerPosition = positions[player]
-
-                    if (
-                        playerPosition != null &&
-                        playerPosition.x.toInt() == x &&
-                        playerPosition.y.toInt() == y
-                    ) {
-                        character = 'P'
-                    }
-                }
-
-                // Check if a zombie is here
-                for (zombie in zombies) {
-
-                    val zombiePosition = positions[zombie]
-
-                    if (
-                        zombiePosition != null &&
-                        zombiePosition.x.toInt() == x &&
-                        zombiePosition.y.toInt() == y
-                    ) {
-                        character = 'Z'
-                    }
-                }
-
-                print(character)
-            }
-
-            println()
-        }
     }
 
 

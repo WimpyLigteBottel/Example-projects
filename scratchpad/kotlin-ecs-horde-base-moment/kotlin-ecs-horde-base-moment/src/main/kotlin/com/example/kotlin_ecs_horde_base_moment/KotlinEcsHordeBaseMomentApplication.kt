@@ -21,7 +21,6 @@ class Startup : CommandLineRunner {
         while (true) {
             println("")
             world.tick(1f)
-            world.displayWorld()
             Thread.sleep(1000)
         }
     }

@@ -10,7 +10,7 @@ import com.example.kotlin_ecs_horde_base_moment.World
 
 fun spawnWorld(): World {
     val world = World()
-    world.height = 10
+    world.height = 20
     world.width = 50
 
     spawnPlayer(world)
