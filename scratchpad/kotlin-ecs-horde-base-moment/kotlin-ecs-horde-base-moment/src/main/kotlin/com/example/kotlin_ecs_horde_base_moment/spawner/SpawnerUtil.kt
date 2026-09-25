@@ -6,6 +6,7 @@ import com.example.kotlin_ecs_horde_base_moment.Target
 import com.example.kotlin_ecs_horde_base_moment.UnitType
 import com.example.kotlin_ecs_horde_base_moment.Velocity
 import com.example.kotlin_ecs_horde_base_moment.World
+import kotlin.random.Random
 
 
 fun spawnWorld(): World {
@@ -15,7 +16,7 @@ fun spawnWorld(): World {
 
     spawnPlayer(world)
 
-    repeat(5) {
+    repeat(20) {
         spawnZombie(world, it.toFloat(), it.toFloat())
     }
 
@@ -31,20 +32,21 @@ fun spawnPlayer(world: World): World {
     world.positions[player] = Position(x = 0f, y = 0f)
     world.velocities[player] = Velocity(x = 0f, y = 0f)
     world.entityType[player] = UnitType.PLAYER_1
-    world.speeds[player] = Speed(4f)
+    world.speeds[player] = Speed(2f)
 
 
     return world
 }
 
+val random = Random(12345)
+
 fun spawnZombie(world: World, x: Float, y: Float): World {
     val zombieId = world.createEntity()
 
     world.zombies.add(zombieId)
-
-    world.positions[zombieId] = Position(x = x + 10f, y = y + 10f)
+    world.positions[zombieId] = Position(x = x + random.nextInt(5,20), y = y + random.nextInt(5,20))
     world.velocities[zombieId] = Velocity(x = 0f, y = 0f)
-    world.speeds[zombieId] = Speed(value = 2f)
+    world.speeds[zombieId] = Speed(value = 1f)
     // targets the first player
     world.players.firstOrNull()?.let { world.targets[zombieId] = Target(entity = world.players.first()) }
     world.entityType[zombieId] = UnitType.ZOMBIE
