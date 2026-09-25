@@ -1,5 +1,6 @@
 package com.example.kotlin_ecs_horde_base_moment
 
+import com.example.kotlin_ecs_horde_base_moment.collision.ZombieCollisionSystem
 import com.example.kotlin_ecs_horde_base_moment.movement.MovementSystem
 import com.example.kotlin_ecs_horde_base_moment.movement.PlayerMovementSystem
 import com.example.kotlin_ecs_horde_base_moment.movement.ZombieMovementSystem
@@ -7,6 +8,11 @@ import com.example.kotlin_ecs_horde_base_moment.state.StateChecker
 
 
 typealias Entity = Int
+
+data class Direction(
+    val x: Float,
+    val y: Float
+)
 
 data class Position(
     var x: Float,
@@ -35,8 +41,8 @@ class World {
 
     private var nextEntityId = 0
 
-    var width = 100
-    var height = 100
+    var width = 50
+    var height = 50
 
     val positions = mutableMapOf<Entity, Position>()
     val velocities = mutableMapOf<Entity, Velocity>()
@@ -57,6 +63,7 @@ class World {
         ZombieMovementSystem.update(this)
         PlayerMovementSystem.update(this)
         MovementSystem.update(this, deltaTime)
+        ZombieCollisionSystem.update(this)
 
 
         //Game over check

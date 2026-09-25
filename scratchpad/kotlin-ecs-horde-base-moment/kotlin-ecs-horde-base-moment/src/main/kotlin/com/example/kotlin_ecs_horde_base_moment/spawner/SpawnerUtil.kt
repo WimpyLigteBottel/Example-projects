@@ -15,7 +15,7 @@ fun spawnWorld(): World {
 
     spawnPlayer(world)
 
-    repeat(1) {
+    repeat(5) {
         spawnZombie(world, it.toFloat(), it.toFloat())
     }
 

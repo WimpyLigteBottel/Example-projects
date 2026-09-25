@@ -13,6 +13,10 @@ object MovementSystem {
 
             position.x += velocity.x * deltaTime
             position.y += velocity.y * deltaTime
+
+            // Keep entity inside the world
+            position.x = position.x.coerceIn(0f, world.width.toFloat())
+            position.y = position.y.coerceIn(0f, world.height.toFloat())
         }
     }
 }
