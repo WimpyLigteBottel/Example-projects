@@ -1,5 +1,28 @@
-package com.example.kotlin_ecs_horde_base_moment
+package com.example.kotlin_ecs_horde_base_moment.spawner
 
+import com.example.kotlin_ecs_horde_base_moment.Position
+import com.example.kotlin_ecs_horde_base_moment.Speed
+import com.example.kotlin_ecs_horde_base_moment.Target
+import com.example.kotlin_ecs_horde_base_moment.UnitType
+import com.example.kotlin_ecs_horde_base_moment.Velocity
+import com.example.kotlin_ecs_horde_base_moment.World
+
+
+fun spawnWorld(): World {
+    val world = World()
+    world.height = 10
+    world.width = 50
+
+    spawnPlayer(world)
+
+    repeat(1) {
+        spawnZombie(world, it.toFloat(), it.toFloat())
+    }
+
+
+    return world
+
+}
 
 fun spawnPlayer(world: World): World {
     val player = world.createEntity()

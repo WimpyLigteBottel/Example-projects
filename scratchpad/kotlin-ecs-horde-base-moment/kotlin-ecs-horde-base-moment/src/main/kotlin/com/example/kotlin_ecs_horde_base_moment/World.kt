@@ -1,5 +1,10 @@
 package com.example.kotlin_ecs_horde_base_moment
 
+import com.example.kotlin_ecs_horde_base_moment.movement.MovementSystem
+import com.example.kotlin_ecs_horde_base_moment.movement.PlayerMovementSystem
+import com.example.kotlin_ecs_horde_base_moment.movement.ZombieMovementSystem
+import com.example.kotlin_ecs_horde_base_moment.state.StateChecker
+
 
 typealias Entity = Int
 
@@ -46,48 +51,18 @@ class World {
     }
 
 
-    private fun updateZombieMovement(world: World) {
+    fun tick(deltaTime: Float) {
 
-        for (zombie in world.zombies) {
+        // DO movements
+        ZombieMovementSystem.update(this)
+        PlayerMovementSystem.update(this)
+        MovementSystem.update(this, deltaTime)
 
-            val position = world.positions[zombie] ?: continue
-            val velocity = world.velocities[zombie] ?: continue
-            val speed = world.speeds[zombie] ?: continue
-            val target = world.targets[zombie] ?: continue
 
-            val targetPosition =
-                world.positions[target.entity] ?: continue
-
-            val dx = targetPosition.x - position.x
-            val dy = targetPosition.y - position.y
-
-            val distance = kotlin.math.sqrt(
-                dx * dx + dy * dy
-            )
-
-            if (distance > 0f) {
-
-                velocity.x = dx / distance * speed.value
-                velocity.y = dy / distance * speed.value
-            }
+        //Game over check
+        if (StateChecker.zombieTouchesPlayer(this)) {
+            throw RuntimeException("GAME OVER")
         }
-    }
-
-    private fun updateMovement(world: World, deltaTime: Float) {
-        for ((entity, velocity) in world.velocities) {
-
-            val position = world.positions[entity]
-                ?: continue
-
-            position.x += velocity.x * deltaTime
-            position.y += velocity.y * deltaTime
-        }
-    }
-
-
-    fun update(deltaTime: Float) {
-        updateZombieMovement(this)
-        updateMovement(this, deltaTime)
     }
 
     fun displayWorld() {

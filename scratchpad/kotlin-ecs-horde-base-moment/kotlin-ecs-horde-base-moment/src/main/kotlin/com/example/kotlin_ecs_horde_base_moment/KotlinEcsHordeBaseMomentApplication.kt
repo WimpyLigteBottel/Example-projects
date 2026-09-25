@@ -1,5 +1,6 @@
 package com.example.kotlin_ecs_horde_base_moment
 
+import com.example.kotlin_ecs_horde_base_moment.spawner.spawnWorld
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -14,28 +15,15 @@ fun main(args: Array<String>) {
 
 
 @Component
-class Startup() : CommandLineRunner {
+class Startup : CommandLineRunner {
     override fun run(vararg args: String) {
-
-        val world = World()
-        world.height = 50
-        world.width = 50
-
-        spawnPlayer(world)
-
-        repeat(1) {
-            spawnZombie(world, it.toFloat(), it.toFloat())
-        }
-
-
-
-        repeat(10) {
+        val world = spawnWorld()
+        while (true) {
             println("")
-            world.update(1f)
+            world.tick(1f)
             world.displayWorld()
-            Thread.sleep(2000)
+            Thread.sleep(1000)
         }
-
     }
 
 }
