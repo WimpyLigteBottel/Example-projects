@@ -31,10 +31,8 @@ object DisplaySystem {
                 character = updatePastWalkedLocations(world, x, y, character)
 
                 map.append(character.tile)
-                //print(character.tile)
             }
             map.append("\n")
-            //println()
         }
 
         print(map)

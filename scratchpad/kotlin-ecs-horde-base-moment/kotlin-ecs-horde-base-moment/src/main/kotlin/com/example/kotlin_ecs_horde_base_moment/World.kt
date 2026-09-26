@@ -7,6 +7,7 @@ import com.example.kotlin_ecs_horde_base_moment.movement.PlayerMovementSystem
 import com.example.kotlin_ecs_horde_base_moment.movement.PositionMemorySystem
 import com.example.kotlin_ecs_horde_base_moment.movement.ZombieMovementSystem
 import com.example.kotlin_ecs_horde_base_moment.state.StateChecker
+import kotlin.random.Random
 
 
 typealias Entity = Int
@@ -54,6 +55,8 @@ class World {
     val entityType = mutableMapOf<Entity, UnitType>()
     val zombies = mutableSetOf<Entity>()
     val players = mutableSetOf<Entity>()
+    var tickNumber = 0
+    var random = Random(Random.nextInt(0, 10000000))
 
     fun createEntity(): Entity {
         return nextEntityId++
@@ -76,6 +79,7 @@ class World {
         }
 
 
+        tickNumber++
         Thread.sleep(tickspeed)
 
     }
