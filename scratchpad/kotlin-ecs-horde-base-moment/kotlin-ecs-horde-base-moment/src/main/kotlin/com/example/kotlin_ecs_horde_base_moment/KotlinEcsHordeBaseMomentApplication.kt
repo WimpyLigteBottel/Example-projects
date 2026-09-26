@@ -20,8 +20,7 @@ class Startup : CommandLineRunner {
         val world = spawnWorld()
         while (true) {
             println("")
-            world.tick(1f)
-            Thread.sleep(500)
+            world.tick(1f, tickspeed = 200)
         }
     }
 

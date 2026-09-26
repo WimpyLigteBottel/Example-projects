@@ -4,6 +4,7 @@ import com.example.kotlin_ecs_horde_base_moment.collision.ZombieCollisionSystem
 import com.example.kotlin_ecs_horde_base_moment.display.DisplaySystem
 import com.example.kotlin_ecs_horde_base_moment.movement.MovementSystem
 import com.example.kotlin_ecs_horde_base_moment.movement.PlayerMovementSystem
+import com.example.kotlin_ecs_horde_base_moment.movement.PositionMemorySystem
 import com.example.kotlin_ecs_horde_base_moment.movement.ZombieMovementSystem
 import com.example.kotlin_ecs_horde_base_moment.state.StateChecker
 
@@ -42,10 +43,11 @@ class World {
 
     private var nextEntityId = 0
 
-    var width = 20
-    var height = 20
+    var width = 30
+    var height = 30
 
     val positions = mutableMapOf<Entity, Position>()
+    val positionMemory = mutableMapOf<Entity, MutableList<Position>>()
     val velocities = mutableMapOf<Entity, Velocity>()
     val speeds = mutableMapOf<Entity, Speed>()
     val targets = mutableMapOf<Entity, Target>()
@@ -58,9 +60,10 @@ class World {
     }
 
 
-    fun tick(deltaTime: Float) {
+    fun tick(deltaTime: Float, tickspeed: Long) {
 
         // DO movements
+        PositionMemorySystem.update(this)
         ZombieMovementSystem.update(this)
         PlayerMovementSystem.update(this)
         MovementSystem.update(this, deltaTime)
@@ -72,6 +75,8 @@ class World {
             throw RuntimeException("GAME OVER")
         }
 
+
+        Thread.sleep(tickspeed)
 
     }
 

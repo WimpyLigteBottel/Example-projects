@@ -12,7 +12,7 @@ import kotlin.random.Random
 fun spawnWorld(): World {
     val world = World()
     world.height = 20
-    world.width = 50
+    world.width = 100
 
     spawnPlayer(world)
 
@@ -32,6 +32,7 @@ fun spawnPlayer(world: World): World {
     world.positions[player] = Position(x = 0f, y = 0f)
     world.velocities[player] = Velocity(x = 0f, y = 0f)
     world.entityType[player] = UnitType.PLAYER_1
+    world.positionMemory[player] = mutableListOf(Position(x = 0f, y = 0f))
     world.speeds[player] = Speed(2f)
 
 
