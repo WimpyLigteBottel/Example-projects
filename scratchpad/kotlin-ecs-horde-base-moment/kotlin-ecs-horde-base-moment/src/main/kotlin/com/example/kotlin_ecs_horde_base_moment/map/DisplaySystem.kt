@@ -1,4 +1,4 @@
-package com.example.kotlin_ecs_horde_base_moment.display
+package com.example.kotlin_ecs_horde_base_moment.map
 
 import com.example.kotlin_ecs_horde_base_moment.World
 

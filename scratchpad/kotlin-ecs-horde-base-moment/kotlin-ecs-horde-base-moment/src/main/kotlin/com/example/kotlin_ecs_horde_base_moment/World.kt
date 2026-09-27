@@ -1,7 +1,7 @@
 package com.example.kotlin_ecs_horde_base_moment
 
 import com.example.kotlin_ecs_horde_base_moment.collision.ZombieCollisionSystem
-import com.example.kotlin_ecs_horde_base_moment.display.RecordMapSystem
+import com.example.kotlin_ecs_horde_base_moment.map.RecordMapSystem
 import com.example.kotlin_ecs_horde_base_moment.movement.MovementSystem
 import com.example.kotlin_ecs_horde_base_moment.movement.PlayerMovementSystem
 import com.example.kotlin_ecs_horde_base_moment.movement.PositionMemorySystem
