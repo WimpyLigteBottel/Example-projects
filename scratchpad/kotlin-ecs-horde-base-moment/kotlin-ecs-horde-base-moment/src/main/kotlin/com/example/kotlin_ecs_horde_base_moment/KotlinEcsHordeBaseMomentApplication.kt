@@ -18,9 +18,9 @@ fun main(args: Array<String>) {
 class Startup : CommandLineRunner {
     override fun run(vararg args: String) {
         val world = spawnWorld()
-        while (true) {
+        while (world.tickNumber < 200) {
             println("")
-            world.tick(1f, tickspeed = 200)
+            world.tick(1f, tickspeed = 0)
         }
     }
 

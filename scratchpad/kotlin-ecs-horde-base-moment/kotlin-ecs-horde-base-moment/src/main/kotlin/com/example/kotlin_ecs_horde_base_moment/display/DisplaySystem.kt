@@ -13,7 +13,7 @@ object DisplaySystem {
         WALKED_TILE("."),
     }
 
-    fun displayWorld(world: World) {
+    fun displayWorld(world: World): String {
         val map = StringBuilder()
 
 
@@ -36,6 +36,8 @@ object DisplaySystem {
         }
 
         print(map)
+
+        return map.toString()
     }
 
     private fun updatePlayerPosition(
@@ -114,6 +116,7 @@ object DisplaySystem {
         if (hasSteppedHereBefore) {
             character1 = UnitCharacter.WALKED_TILE
         }
+
         return character1
     }
 

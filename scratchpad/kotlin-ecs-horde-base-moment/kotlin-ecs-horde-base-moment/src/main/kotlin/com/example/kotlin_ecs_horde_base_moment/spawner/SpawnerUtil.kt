@@ -9,7 +9,8 @@ fun spawnWorld(): World {
     val world = World()
     world.height = 20
     world.width = 100
-    world.random = Random(Random.nextInt(0, 1000))
+    world.seed = Random.nextInt(0, 1000)
+    world.random = Random(world.seed)
 
     spawnPlayer(world)
 

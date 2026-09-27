@@ -1,7 +1,7 @@
 package com.example.kotlin_ecs_horde_base_moment
 
 import com.example.kotlin_ecs_horde_base_moment.collision.ZombieCollisionSystem
-import com.example.kotlin_ecs_horde_base_moment.display.DisplaySystem
+import com.example.kotlin_ecs_horde_base_moment.display.RecordMapSystem
 import com.example.kotlin_ecs_horde_base_moment.movement.MovementSystem
 import com.example.kotlin_ecs_horde_base_moment.movement.PlayerMovementSystem
 import com.example.kotlin_ecs_horde_base_moment.movement.PositionMemorySystem
@@ -56,7 +56,9 @@ class World {
     val zombies = mutableSetOf<Entity>()
     val players = mutableSetOf<Entity>()
     var tickNumber = 0
-    var random = Random(Random.nextInt(0, 10000000))
+
+    var seed = Random.nextInt(0, 10000000)
+    var random = Random(seed)
 
     fun createEntity(): Entity {
         return nextEntityId++
@@ -72,7 +74,7 @@ class World {
         MovementSystem.update(this, deltaTime)
         ZombieCollisionSystem.update(this)
 
-        DisplaySystem.displayWorld(this)
+        RecordMapSystem.record(this)
         //Game over check
         if (StateChecker.zombieTouchesPlayer(this)) {
             throw RuntimeException("GAME OVER")
