@@ -7,10 +7,10 @@ import org.springframework.boot.runApplication
 import org.springframework.stereotype.Component
 
 @SpringBootApplication
-class KotlinEcsHordeBaseMomentApplication
+class Launcher
 
 fun main(args: Array<String>) {
-    runApplication<KotlinEcsHordeBaseMomentApplication>(*args)
+    runApplication<Launcher>(*args)
 }
 
 
