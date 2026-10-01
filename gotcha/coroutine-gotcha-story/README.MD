@@ -36,3 +36,6 @@
 
 
 - Lesson 4: SupervisorScope
+  - What is it
+  - When would you use it
+  - What is the gatcha with exceptions
