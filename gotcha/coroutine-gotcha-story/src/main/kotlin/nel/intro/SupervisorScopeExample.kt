@@ -1,7 +1,6 @@
 package nel.intro
 
 import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -17,18 +16,16 @@ fun main(): Unit = runBlocking {
             "MAIN"
         }
 
-        val secondJob =
+        val secondJob = runCatching {
             async {
                 delay(100)
                 throw RuntimeException("Failed")
             }
+        }.getOrNull()
 
-        runCatching {
-            awaitAll(mainJob, secondJob)
-        }
 
         val main = mainJob.await()
-        val second = runCatching { secondJob.await() }.getOrNull()
+        val second = secondJob?.await()
 
         println(CombinedResult(main, second))
     }

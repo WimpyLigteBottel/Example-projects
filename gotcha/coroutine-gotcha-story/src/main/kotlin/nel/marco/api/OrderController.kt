@@ -1,8 +1,12 @@
 package nel.marco.api
 
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import nel.marco.service.OrderService
 import org.slf4j.LoggerFactory
 import org.slf4j.MDC
@@ -10,6 +14,8 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.lang.Thread.sleep
+import java.util.concurrent.Executors
 
 data class Order(
     val id: Long,
@@ -55,4 +61,20 @@ class OrderController(
             )
         }
     }
+
+
+    val dispatcher = Executors.newFixedThreadPool(1).asCoroutineDispatcher()
+
+    @GetMapping("/{id}/lesson3")
+    suspend fun getOrderLesson3(
+        @PathVariable id: Long
+    ): Unit = coroutineScope {
+        logger.info("START ${Thread.currentThread().name}")
+
+        withContext(dispatcher) {
+            sleep(2000)
+            logger.info("END ${Thread.currentThread().name}")
+        }
+    }
+
 }

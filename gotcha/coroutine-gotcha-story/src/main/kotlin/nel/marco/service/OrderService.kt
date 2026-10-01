@@ -1,13 +1,12 @@
 package nel.marco.service
 
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import nel.marco.api.Order
 import nel.marco.repository.OrderRepository
 import org.slf4j.LoggerFactory
-import org.slf4j.MDC
 import org.springframework.stereotype.Service
+import java.lang.Thread.sleep
 
 @Service
 class OrderService(

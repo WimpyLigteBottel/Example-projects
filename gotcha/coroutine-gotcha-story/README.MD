@@ -30,3 +30,9 @@
   - What happen when you start new coroutine context
   - How and where you could use it
   - What you should be aware off
+
+
+- Lesson 3: What happens when you block the wrong context
+
+
+- Lesson 4: SupervisorScope
