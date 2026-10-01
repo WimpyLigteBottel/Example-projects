@@ -20,7 +20,7 @@ class OrderController(
 ) {
 
     @GetMapping("/{id}")
-    fun getOrder(
+    suspend fun getOrder(
         @PathVariable id: Long
     ): Order {
         println(

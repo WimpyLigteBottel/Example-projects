@@ -8,11 +8,11 @@ import java.lang.Thread.sleep
 import java.util.concurrent.Executors
 
 /**
- * Remember block vs suspending.... What is the difference
+ * Lesson 1: Remember block vs suspending.... What is the difference
  */
 
 fun main(): Unit {
-//    blocking()
+    blocking()
     suspending()
 }
 
