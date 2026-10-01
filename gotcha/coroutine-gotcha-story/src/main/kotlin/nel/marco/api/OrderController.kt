@@ -1,6 +1,7 @@
 package nel.marco.api
 
 import nel.marco.service.OrderService
+import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
@@ -19,13 +20,16 @@ class OrderController(
     private val orderService: OrderService
 ) {
 
+    val logger = LoggerFactory.getLogger(OrderController::class.java)
+
     @GetMapping("/{id}")
     suspend fun getOrder(
         @PathVariable id: Long
     ): Order {
-        println(
-            "Controller: ${Thread.currentThread().name}"
-        )
+
+
+        logger.info("Controller: thread=${Thread.currentThread().name}")
+
 
         return orderService.getOrder(id)
     }

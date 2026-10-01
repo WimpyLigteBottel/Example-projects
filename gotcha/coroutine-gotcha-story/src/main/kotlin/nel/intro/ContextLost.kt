@@ -1,5 +1,6 @@
 package nel.intro
 
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -24,10 +25,11 @@ fun main(): Unit {
         message.set("$manager said: \"Remember RED Apples on top!\"")
         println(message.get())
 
-        launch {
+        launch(Dispatchers.IO) {
             val threadName = Thread.currentThread().name
             println("$threadName A: Remembers what manager said -> ${message.get()}") // Will remember
         }
+
         launch {
             val threadName = Thread.currentThread().name
             println("$threadName B: Remembers what manager said -> ${message.get()}") // Will remember

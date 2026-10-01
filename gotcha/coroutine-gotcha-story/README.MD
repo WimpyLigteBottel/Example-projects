@@ -23,4 +23,10 @@
 - Lesson 1: Blocking code and suspending
   - What does blocking look like
   - What you should do
-  - What should you keep aware off?
+  - What should you keep aware off
+
+
+- Lesson 2: Working with context in thread
+  - What happen when you start new coroutine context
+  - How and where you could use it
+  - What you should be aware off

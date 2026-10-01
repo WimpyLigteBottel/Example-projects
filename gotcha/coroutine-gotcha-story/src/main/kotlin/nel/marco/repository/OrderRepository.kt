@@ -1,26 +1,23 @@
 package nel.marco.repository
 
-import kotlinx.coroutines.coroutineScope
 import nel.marco.api.Order
+import nel.marco.service.OrderService
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Repository
 import java.lang.Thread.sleep
 
 @Repository
 class OrderRepository {
 
-    suspend fun findById(id: Long): Order = coroutineScope {
-        println(
-            "DB START: ${Thread.currentThread().name}"
-        )
+    val logger = LoggerFactory.getLogger(OrderService::class.java)
 
+    suspend fun findById(id: Long): Order {
         // Lesson 1: Blocking code
         sleep(1_000)
 
-        println(
-            "DB END: ${Thread.currentThread().name}"
-        )
+        logger.info("Repository: ${Thread.currentThread().name} - id=${id}")
 
-        Order(
+        return Order(
             id = id,
             customerId = 123,
             description = "Kotlin conference ticket"
