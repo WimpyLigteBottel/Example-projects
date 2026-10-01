@@ -20,9 +20,21 @@ class ExecuteCode : CommandLineRunner {
 
     override fun run(vararg args: String) {
         client.get()
-            .uri("/orders/{id}", 1)
+            .uri("/orders/{id}/lesson1", 1)
             .retrieve()
             .toBodilessEntity()
+
+
+        client.get()
+            .uri("/orders/{id}/lesson2", 1)
+            .retrieve()
+            .toBodilessEntity()
+//
+//
+//        client.get()
+//            .uri("/orders/{id}/lesson3", 1)
+//            .retrieve()
+//            .toBodilessEntity()
 
     }
 }

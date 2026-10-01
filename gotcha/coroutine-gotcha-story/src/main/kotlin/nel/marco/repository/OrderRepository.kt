@@ -15,7 +15,7 @@ class OrderRepository {
         // Lesson 1: Blocking code
         sleep(1_000)
 
-        logger.info("Repository: ${Thread.currentThread().name} - id=${id}")
+        logger.info("Repository: thread=${Thread.currentThread().name} - id=${id}")
 
         return Order(
             id = id,

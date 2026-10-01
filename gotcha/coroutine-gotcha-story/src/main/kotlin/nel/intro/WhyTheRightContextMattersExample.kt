@@ -3,12 +3,11 @@ package nel.intro
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 
 
-val workers = Executors.newFixedThreadPool(2).asCoroutineDispatcher()
-val countDownLatch = CountDownLatch(1)
+val cpuWorkers = Executors.newFixedThreadPool(1).asCoroutineDispatcher()
+val ioWorkers = Executors.newFixedThreadPool(64).asCoroutineDispatcher()
 
 
 /*
@@ -17,14 +16,14 @@ What is going to print?
 1.
 Worker A: Tell me when I can start!
 Worker B: YOU CAN START!
-Worker B: DONE!
 Worker A: DONE!
 
 
 2.
 
-Launching tasks!
-Worker A: Tell me when i can start!
+Worker A: Tell me when I can start!
+Worker A: DONE!
+Worker B: YOU CAN START!
 
  */
 
@@ -34,17 +33,16 @@ fun main(): Unit {
 
         println("Launching tasks!")
 
-        launch(workers) {
+        launch(cpuWorkers) {
             println("Worker A: Tell me when i can start!")
-            countDownLatch.await()
+            Thread.sleep(2000)
             println("Worker A: DONE!")
         }
 
         // Say when ready :)
-        launch(workers) {
+        launch(cpuWorkers) {
             println("Worker B: YOU CAN START!")
-            countDownLatch.countDown()
-            println("Worker B: DONE!")
         }
+
     }
 }

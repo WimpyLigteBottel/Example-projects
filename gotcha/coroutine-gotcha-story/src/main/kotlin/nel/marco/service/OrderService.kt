@@ -16,25 +16,15 @@ class OrderService(
 
     val logger = LoggerFactory.getLogger(OrderService::class.java)
 
-    suspend fun getOrder(id: Long): Order =
+    suspend fun getOrderLesson1(id: Long): Order =
         coroutineScope {
-            // Lesson 2: CONTEXT
-            MDC.put("LESSON-2", "<BLANK>")
+            logger.info("Service: thread=${Thread.currentThread().name}")
 
-            logger.info("Service: thread=${Thread.currentThread().name}; MDC={}", MDC.get("LESSON-2"))
-
-            val order1 = async(Dispatchers.IO) {
-                logger.info("       IO coroutine: thread=${Thread.currentThread().name}; MDC={}", MDC.get("LESSON-2"))
-
+            val order1 = async {
                 repository.findById(id)
             }
 
             val order2 = async {
-                logger.info(
-                    "       DEFAULT coroutine: thread=${Thread.currentThread().name}; MDC={}",
-                    MDC.get("LESSON-2")
-                )
-
                 repository.findById(9999)
             }
 
